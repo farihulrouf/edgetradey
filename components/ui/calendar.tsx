@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -8,6 +8,43 @@ import { buttonVariants } from "@/components/ui/button";
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
+  // Custom navigation component
+  const CustomNavigation = ({
+    displayMonth,
+    goToMonth,
+  }: {
+    displayMonth: Date;
+    goToMonth: (date: Date) => void;
+  }) => {
+    const prevMonth = new Date(displayMonth);
+    prevMonth.setMonth(prevMonth.getMonth() - 1);
+
+    const nextMonth = new Date(displayMonth);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+    return (
+      <div className="flex justify-between items-center mb-2">
+        <button
+          type="button"
+          onClick={() => goToMonth(prevMonth)}
+          className={cn(buttonVariants({ variant: "outline" }), "h-7 w-7 p-0")}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <span className="text-sm font-medium">
+          {displayMonth.toLocaleString("default", { month: "long", year: "numeric" })}
+        </span>
+        <button
+          type="button"
+          onClick={() => goToMonth(nextMonth)}
+          className={cn(buttonVariants({ variant: "outline" }), "h-7 w-7 p-0")}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -41,9 +78,8 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_hidden: "invisible",
         ...classNames,
       }}
-      icons={{
-        left: () => <ChevronLeft className="h-4 w-4" />,
-        right: () => <ChevronRight className="h-4 w-4" />,
+      components={{
+        Caption: CustomNavigation,
       }}
       {...props}
     />
