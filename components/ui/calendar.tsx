@@ -1,50 +1,11 @@
 import * as React from "react";
 import { DayPicker } from "react-day-picker";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
-  // Custom navigation component
-  const CustomNavigation = ({
-    displayMonth,
-    goToMonth,
-  }: {
-    displayMonth: Date;
-    goToMonth: (date: Date) => void;
-  }) => {
-    const prevMonth = new Date(displayMonth);
-    prevMonth.setMonth(prevMonth.getMonth() - 1);
-
-    const nextMonth = new Date(displayMonth);
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-
-    return (
-      <div className="flex justify-between items-center mb-2">
-        <button
-          type="button"
-          onClick={() => goToMonth(prevMonth)}
-          className={cn(buttonVariants({ variant: "outline" }), "h-7 w-7 p-0")}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <span className="text-sm font-medium">
-          {displayMonth.toLocaleString("default", { month: "long", year: "numeric" })}
-        </span>
-        <button
-          type="button"
-          onClick={() => goToMonth(nextMonth)}
-          className={cn(buttonVariants({ variant: "outline" }), "h-7 w-7 p-0")}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
-      </div>
-    );
-  };
-
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -54,13 +15,14 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
         caption_label: "text-sm font-medium",
-        nav: "space-x-1 flex items-center",
+        nav: "flex justify-between items-center mb-2",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
         ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
+        // Tambahkan ikon navigasi via CSS pseudo-element atau inline text
+        nav_button_previous: "before:content-['←']",
+        nav_button_next: "before:content-['→']",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
@@ -77,9 +39,6 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         ...classNames,
-      }}
-      components={{
-        Caption: CustomNavigation,
       }}
       {...props}
     />
