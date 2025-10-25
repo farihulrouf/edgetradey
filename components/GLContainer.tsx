@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from "react";
+import type { Config } from "@annotationhub/react-golden-layout";
 
 type GLContainerProps = {
   components: Record<string, React.ComponentType<any>>;
@@ -16,7 +17,7 @@ export const GLContainer: React.FC<GLContainerProps> = ({ components }) => {
       const mod = await import("@annotationhub/react-golden-layout");
       const GoldenLayout = mod.default;
 
-      const config = {
+      const config: Config = {
         content: [
           {
             type: "row",
@@ -34,7 +35,7 @@ export const GLContainer: React.FC<GLContainerProps> = ({ components }) => {
             ],
           },
         ],
-      };
+      } as unknown as Config; // fix typing issue
 
       if (containerRef.current) {
         layout = new GoldenLayout(config, containerRef.current);
@@ -52,10 +53,5 @@ export const GLContainer: React.FC<GLContainerProps> = ({ components }) => {
     };
   }, [components]);
 
-  return (
-    <div
-      ref={containerRef}
-      style={{ width: "100%", height: "600px" }}
-    />
-  );
+  return <div ref={containerRef} style={{ width: "100%", height: "600px" }} />;
 };
