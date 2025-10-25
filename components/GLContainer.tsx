@@ -1,42 +1,61 @@
 'use client'
 
-import dynamic from "next/dynamic";
-import React from "react";
-
-// Dynamic import agar SSR tidak memanggil class ES6 secara langsung
-const GoldenLayoutComponent = dynamic(
-  () => import("@annotationhub/react-golden-layout").then(mod => mod.default),
-  { ssr: false }
-);
+import React, { useEffect, useRef } from "react";
 
 type GLContainerProps = {
-  components: Record<string, React.ComponentType<any>>
+  components: Record<string, React.ComponentType<any>>;
 };
 
 export const GLContainer: React.FC<GLContainerProps> = ({ components }) => {
-  const config = {
-    content: [
-      {
-        type: "row",
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let layout: any;
+
+    const loadGoldenLayout = async () => {
+      const mod = await import("@annotationhub/react-golden-layout");
+      const GoldenLayout = mod.default;
+
+      const config = {
         content: [
           {
-            type: "react-component",
-            component: "TradersTable",
-            title: "Traders Table"
+            type: "row",
+            content: [
+              {
+                type: "react-component",
+                component: "TradersTable",
+                title: "Traders Table",
+              },
+              {
+                type: "react-component",
+                component: "StatsCards",
+                title: "Stats Cards",
+              },
+            ],
           },
-          {
-            type: "react-component",
-            component: "StatsCards",
-            title: "Stats Cards"
-          }
-        ]
+        ],
+      };
+
+      if (containerRef.current) {
+        layout = new GoldenLayout(config, containerRef.current);
+        Object.entries(components).forEach(([key, comp]) => {
+          layout.registerComponent(key, comp);
+        });
+        layout.init();
       }
-    ]
-  };
+    };
+
+    loadGoldenLayout();
+
+    return () => {
+      if (layout) layout.destroy?.();
+    };
+  }, [components]);
 
   return (
-    <div style={{ width: "100%", height: "600px" }}>
-      <GoldenLayoutComponent config={config} components={components} />
-    </div>
+    <div
+      ref={containerRef}
+      style={{ width: "100%", height: "600px" }}
+    />
   );
 };
