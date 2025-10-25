@@ -130,7 +130,7 @@ const usersData = [
   },
 ];
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 5;
 
 export const UserVerification = () => {
   const [currentPage, setCurrentPage] = useState(1);

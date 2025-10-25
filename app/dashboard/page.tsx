@@ -1,51 +1,45 @@
 'use client'
 
-import { useState } from "react";
-import { Search, Bell } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { StatsCards } from "@/components/StatsCards";
-import { ActionPanel } from "@/components/ActionPanel";
-import { TradersTable } from "@/components/TradersTable";
-import { DepositSetup } from "@/components/DepositSetup";
-import { Administration } from "@/components/AdminisTration";
-import { UserVerification } from "@/components/UserVerification";
+import { useState } from "react"
+import { DashboardSidebar } from "@/components/DashboardSidebar"
+import { StatsCards } from "@/components/StatsCards"
+import { TradersTable } from "@/components/TradersTable"
+import { DepositSetup } from "@/components/DepositSetup"
+import { Administration } from "@/components/AdminisTration"
+import { UserVerification } from "@/components/UserVerification"
+import { Navbar } from "@/components/Navbar"
+import { ActionPanel } from "@/components/ActionPanel"
 
 export default function DashboardPage() {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const [activeItem, setActiveItem] = useState("Dashboard")
 
   return (
-    <div className="grid grid-cols-[auto_1fr_auto] min-h-screen">
-      {/* Sidebar kiri */}
-      <DashboardSidebar activeItem={activeItem} setActiveItem={setActiveItem} />
+    <div className="flex flex-col min-h-screen">
+      {/* Navbar */}
+      <Navbar />
 
-      {/* Konten utama */}
-      <main className="flex flex-col flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Search className="text-muted-foreground" />
-            <Input placeholder="Cari sesuatu..." className="w-64" disabled />
+      {/* Grid utama: Sidebar kiri, Main Content, Action Panel kanan */}
+      <div className="flex-1 grid grid-cols-[auto_1fr_auto] lg:grid-cols-[280px_1fr_280px] gap-4 h-[calc(100vh-4rem)]">
+        {/* Sidebar kiri */}
+        <DashboardSidebar activeItem={activeItem} setActiveItem={setActiveItem} />
+
+        {/* Konten utama */}
+        <main className="flex flex-col flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
+          {/* StatsCards di atas */}
+          <StatsCards />
+
+          {/* Konten utama di bawah StatsCards */}
+          <div className="mt-6 w-full flex-1">
+            {activeItem === "Dashboard" && <TradersTable />}
+            {activeItem === "Users Verification" && <UserVerification />}
+            {activeItem === "Deposit Setup" && <DepositSetup />}
+            {activeItem === "Administration" && <Administration />}
           </div>
-          <Bell className="text-muted-foreground cursor-pointer" />
-        </div>
+        </main>
 
-        {/* StatsCards selalu tampil di atas */}
-        <StatsCards />
-
-        {/* Konten utama di bawah StatsCards */}
-        <div className="mt-6">
-          {activeItem === "Dashboard" && <TradersTable />}
-          {activeItem === "Users Verification" && <UserVerification />}
-          {activeItem === "Deposit Setup" && <DepositSetup />}
-          {activeItem === "Administration" && <Administration />}
-        </div>
-      </main>
-
-      {/* Panel kanan (sticky & responsif) */}
-      <div className="hidden lg:block w-[280px] xl:w-[320px] border-l bg-background p-4 sticky top-0 h-screen">
+        {/* Action Panel kanan */}
         <ActionPanel />
       </div>
     </div>
-  );
+  )
 }

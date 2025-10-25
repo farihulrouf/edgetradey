@@ -165,7 +165,7 @@ const tradersData = [
   },
 ];
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 6;
 
 export const TradersTable = () => {
   const [currentPage, setCurrentPage] = useState(1);

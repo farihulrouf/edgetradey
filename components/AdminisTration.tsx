@@ -14,7 +14,7 @@ const adminsData = Array.from({ length: 30 }, (_, idx) => ({
   password: `pass${1000 + idx}`,
 }));
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 5;
 
 export const Administration = () => {
   const [currentPage, setCurrentPage] = useState(1);

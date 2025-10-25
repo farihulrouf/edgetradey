@@ -31,29 +31,15 @@ const pendingWithdrawals = [
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeItem, setActiveItem }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const handleCheckClick = () => {
-    setIsDialogOpen(true)
-  }
+  const handleCheckClick = () => setIsDialogOpen(true)
 
   return (
     <>
-      <aside className="w-80 bg-sidebar border-sidebar-border flex flex-col h-screen">
-        <div className="p-4 border-b border-sidebar-border shrink-0">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-sidebar-foreground">Dominique Ch.</span>
-            <svg
-              className="w-4 h-4 text-sidebar-foreground"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </div>
-
+      <aside className="w-80 min-w-[300px] border-sidebar-border flex flex-col">
+        {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto">
-          <nav className="py-4 bg-white p-4">
+          {/* Navigation */}
+          <nav className="py-4 bg-white p-4 sticky top-0 z-10">
             {navigationItems.map((item) => (
               <button
                 key={item.label}
@@ -70,10 +56,13 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeItem, 
             ))}
           </nav>
 
+          {/* Pending Deposits & Withdrawals */}
           <div className="border-sidebar-border p-4 space-y-6">
             {/* Pending Deposit */}
-            <div className="bg-white h-64 rounded-md p-1">
-              <h3 className="font-semibold text-sm mb-3 text-sidebar-foreground text-center">Pending Deposit</h3>
+            <div className="bg-white rounded-md p-1">
+              <h3 className="font-semibold text-sm mb-3 text-sidebar-foreground text-center">
+                Pending Deposit
+              </h3>
               <div className="space-y-0">
                 <div className="flex items-center justify-between text-xs font-medium px-2 rounded-t-lg h-8" style={{ backgroundColor: '#D1D1D6' }}>
                   <span className="flex-1">User</span>
@@ -99,7 +88,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeItem, 
             </div>
 
             {/* Pending Withdrawal */}
-            <div className="bg-white h-64 rounded-md p-1">
+            <div className="bg-white rounded-md p-1">
               <h3 className="font-semibold text-center text-sm mb-3 text-sidebar-foreground">Pending Withdrawal</h3>
               <div className="space-y-0">
                 <div className="flex items-center justify-between text-xs font-medium px-2 rounded-t-lg h-8" style={{ backgroundColor: '#D1D1D6' }}>
@@ -132,12 +121,13 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeItem, 
           </div>
         </div>
 
+        {/* Footer */}
         <div className="p-4 border-t border-sidebar-border shrink-0">
           <span className="text-sm font-semibold text-sidebar-foreground">isfinans.trade</span>
         </div>
       </aside>
 
-      {/* ✅ Popup Dialog */}
+      {/* Popup Dialog */}
       <PendingWithdrawalDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   )
