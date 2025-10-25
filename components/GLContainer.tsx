@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useRef } from "react";
-import type { Config } from "@annotationhub/react-golden-layout";
 
 type GLContainerProps = {
   components: Record<string, React.ComponentType<any>>;
@@ -17,7 +16,8 @@ export const GLContainer: React.FC<GLContainerProps> = ({ components }) => {
       const mod = await import("@annotationhub/react-golden-layout");
       const GoldenLayout = mod.default;
 
-      const config: Config = {
+      // abaikan type checking di sini, karena library tidak ekspor tipe Config
+      const config = {
         content: [
           {
             type: "row",
@@ -35,7 +35,7 @@ export const GLContainer: React.FC<GLContainerProps> = ({ components }) => {
             ],
           },
         ],
-      } as unknown as Config; // fix typing issue
+      } as any;
 
       if (containerRef.current) {
         layout = new GoldenLayout(config, containerRef.current);
