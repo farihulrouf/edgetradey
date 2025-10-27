@@ -20,10 +20,10 @@ interface Props {
 }
 
 export const MarginCallPanel = ({ activePeople, marginCalls }: Props) => {
-  const cardClass = "p-4 flex flex-col gap-3 bg-white shadow-lg rounded-md"; // <-- konsisten dengan PendingDeposit
+  const cardClass = "p-2 flex flex-col gap-3 bg-white shadow-lg rounded-md"; // <-- konsisten dengan PendingDeposit
 
   return (
-    <div className="flex flex-col gap-6 mt-4">
+    <div className="flex flex-col gap-3 mt-4">
       {/* Active People */}
       <Card className={cardClass}>
         <h3 className="font-semibold text-sm mb-2 text-center">List of Active People</h3>
