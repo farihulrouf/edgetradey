@@ -36,33 +36,20 @@ export const TradersTable = () => {
   }, [allTraders, currentPage, itemsPerPage])
 
   const totalPages = Math.ceil(allTraders.length / itemsPerPage)
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page)
-  }
-  const handleShowAll = () => {
-    setItemsPerPage(allTraders.length)
-    setCurrentPage(1)
-  }
-  const handleResetPagination = () => {
-    setItemsPerPage(ITEMS_PER_PAGE)
-    setCurrentPage(1)
-  }
-  const handleRowClick = (user: Trader) => {
-    setSelectedUser(user)
-    setIsDialogOpen(true)
-  }
+  const goToPage = (page: number) => { if (page >= 1 && page <= totalPages) setCurrentPage(page) }
+  const handleShowAll = () => { setItemsPerPage(allTraders.length); setCurrentPage(1) }
+  const handleResetPagination = () => { setItemsPerPage(ITEMS_PER_PAGE); setCurrentPage(1) }
+  const handleRowClick = (user: Trader) => { setSelectedUser(user); setIsDialogOpen(true) }
 
-  if (loading)
-    return <div className="p-6 text-center text-muted-foreground">Loading traders...</div>
-  if (error)
-    return <div className="p-6 text-center text-red-500">{error}</div>
+  if (loading) return <div className="p-6 text-center text-muted-foreground">Loading traders...</div>
+  if (error) return <div className="p-6 text-center text-red-500">{error}</div>
 
   return (
     <>
       <div className="rounded-lg flex flex-col h-full w-full bg-white">
         {/* Header */}
         <div className="flex items-center p-4 border-b border-border flex-shrink-0">
-          <h2 className="flex-1 text-center text-lg font-semibold">Traders Information</h2>
+          <h2 className="flex-1 text-center text-2xl text-gray-500 font-semibold">Traders Information</h2>
           <Button variant="outline" size="sm" className="flex items-center">
             <Download className="w-4 h-4 mr-2" /> Export to Excel
           </Button>
@@ -120,38 +107,60 @@ export const TradersTable = () => {
 
         {/* Pagination */}
         <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
+          {/* Previous */}
           <Button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
-            variant="ghost"
             size="sm"
+            className="text-black bg-white hover:bg-[#e6f0ff]"
           >
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <Button
-              key={i}
-              variant={i + 1 === currentPage ? "default" : "ghost"}
-              size="sm"
-              onClick={() => goToPage(i + 1)}
-            >
-              {i + 1}
-            </Button>
-          ))}
+
+          {/* Page numbers */}
+          {Array.from({ length: totalPages }, (_, i) => {
+            const isActive = i + 1 === currentPage
+            return (
+              <Button
+                key={i}
+                size="sm"
+                onClick={() => goToPage(i + 1)}
+                className={`${
+                  isActive
+                    ? "bg-[#1D6CE9] text-white hover:bg-[#1b62c0]"
+                    : "bg-white text-black hover:bg-[#e6f0ff]"
+                }`}
+              >
+                {i + 1}
+              </Button>
+            )
+          })}
+
+          {/* Next */}
           <Button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            variant="ghost"
             size="sm"
+            className="text-black bg-white hover:bg-[#e6f0ff]"
           >
             Next <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
+
+          {/* Show all / Reset */}
           {itemsPerPage < allTraders.length ? (
-            <Button onClick={handleShowAll} variant="link" size="sm">
+            <Button
+              onClick={handleShowAll}
+              size="sm"
+              className="text-black bg-white hover:bg-[#e6f0ff]"
+            >
               Show all
             </Button>
           ) : (
-            <Button onClick={handleResetPagination} variant="link" size="sm">
+            <Button
+              onClick={handleResetPagination}
+              size="sm"
+              className="text-black bg-white hover:bg-[#e6f0ff]"
+            >
               Show paginated
             </Button>
           )}
