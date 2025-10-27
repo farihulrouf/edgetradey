@@ -58,7 +58,6 @@ export const UserVerification = () => {
     <div className="bg-white rounded-lg border border-border">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between">
-        <h2 className="text-center flex-1 text-lg font-semibold">User Verification</h2>
         <Button
           variant="outline"
           size="sm"
@@ -70,26 +69,26 @@ export const UserVerification = () => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full text-sm border-collapse">
+        <table className="min-w-full text-[11px] border-collapse">
           <thead className="bg-[#D1D1D6] sticky top-0">
             <tr className="h-[45px]">
-              <th className="px-4 py-2 border-b rounded-tl-lg">User ID</th>
-              <th className="px-4 py-2 border-b">Name</th>
-              <th className="px-4 py-2 border-b">Account Type</th>
-              <th className="px-4 py-2 border-b">Email</th>
-              <th className="px-4 py-2 border-b">Phone</th>
-              <th className="px-4 py-2 border-b">Date of Birth</th>
-              <th className="px-4 py-2 border-b">Account Setting</th>
-              <th className="px-4 py-2 border-b rounded-tr-lg">Verification</th>
+              <th className="px-4 py-2 border-b rounded-tl-lg text-left">User ID</th>
+              <th className="px-4 py-2 border-b text-left">Name</th>
+              <th className="px-4 py-2 border-b text-left">Account Type</th>
+              <th className="px-4 py-2 border-b text-left">Email</th>
+              <th className="px-4 py-2 border-b text-left">Phone</th>
+              <th className="px-4 py-2 border-b text-left">Date of Birth</th>
+              <th className="px-4 py-2 border-b text-left">Account Setting</th>
+              <th className="px-4 py-2 border-b rounded-tr-lg text-left">Verification</th>
             </tr>
           </thead>
+
           <tbody>
             {currentUsers.map((user, idx) => (
               <tr
                 key={user.userId}
-                className={`cursor-pointer hover:bg-[#D1D1D6]/50 ${
-                  idx % 2 === 1 ? "bg-[#D1D1D6]" : "bg-white"
-                }`}
+                className={`cursor-pointer hover:bg-[#D1D1D6]/50 ${idx % 2 === 1 ? "bg-[#D1D1D6]" : "bg-white"
+                  }`}
                 onClick={() => handleRowClick(user)}
               >
                 <td className="px-4 py-2">{user.userId}</td>
@@ -100,13 +99,12 @@ export const UserVerification = () => {
                 <td className="px-4 py-2">{user.dateOfBirth}</td>
                 <td className="px-4 py-2">{user.accountSetting}</td>
                 <td
-                  className={`px-4 py-2 font-medium ${
-                    user.verification === "Verified"
+                  className={`px-4 py-2 font-medium ${user.verification === "Verified"
                       ? "text-green-600"
                       : user.verification === "uploaded"
-                      ? "text-yellow-600"
-                      : "text-red-600"
-                  }`}
+                        ? "text-yellow-600"
+                        : "text-red-600"
+                    }`}
                 >
                   {user.verification}
                 </td>
@@ -135,11 +133,10 @@ export const UserVerification = () => {
               variant={i + 1 === currentPage ? "default" : "ghost"} // ganti solid jadi default
               size="sm"
               onClick={() => goToPage(i + 1)}
-              className={`${
-                i + 1 === currentPage
+              className={`${i + 1 === currentPage
                   ? "bg-[#1D6CE9] text-white"
                   : "text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
-              }`}
+                }`}
             >
               {i + 1}
             </Button>

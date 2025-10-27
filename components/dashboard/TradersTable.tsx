@@ -59,20 +59,21 @@ export const TradersTable = () => {
         <div className="flex-1 overflow-x-auto">
           <table className="w-max min-w-full text-sm border-collapse">
             <thead className="bg-[#D1D1D6] sticky top-0 rounded-t-lg">
-              <tr className="h-11">
-                <th className="p-2 border-b rounded-tl-md">User ID</th>
-                <th className="p-2 border-b">Status</th>
-                <th className="p-2 border-b">Name</th>
-                <th className="p-2 border-b">Account Type</th>
-                <th className="p-2 border-b">Email</th>
-                <th className="p-2 border-b">Phone</th>
-                <th className="p-2 border-b">Credit</th>
-                <th className="p-2 border-b">Balance</th>
-                <th className="p-2 border-b">Equity</th>
-                <th className="p-2 border-b">Margin</th>
-                <th className="p-2 border-b rounded-tr-md">Free Margin</th>
-              </tr>
-            </thead>
+  <tr className="h-10">
+    <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
+    <th className="p-2 border-b text-left">Status</th>
+    <th className="p-2 border-b text-left">Name</th>
+    <th className="p-2 border-b text-left">Account Type</th>
+    <th className="p-2 border-b text-left">Email</th>
+    <th className="p-2 border-b text-left">Phone</th>
+    <th className="p-2 border-b text-left">Credit</th>
+    <th className="p-2 border-b text-left">Balance</th>
+    <th className="p-2 border-b text-left">Equity</th>
+    <th className="p-2 border-b text-left">Margin</th>
+    <th className="p-2 border-b rounded-tr-md text-left">Free Margin</th>
+  </tr>
+</thead>
+
             <tbody>
               {traders.map((trader, idx) => (
                 <tr
