@@ -11,7 +11,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#EAEAEA]">
       {/* Navbar */}
       <Navbar />
 
@@ -21,7 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <DashboardSidebar activePath={pathname} />
 
         {/* Main content */}
-        <main className="flex bg-white flex-col flex-1 overflow-y-auto overflow-x-auto p-4 rounded-xl relative z-10">
+        <main className="flex bg-[#EAEAEA] flex-col flex-1 overflow-y-auto overflow-x-auto p-4 rounded-xl relative z-10">
           <StatsCards />
           <div className="mt-6 flex-1 min-w-full">
             {children}

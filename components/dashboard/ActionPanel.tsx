@@ -16,7 +16,7 @@ const marginCalls = [
 export const ActionPanel = () => {
   return (
     <aside
-      className="w-full py-2 sticky top-16 overflow-y-auto flex flex-col gap-6 p-4"
+      className="w-full py-2 sticky top-16 overflow-y-auto flex flex-col gap-6 p-2"
       style={{ height: 'calc(100vh - 4rem)' }}
     >
       <MarginCallPanel activePeople={activePeople} marginCalls={marginCalls} />
