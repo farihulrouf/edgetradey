@@ -1,4 +1,4 @@
-import { Administration } from "@/components/AdminisTration"
+import { Administration } from "@/components/dashboard/AdminisTration"
 export default function AdministrationPage() {
   return (
     <div className="space-y-6">

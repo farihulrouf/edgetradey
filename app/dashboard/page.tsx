@@ -1,4 +1,4 @@
-import { TradersTable } from "@/components/TradersTable"
+import { TradersTable } from "@/components/dashboard/TradersTable"
 
 export default function DashboardPage() {
   return <TradersTable />

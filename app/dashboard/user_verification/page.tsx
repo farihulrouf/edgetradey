@@ -1,4 +1,4 @@
-import { UserVerification } from "@/components/UserVerification"
+import { UserVerification } from "@/components/dashboard/UserVerification"
 
 export default function UserVerificationPage() {
   return (

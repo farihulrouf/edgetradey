@@ -1,34 +1,54 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// Dummy data admin
-const adminsData = Array.from({ length: 30 }, (_, idx) => ({
-  name: `Admin ${idx + 1}`,
-  role: idx % 2 === 0 ? "Super Admin" : "Moderator",
-  email: `admin${idx + 1}@example.com`,
-  password: `pass${1000 + idx}`,
-}));
+interface Admin {
+  id: number;
+  name: string;
+  role: string;
+  email: string;
+  password: string;
+}
 
 const ITEMS_PER_PAGE = 5;
 
 export const Administration = () => {
+  const [admins, setAdmins] = useState<Admin[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const totalPages = Math.ceil(adminsData.length / ITEMS_PER_PAGE);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const isShowAll = currentPage === 0;
+  // ✅ Fetch data dari JSON (bisa diganti ke API nanti)
+  useEffect(() => {
+    fetch("/data/alladmins.json")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setAdmins(data.admins || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load admins:", err);
+        setError("Failed to load admin data");
+        setLoading(false);
+      });
+  }, []);
 
-  // Filter berdasarkan searchQuery
-  const filteredAdmins = adminsData.filter(admin =>
+  const filteredAdmins = admins.filter((admin) =>
     admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     admin.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
     admin.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredAdmins.length / ITEMS_PER_PAGE);
+  const isShowAll = currentPage === 0;
 
   const currentAdmins = isShowAll
     ? filteredAdmins
@@ -61,6 +81,14 @@ export const Administration = () => {
     return buttons;
   };
 
+  if (loading) {
+    return <div className="p-4 text-center text-muted-foreground">Loading admins...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-center text-red-500">{error}</div>;
+  }
+
   return (
     <div className="bg-card rounded-lg border border-border">
       {/* Header */}
@@ -70,10 +98,17 @@ export const Administration = () => {
           <Input
             placeholder="Search by Name, Role, or Email"
             value={searchQuery}
-            onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-64"
           />
-          <Button variant="outline" size="sm" className="text-primary border-primary hover:bg-primary hover:text-primary-foreground">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+          >
             Export
           </Button>
         </div>
@@ -92,7 +127,7 @@ export const Administration = () => {
           </TableHeader>
           <TableBody>
             {currentAdmins.map((admin, idx) => (
-              <TableRow key={idx} className={idx % 2 === 1 ? "bg-muted/50" : ""}>
+              <TableRow key={admin.id} className={idx % 2 === 1 ? "bg-muted/50" : ""}>
                 <TableCell>{admin.name}</TableCell>
                 <TableCell>{admin.role}</TableCell>
                 <TableCell>{admin.email}</TableCell>
@@ -123,12 +158,6 @@ export const Administration = () => {
 
         {!isShowAll && getPageButtons()}
 
-        {!isShowAll && totalPages > 5 && <span>...</span>}
-
-        {!isShowAll && (
-          <Button onClick={() => goToPage(totalPages)} variant="ghost" size="sm">{totalPages}</Button>
-        )}
-
         <Button
           onClick={() => !isShowAll && goToPage(currentPage + 1)}
           disabled={currentPage === totalPages || isShowAll}
@@ -138,13 +167,15 @@ export const Administration = () => {
           Next <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
 
-        <Button
-          onClick={() => setCurrentPage(0)}
-          variant="link"
-          size="sm"
-        >
-          Show all
-        </Button>
+        {isShowAll ? (
+          <Button onClick={() => setCurrentPage(1)} variant="link" size="sm">
+            Show paginated
+          </Button>
+        ) : (
+          <Button onClick={() => setCurrentPage(0)} variant="link" size="sm">
+            Show all
+          </Button>
+        )}
       </div>
     </div>
   );

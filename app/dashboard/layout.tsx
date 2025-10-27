@@ -1,10 +1,10 @@
 'use client'
 
 import { usePathname } from "next/navigation"
-import { DashboardSidebar } from "@/components/DashboardSidebar"
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar"
 import { Navbar } from "@/components/Navbar"
-import { StatsCards } from "@/components/StatsCards"
-import { ActionPanel } from "@/components/ActionPanel"
+import { StatsCards } from "@/components/dashboard/StatsCards"
+import { ActionPanel } from "@/components/dashboard/ActionPanel"
 
 export default function DashboardLayout({
   children,
