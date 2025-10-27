@@ -38,7 +38,7 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
       <aside className="w-[260px] flex-shrink-0 flex flex-col bg-white h-full">
         {/* Navigation */}
         <nav className="mt-4 px-2 space-y-1">
-          <div className="p-2 bg-white shadow-md">
+          <div className="p-2 bg-white shadow-lg ring-1 ring-white/50 rounded">
             {navigationItems.map(item => {
               const active = activePath === item.path
               // Khusus tombol Administration kasih margin top

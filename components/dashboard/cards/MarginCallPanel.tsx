@@ -22,9 +22,10 @@ interface Props {
 
 export const MarginCallPanel = ({ activePeople, marginCalls }: Props) => {
   return (
-    <div className="flex flex-col gap-6 mt-4">
+    <div className="flex flex-col gap-6 mt-4 ">
       {/* Active People */}
-      <Card className="p-4 flex flex-col gap-3">
+      <Card className="p-4 flex flex-col gap-3 bg-white/90 backdrop-blur-sm shadow-md rounded-lg">
+
         <h3 className="font-semibold text-card-foreground">List of active people</h3>
         <div className="grid grid-cols-3 text-xs font-medium text-muted-foreground bg-muted/30 px-2 py-1 rounded">
           <span>Status</span>
