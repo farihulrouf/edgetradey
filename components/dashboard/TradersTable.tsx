@@ -59,20 +59,20 @@ export const TradersTable = () => {
         <div className="flex-1 overflow-x-auto">
           <table className="w-max min-w-full text-sm border-collapse">
             <thead className="bg-[#D1D1D6] sticky top-0 rounded-t-lg">
-  <tr className="h-10">
-    <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
-    <th className="p-2 border-b text-left">Status</th>
-    <th className="p-2 border-b text-left">Name</th>
-    <th className="p-2 border-b text-left">Account Type</th>
-    <th className="p-2 border-b text-left">Email</th>
-    <th className="p-2 border-b text-left">Phone</th>
-    <th className="p-2 border-b text-left">Credit</th>
-    <th className="p-2 border-b text-left">Balance</th>
-    <th className="p-2 border-b text-left">Equity</th>
-    <th className="p-2 border-b text-left">Margin</th>
-    <th className="p-2 border-b rounded-tr-md text-left">Free Margin</th>
-  </tr>
-</thead>
+              <tr className="h-10 text-[10px]">
+                <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
+                <th className="p-2 border-b text-left">Status</th>
+                <th className="p-2 border-b text-left">Name</th>
+                <th className="p-2 border-b text-left">Account Type</th>
+                <th className="p-2 border-b text-left">Email</th>
+                <th className="p-2 border-b text-left">Phone</th>
+                <th className="p-2 border-b text-left">Credit</th>
+                <th className="p-2 border-b text-left">Balance</th>
+                <th className="p-2 border-b text-left">Equity</th>
+                <th className="p-2 border-b text-left">Margin</th>
+                <th className="p-2 border-b rounded-tr-md text-left">Free Margin</th>
+              </tr>
+            </thead>
 
             <tbody>
               {traders.map((trader, idx) => (
@@ -83,23 +83,23 @@ export const TradersTable = () => {
                   }`}
                   onClick={() => handleRowClick(trader)}
                 >
-                  <td className="p-2 border-b">{trader.userId}</td>
-                  <td className="p-2 border-b flex justify-center">
+                  <td className="p-2 border-b text-[10px]">{trader.userId}</td>
+                  <td className="p-2 border-b flex justify-center text-[10px]">
                     <div
                       className={`w-4 h-4 rounded-full border ${
                         trader.status ? "bg-green-500" : "bg-red-500"
                       }`}
                     />
                   </td>
-                  <td className="p-2 border-b">{trader.name}</td>
-                  <td className="p-2 border-b">{trader.accountType}</td>
-                  <td className="p-2 border-b">{trader.email}</td>
-                  <td className="p-2 border-b">{trader.phone}</td>
-                  <td className="p-2 border-b">{trader.credit}</td>
-                  <td className="p-2 border-b">{trader.balance}</td>
-                  <td className="p-2 border-b">{trader.equity}</td>
-                  <td className="p-2 border-b">{trader.margin}</td>
-                  <td className="p-2 border-b">{trader.freeMargin}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.name}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.accountType}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.email}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.phone}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.credit}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.balance}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.equity}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.margin}</td>
+                  <td className="p-2 border-b text-[10px]">{trader.freeMargin}</td>
                 </tr>
               ))}
             </tbody>
@@ -108,7 +108,6 @@ export const TradersTable = () => {
 
         {/* Pagination */}
         <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
-          {/* Previous */}
           <Button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -118,7 +117,6 @@ export const TradersTable = () => {
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>
 
-          {/* Page numbers */}
           {Array.from({ length: totalPages }, (_, i) => {
             const isActive = i + 1 === currentPage
             return (
@@ -137,7 +135,6 @@ export const TradersTable = () => {
             )
           })}
 
-          {/* Next */}
           <Button
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage === totalPages}
@@ -147,7 +144,6 @@ export const TradersTable = () => {
             Next <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
 
-          {/* Show all / Reset */}
           {itemsPerPage < allTraders.length ? (
             <Button
               onClick={handleShowAll}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@annotationhub/react-golden-layout": "^2.3.2",
+    "@fontsource/roboto": "^5.2.8",
     "@next/swc-linux-x64-gnu": "^16.0.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

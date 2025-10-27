@@ -1,4 +1,3 @@
-// app/dashboard/layout.tsx
 'use client'
 
 import { usePathname } from "next/navigation"
@@ -11,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#EAEAEA]">
+    <div className="flex flex-col min-h-screen bg-background font-roboto">
       {/* Navbar */}
       <Navbar />
 
@@ -21,7 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <DashboardSidebar activePath={pathname} />
 
         {/* Main content */}
-        <main className="flex bg-[#EAEAEA] flex-col flex-1 overflow-y-auto overflow-x-auto rounded-xl relative z-10">
+        <main className="flex bg-background flex-col flex-1 overflow-y-auto overflow-x-auto rounded-xl relative z-10">
           <StatsCards />
           <div className="mt-1 flex-1 min-w-full">
             {children}

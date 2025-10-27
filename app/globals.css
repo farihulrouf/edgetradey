@@ -1,6 +1,19 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-background text-foreground;
+}
+
+* {
+  @apply border-border outline-ring;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

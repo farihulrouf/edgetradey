@@ -69,7 +69,7 @@ export const UserVerification = () => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full text-[11px] border-collapse">
+        <table className="min-w-full text-[10px] border-collapse">
           <thead className="bg-[#D1D1D6] sticky top-0">
             <tr className="h-[45px]">
               <th className="px-4 py-2 border-b rounded-tl-lg text-left">User ID</th>

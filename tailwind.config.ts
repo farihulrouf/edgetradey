@@ -1,4 +1,4 @@
-import { type Config } from "tailwindcss"
+import { type Config } from "tailwindcss";
 
 const config: Config = {
   content: [
@@ -9,12 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#1D6CE9", // warna custommu
-        "primary-hover": "#155BBB", // optional hover
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        ring: "var(--ring)",
+        border: "var(--border)",
+      },
+      borderRadius: {
+        sm: "var(--radius-sm)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
       },
     },
   },
   plugins: [],
-}
+};
 
-export default config
+export default config;

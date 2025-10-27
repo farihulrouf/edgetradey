@@ -111,30 +111,31 @@ export const Administration = () => {
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableHead>Name</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Password</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentAdmins.map((admin, idx) => (
-              <TableRow key={admin.id} className={idx % 2 === 1 ? "bg-muted/50" : ""}>
-                <TableCell>{admin.name}</TableCell>
-                <TableCell>{admin.role}</TableCell>
-                <TableCell>{admin.email}</TableCell>
-                <TableCell>{admin.password}</TableCell>
-              </TableRow>
-            ))}
-            {currentAdmins.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-4">
-                  No matching records found
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+  <TableRow className="bg-muted/50">
+    <TableHead className="text-[10px]">Name</TableHead>
+    <TableHead className="text-[10px]">Role</TableHead>
+    <TableHead className="text-[10px]">Email</TableHead>
+    <TableHead className="text-[10px]">Password</TableHead>
+  </TableRow>
+</TableHeader>
+<TableBody>
+  {currentAdmins.map((admin, idx) => (
+    <TableRow key={admin.id} className={idx % 2 === 1 ? "bg-muted/50" : ""}>
+      <TableCell className="text-[10px]">{admin.name}</TableCell>
+      <TableCell className="text-[10px]">{admin.role}</TableCell>
+      <TableCell className="text-[10px]">{admin.email}</TableCell>
+      <TableCell className="text-[10px]">{admin.password}</TableCell>
+    </TableRow>
+  ))}
+  {currentAdmins.length === 0 && (
+    <TableRow>
+      <TableCell colSpan={4} className="text-center py-4 text-[10px]">
+        No matching records found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
         </Table>
       </div>
 
