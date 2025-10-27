@@ -4,31 +4,32 @@ import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UserVerificationDialog } from "./UserVerificationDialog"
+import { fetchAllUsersVerification, UserVerificationData } from "@/lib/api"
 
 // jumlah data per halaman
 const ITEMS_PER_PAGE = 5
 
 export const UserVerification = () => {
-  const [usersData, setUsersData] = useState<any[]>([])
+  const [usersData, setUsersData] = useState<UserVerificationData[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [selectedUser, setSelectedUser] = useState<UserVerificationData | null>(null)
   const [showAll, setShowAll] = useState(false)
-
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch("/data/allusersverification.json")
-      .then((res) => {
-        if (!res.ok) throw new Error("File not found: " + res.status)
-        return res.json()
-      })
+    setLoading(true)
+    fetchAllUsersVerification()
       .then((data) => setUsersData(data))
-      .catch((err) => console.error("Failed to load data:", err))
+      .catch((err) => {
+        console.error(err)
+        setError("Failed to load users data")
+      })
+      .finally(() => setLoading(false))
   }, [])
 
-
   const totalPages = Math.ceil(usersData.length / ITEMS_PER_PAGE)
-
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const endIndex = showAll ? usersData.length : startIndex + ITEMS_PER_PAGE
   const currentUsers = usersData.slice(startIndex, endIndex)
@@ -45,10 +46,13 @@ export const UserVerification = () => {
     setCurrentPage(1)
   }
 
-  const handleRowClick = (user: any) => {
+  const handleRowClick = (user: UserVerificationData) => {
     setSelectedUser(user)
     setDialogOpen(true)
   }
+
+  if (loading) return <div className="p-6 text-center text-muted-foreground">Loading users...</div>
+  if (error) return <div className="p-6 text-center text-red-500">{error}</div>
 
   return (
     <div className="bg-card rounded-lg border border-border">
@@ -94,8 +98,7 @@ export const UserVerification = () => {
                 <td className="px-4 py-2">{user.dateOfBirth}</td>
                 <td className="px-4 py-2">{user.accountSetting}</td>
                 <td
-                  className={`px-4 py-2 font-medium ${user.verification === "Verified" ? "text-green-600" : "text-yellow-600"
-                    }`}
+                  className={`px-4 py-2 font-medium ${user.verification === "Verified" ? "text-green-600" : "text-yellow-600"}`}
                 >
                   {user.verification}
                 </td>
@@ -108,32 +111,17 @@ export const UserVerification = () => {
       {/* Pagination */}
       {!showAll && usersData.length > ITEMS_PER_PAGE && (
         <div className="flex items-center justify-center gap-2 p-4 border-t border-border">
-          <Button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            variant="ghost"
-            size="sm"
-          >
+          <Button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} variant="ghost" size="sm">
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>
 
           {[...Array(totalPages)].map((_, i) => (
-            <Button
-              key={i}
-              variant={i + 1 === currentPage ? "default" : "ghost"}
-              size="sm"
-              onClick={() => goToPage(i + 1)}
-            >
+            <Button key={i} variant={i + 1 === currentPage ? "default" : "ghost"} size="sm" onClick={() => goToPage(i + 1)}>
               {i + 1}
             </Button>
           ))}
 
-          <Button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            variant="ghost"
-            size="sm"
-          >
+          <Button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} variant="ghost" size="sm">
             Next <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
 

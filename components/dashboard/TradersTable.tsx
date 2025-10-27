@@ -1,26 +1,12 @@
-// components/dashboard/TradersTable.tsx
 'use client'
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Download, ChevronLeft, ChevronRight } from "lucide-react"
 import { UserTradeDialog } from "./UserTradeDialog"
+import { fetchAllTraders, Trader } from "@/lib/api"
 
-const ITEMS_PER_PAGE = 6
-
-interface Trader {
-  userId: string
-  status: boolean
-  name: string
-  accountType: string
-  email: string
-  phone: string
-  credit: string
-  balance: string
-  equity: string
-  margin: string
-  freeMargin: string
-}
+const ITEMS_PER_PAGE = 10
 
 export const TradersTable = () => {
   const [allTraders, setAllTraders] = useState<Trader[]>([])
@@ -32,26 +18,16 @@ export const TradersTable = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Ambil data dari API.ts
   useEffect(() => {
     setLoading(true)
-    fetch("/data/alltraders.json")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-        return res.json()
-      })
-      .then((data) => {
-        const tradersWithBoolStatus = data.traders.map((t: any) => ({
-          ...t,
-          status: t.status === true || t.status === "true",
-        }))
-        setAllTraders(tradersWithBoolStatus || [])
-        setLoading(false)
-      })
+    fetchAllTraders()
+      .then((data) => setAllTraders(data))
       .catch((err) => {
         console.error(err)
         setError("Failed to load trader data")
-        setLoading(false)
       })
+      .finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
@@ -80,7 +56,7 @@ export const TradersTable = () => {
           </Button>
         </div>
 
-        {/* Table wrapper, flex-grow supaya mengisi sisa ruang */}
+        {/* Table wrapper */}
         <div className="flex-1 overflow-x-auto">
           <table className="w-max min-w-full text-sm border-collapse">
             <thead className="bg-muted/50 text-left sticky top-0">
@@ -125,17 +101,14 @@ export const TradersTable = () => {
           <Button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} variant="ghost" size="sm">
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>
-
           {Array.from({ length: totalPages }, (_, i) => (
             <Button key={i} variant={i + 1 === currentPage ? "default" : "ghost"} size="sm" onClick={() => goToPage(i + 1)}>
               {i + 1}
             </Button>
           ))}
-
           <Button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} variant="ghost" size="sm">
             Next <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
-
           {itemsPerPage < allTraders.length ? (
             <Button onClick={handleShowAll} variant="link" size="sm">Show all</Button>
           ) : (

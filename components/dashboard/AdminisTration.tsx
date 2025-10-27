@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { fetchAllAdmins } from "@/lib/api"; // kita buat function baru di api.ts
 
 interface Admin {
   id: number;
@@ -23,25 +24,22 @@ export const Administration = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ Fetch data dari JSON (bisa diganti ke API nanti)
+  // fetch data via api.ts
   useEffect(() => {
-    fetch("/data/alladmins.json")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        setAdmins(data.admins || []);
+    setLoading(true);
+    fetchAllAdmins()
+      .then(data => {
+        setAdmins(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Failed to load admins:", err);
+      .catch(err => {
+        console.error(err);
         setError("Failed to load admin data");
         setLoading(false);
       });
   }, []);
 
-  const filteredAdmins = admins.filter((admin) =>
+  const filteredAdmins = admins.filter(admin =>
     admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     admin.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
     admin.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -81,13 +79,8 @@ export const Administration = () => {
     return buttons;
   };
 
-  if (loading) {
-    return <div className="p-4 text-center text-muted-foreground">Loading admins...</div>;
-  }
-
-  if (error) {
-    return <div className="p-4 text-center text-red-500">{error}</div>;
-  }
+  if (loading) return <div className="p-4 text-center text-muted-foreground">Loading admins...</div>;
+  if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
 
   return (
     <div className="bg-card rounded-lg border border-border">
@@ -98,7 +91,7 @@ export const Administration = () => {
           <Input
             placeholder="Search by Name, Role, or Email"
             value={searchQuery}
-            onChange={(e) => {
+            onChange={e => {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
