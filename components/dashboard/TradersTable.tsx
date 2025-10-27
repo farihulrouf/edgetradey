@@ -47,8 +47,7 @@ export const TradersTable = () => {
 
   return (
     <>
-      <div className="bg-card rounded-lg flex flex-col h-full w-full">
-        {/* Header */}
+      <div className="rounded-lg flex flex-col h-full w-full">
         {/* Header */}
         <div className="flex items-center p-4 border-b border-border flex-shrink-0">
           <h2 className="flex-1 text-center text-lg font-semibold">Traders Information</h2>
@@ -57,13 +56,12 @@ export const TradersTable = () => {
           </Button>
         </div>
 
-
         {/* Table wrapper */}
         <div className="flex-1 overflow-x-auto">
           <table className="w-max min-w-full text-sm border-collapse">
-            <thead className="bg-muted/50 text-left sticky top-0">
+            <thead className="bg-[#D1D1D6] sticky top-0">
               <tr>
-                <th className="p-2 border-b">User ID</th>
+                <th className="p-2 border-b rounded-tl-md">User ID</th>
                 <th className="p-2 border-b">Status</th>
                 <th className="p-2 border-b">Name</th>
                 <th className="p-2 border-b">Account Type</th>
@@ -73,12 +71,18 @@ export const TradersTable = () => {
                 <th className="p-2 border-b">Balance</th>
                 <th className="p-2 border-b">Equity</th>
                 <th className="p-2 border-b">Margin</th>
-                <th className="p-2 border-b">Free Margin</th>
+                <th className="p-2 border-b rounded-tr-md">Free Margin</th>
               </tr>
             </thead>
             <tbody>
               {traders.map((trader, idx) => (
-                <tr key={trader.userId} className={`${idx % 2 === 1 ? "bg-muted/40" : ""} hover:bg-accent/50 cursor-pointer`} onClick={() => handleRowClick(trader)}>
+                <tr
+                  key={trader.userId}
+                  className={`cursor-pointer hover:bg-accent/50 ${
+                    idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
+                  }`}
+                  onClick={() => handleRowClick(trader)}
+                >
                   <td className="p-2 border-b">{trader.userId}</td>
                   <td className="p-2 border-b flex justify-center">
                     <div className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"}`} />

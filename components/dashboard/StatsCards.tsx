@@ -12,24 +12,24 @@ interface StatsCardData {
   items: StatItem[]
 }
 
-// Data card
+// Data card dengan warna yang sesuai
 const statsData: StatsCardData[] = [
   {
     items: [
-      { value: "55", label: "Total Users", color: "text-foreground" },
-      { value: "$30,000.00", label: "Net\nProfits", color: "text-success" },
+      { value: "55", label: "Total Users", color: "text-black" },       // hitam
+      { value: "$30,000.00", label: "Net\nProfits", color: "text-green-500" }, // hijau
     ],
   },
   {
     items: [
-      { value: "247", label: "Pending Deposit", color: "text-primary" },
-      { value: "118", label: "Pending Withdrawal", color: "text-destructive" },
+      { value: "247", label: "Pending\nDeposit", color: "text-blue-500" },  // biru
+      { value: "118", label: "Pending\nWithdrawal", color: "text-red-500" }, // merah
     ],
   },
   {
     items: [
-      { value: "$30,000.00", label: "Total\nDeposit", color: "text-primary" },
-      { value: "$30,000.00", label: "Total\nWithdrawal", color: "text-destructive" },
+      { value: "$30,000.00", label: "Total\nDeposit", color: "text-blue-500" }, // biru
+      { value: "$30,000.00", label: "Total\nWithdrawal", color: "text-red-500" }, // merah
     ],
   },
 ]
@@ -42,7 +42,6 @@ export const StatsCards = () => {
           {/* Flex row kiri-kanan */}
           <div className="flex flex-col sm:flex-row divide-x divide-border">
             {card.items.map((item, itemIdx) => {
-              // Ukuran value, kalau dollar lebih kecil
               const sizeClass = item.value.startsWith("$") ? "text-[16px] md:text-[18px]" : "text-[32px]"
 
               return (
@@ -50,12 +49,9 @@ export const StatsCards = () => {
                   key={itemIdx}
                   className="flex-1 flex flex-col items-center justify-center text-center px-2 sm:px-4 py-2"
                 >
-                  {/* Value */}
                   <div className={`${sizeClass} font-bold ${item.color} h-[43px] flex items-center justify-center`}>
                     {item.value}
                   </div>
-
-                  {/* Label multi-baris */}
                   <div className="text-xs sm:text-sm text-muted-foreground whitespace-pre-line">
                     {item.label}
                   </div>
