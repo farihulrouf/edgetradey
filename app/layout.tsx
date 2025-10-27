@@ -1,24 +1,21 @@
-// app/layout.tsx
-'use client';
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "./globals.css"
+import type { Metadata } from "next"
 
-import { useEffect, useState } from 'react';
+export const metadata: Metadata = {
+  title: "Edgetrade Admin",
+  description: "Admin Dashboard",
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState('light');
-
-  useEffect(() => {
-    // Example: set theme based on localStorage or OS preference
-    setTheme(localStorage.getItem('theme') || 'light');
-  }, []);
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className={theme}>
-      <body className="antialiased min-h-screen bg-background text-foreground">
+    <html lang="en">
+      <body className="antialiased bg-gray-50 text-gray-900">
         {children}
       </body>
     </html>
-  );
+  )
 }
