@@ -12,40 +12,39 @@ interface StatsCardData {
   items: StatItem[]
 }
 
-// Data card dengan warna yang sesuai
 const statsData: StatsCardData[] = [
   {
     items: [
-      { value: "55", label: "Total Users", color: "text-black" },       // hitam
-      { value: "$30,000.00", label: "Net\nProfits", color: "text-green-500" }, // hijau
+      { value: "55", label: "Total Users", color: "text-black" },
+      { value: "$30,000.00", label: "Net\nProfits", color: "text-green-500" },
     ],
   },
   {
     items: [
-      { value: "247", label: "Pending\nDeposit", color: "text-blue-500" },  // biru
-      { value: "118", label: "Pending\nWithdrawal", color: "text-red-500" }, // merah
+      { value: "247", label: "Pending\nDeposit", color: "text-blue-500" },
+      { value: "118", label: "Pending\nWithdrawal", color: "text-red-500" },
     ],
   },
   {
     items: [
-      { value: "$30,000.00", label: "Total\nDeposit", color: "text-blue-500" }, // biru
-      { value: "$30,000.00", label: "Total\nWithdrawal", color: "text-red-500" }, // merah
+      { value: "$30,000.00", label: "Total\nDeposit", color: "text-blue-500" },
+      { value: "$30,000.00", label: "Total\nWithdrawal", color: "text-red-500" },
     ],
   },
 ]
 
 export const StatsCards = () => {
   return (
-    <div className="grid gap-4 mb-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+    <div className="grid gap-4 mb-3 mt-4 justify-center 
+      grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {statsData.map((card, idx) => (
         <Card
           key={idx}
-          className="p-4 border-2 border-blue-500 min-w-[260px]"
+          className="p-4 border-2 border-blue-500 w-full mx-auto"
+          style={{ width: 'clamp(220px, 18vw, 320px)' }} // min 220px, max 320px, 18% layar sebagai basis
         >
-          {/* Flex row kiri-kanan */}
           <div className="flex flex-col sm:flex-row divide-x divide-blue-500">
             {card.items.map((item, itemIdx) => {
-              // Jika value diawali $ pakai ukuran teks lebih kecil
               const sizeClass = item.value.startsWith("$") 
                 ? "text-[16px] md:text-[18px]" 
                 : "text-[32px]"
