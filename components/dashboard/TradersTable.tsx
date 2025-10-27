@@ -1,3 +1,4 @@
+// components/dashboard/TradersTable.tsx
 'use client'
 
 import { useState, useEffect } from "react"
@@ -70,18 +71,18 @@ export const TradersTable = () => {
 
   return (
     <>
-      <div className="bg-card rounded-lg border border-border flex flex-col min-h-[600px]">
+      <div className="bg-card rounded-lg border border-border flex flex-col h-full w-full">
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b border-border">
+        <div className="flex justify-between items-center p-4 border-b border-border flex-shrink-0">
           <h2 className="text-lg font-semibold">Traders Information</h2>
           <Button variant="outline" size="sm" className="flex items-center">
             <Download className="w-4 h-4 mr-2" /> Export to Excel
           </Button>
         </div>
 
-        {/* Table */}
+        {/* Table wrapper, flex-grow supaya mengisi sisa ruang */}
         <div className="flex-1 overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
+          <table className="w-max min-w-full text-sm border-collapse">
             <thead className="bg-muted/50 text-left sticky top-0">
               <tr>
                 <th className="p-2 border-b">User ID</th>
@@ -120,7 +121,7 @@ export const TradersTable = () => {
         </div>
 
         {/* Pagination */}
-        <div className="mt-auto flex items-center justify-center gap-2 p-4 border-t border-border">
+        <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
           <Button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} variant="ghost" size="sm">
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>

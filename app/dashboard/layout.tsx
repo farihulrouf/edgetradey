@@ -1,3 +1,4 @@
+// app/dashboard/layout.tsx
 'use client'
 
 import { usePathname } from "next/navigation"
@@ -14,15 +15,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Navbar */}
       <Navbar />
 
-      {/* Grid utama */}
-      <div className="flex-1 grid grid-cols-[260px_1fr_280px] gap-0 h-[calc(100vh-4rem)] relative">
+      {/* Grid utama: sidebar kiri, main, action panel kanan */}
+      <div className="flex-1 grid grid-cols-[260px_1fr_260px] gap-4 h-[calc(100vh-4rem)]">
         {/* Sidebar kiri */}
         <DashboardSidebar activePath={pathname} />
 
         {/* Main content */}
-        <main className="flex flex-col flex-1 overflow-y-auto py-6 relative z-10 p-4">
+        <main className="flex flex-col border flex-1 overflow-y-auto overflow-x-auto p-4 rounded-xl shadow-lg relative z-10">
           <StatsCards />
-          <div className="mt-6 flex-1">
+          <div className="mt-6 flex-1 min-w-full">
             {children}
           </div>
         </main>

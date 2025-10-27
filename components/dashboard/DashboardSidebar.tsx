@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { LayoutDashboard, Users, Wallet, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { PendingDeposit } from "./PendingDeposit"
-import { PendingWithdrawal } from "./PendingWithdrawal"
+import { PendingDeposit } from "./cards/PendingDeposit"
+import { PendingWithdrawal } from "./cards/PendingWithdrawal"
 import { PendingWithdrawalDialog } from "./PendingWithdrawalDialog"
 
 interface DashboardSidebarProps {
@@ -35,9 +35,9 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
 
   return (
     <>
-      <aside className="w-[260px] flex-shrink-0 flex flex-col bg-white h-full p-2">
+      <aside className="w-[260px] flex-shrink-0 border flex flex-col bg-white h-full">
         {/* Navigation */}
-        <nav className="mt-4">
+        <nav className="mt-4 px-2 space-y-1">
           {navigationItems.map(item => {
             const active = activePath === item.path
             return (
@@ -58,17 +58,16 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
           })}
         </nav>
 
-     
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        {/* Pending Deposit & Withdrawal */}
+        <div className="flex-1 flex flex-col justify-start gap-4 p-2">
           <PendingDeposit deposits={pendingDeposits} />
           <PendingWithdrawal withdrawals={pendingWithdrawals} />
         </div>
 
-        
+        {/* Footer */}
         <div className="p-4 border-t text-sm font-semibold text-center">
           isfinans.trade
         </div>
-        
       </aside>
 
       {/* Dialog */}

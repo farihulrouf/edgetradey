@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { MarginCallPanel } from "./MarginCallPanel";
+import { MarginCallPanel } from "./cards/MarginCallPanel";
 
 const activePeople = [
   { user: "Kutay Can", marginLevel: "%400", status: true },
@@ -16,7 +16,7 @@ const marginCalls = [
 export const ActionPanel = () => {
   return (
     <aside
-  className="w-full py-2 sticky top-16 overflow-y-auto flex flex-col gap-6 p-4"
+  className="w-full py-2 sticky top-16 overflow-y-auto border flex flex-col gap-6 p-4"
   style={{ height: 'calc(100vh - 4rem)' }}
 >
   <MarginCallPanel activePeople={activePeople} marginCalls={marginCalls} />
