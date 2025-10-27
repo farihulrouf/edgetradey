@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Main content */}
         <main className="flex bg-[#EAEAEA] flex-col flex-1 overflow-y-auto overflow-x-auto rounded-xl relative z-10">
           <StatsCards />
-          <div className="mt-6 flex-1 min-w-full">
+          <div className="mt-1 flex-1 min-w-full">
             {children}
           </div>
         </main>

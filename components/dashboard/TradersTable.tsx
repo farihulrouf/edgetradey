@@ -18,7 +18,6 @@ export const TradersTable = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Ambil data dari API.ts
   useEffect(() => {
     setLoading(true)
     fetchAllTraders()
@@ -37,17 +36,30 @@ export const TradersTable = () => {
   }, [allTraders, currentPage, itemsPerPage])
 
   const totalPages = Math.ceil(allTraders.length / itemsPerPage)
-  const goToPage = (page: number) => { if (page >= 1 && page <= totalPages) setCurrentPage(page) }
-  const handleShowAll = () => { setItemsPerPage(allTraders.length); setCurrentPage(1) }
-  const handleResetPagination = () => { setItemsPerPage(ITEMS_PER_PAGE); setCurrentPage(1) }
-  const handleRowClick = (user: Trader) => { setSelectedUser(user); setIsDialogOpen(true) }
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page)
+  }
+  const handleShowAll = () => {
+    setItemsPerPage(allTraders.length)
+    setCurrentPage(1)
+  }
+  const handleResetPagination = () => {
+    setItemsPerPage(ITEMS_PER_PAGE)
+    setCurrentPage(1)
+  }
+  const handleRowClick = (user: Trader) => {
+    setSelectedUser(user)
+    setIsDialogOpen(true)
+  }
 
-  if (loading) return <div className="p-6 text-center text-muted-foreground">Loading traders...</div>
-  if (error) return <div className="p-6 text-center text-red-500">{error}</div>
+  if (loading)
+    return <div className="p-6 text-center text-muted-foreground">Loading traders...</div>
+  if (error)
+    return <div className="p-6 text-center text-red-500">{error}</div>
 
   return (
     <>
-      <div className="rounded-lg flex flex-col h-full w-full">
+      <div className="rounded-lg flex flex-col h-full w-full bg-white">
         {/* Header */}
         <div className="flex items-center p-4 border-b border-border flex-shrink-0">
           <h2 className="flex-1 text-center text-lg font-semibold">Traders Information</h2>
@@ -59,8 +71,8 @@ export const TradersTable = () => {
         {/* Table wrapper */}
         <div className="flex-1 overflow-x-auto">
           <table className="w-max min-w-full text-sm border-collapse">
-            <thead className="bg-[#D1D1D6] sticky top-0">
-              <tr>
+            <thead className="bg-[#D1D1D6] sticky top-0 rounded-t-lg">
+              <tr className="h-11">
                 <th className="p-2 border-b rounded-tl-md">User ID</th>
                 <th className="p-2 border-b">Status</th>
                 <th className="p-2 border-b">Name</th>
@@ -85,7 +97,11 @@ export const TradersTable = () => {
                 >
                   <td className="p-2 border-b">{trader.userId}</td>
                   <td className="p-2 border-b flex justify-center">
-                    <div className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"}`} />
+                    <div
+                      className={`w-4 h-4 rounded-full border ${
+                        trader.status ? "bg-green-500" : "bg-red-500"
+                      }`}
+                    />
                   </td>
                   <td className="p-2 border-b">{trader.name}</td>
                   <td className="p-2 border-b">{trader.accountType}</td>
@@ -104,26 +120,47 @@ export const TradersTable = () => {
 
         {/* Pagination */}
         <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
-          <Button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} variant="ghost" size="sm">
+          <Button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            variant="ghost"
+            size="sm"
+          >
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>
           {Array.from({ length: totalPages }, (_, i) => (
-            <Button key={i} variant={i + 1 === currentPage ? "default" : "ghost"} size="sm" onClick={() => goToPage(i + 1)}>
+            <Button
+              key={i}
+              variant={i + 1 === currentPage ? "default" : "ghost"}
+              size="sm"
+              onClick={() => goToPage(i + 1)}
+            >
               {i + 1}
             </Button>
           ))}
-          <Button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} variant="ghost" size="sm">
+          <Button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            variant="ghost"
+            size="sm"
+          >
             Next <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
           {itemsPerPage < allTraders.length ? (
-            <Button onClick={handleShowAll} variant="link" size="sm">Show all</Button>
+            <Button onClick={handleShowAll} variant="link" size="sm">
+              Show all
+            </Button>
           ) : (
-            <Button onClick={handleResetPagination} variant="link" size="sm">Show paginated</Button>
+            <Button onClick={handleResetPagination} variant="link" size="sm">
+              Show paginated
+            </Button>
           )}
         </div>
       </div>
 
-      {selectedUser && <UserTradeDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />}
+      {selectedUser && (
+        <UserTradeDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      )}
     </>
   )
 }
