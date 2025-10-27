@@ -47,14 +47,16 @@ export const TradersTable = () => {
 
   return (
     <>
-      <div className="bg-card rounded-lg border border-border flex flex-col h-full w-full">
+      <div className="bg-card rounded-lg flex flex-col h-full w-full">
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b border-border flex-shrink-0">
-          <h2 className="text-lg font-semibold">Traders Information</h2>
+        {/* Header */}
+        <div className="flex items-center p-4 border-b border-border flex-shrink-0">
+          <h2 className="flex-1 text-center text-lg font-semibold">Traders Information</h2>
           <Button variant="outline" size="sm" className="flex items-center">
             <Download className="w-4 h-4 mr-2" /> Export to Excel
           </Button>
         </div>
+
 
         {/* Table wrapper */}
         <div className="flex-1 overflow-x-auto">

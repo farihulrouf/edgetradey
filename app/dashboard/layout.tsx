@@ -21,7 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <DashboardSidebar activePath={pathname} />
 
         {/* Main content */}
-        <main className="flex flex-col border flex-1 overflow-y-auto overflow-x-auto p-4 rounded-xl shadow-lg relative z-10">
+        <main className="flex bg-white flex-col flex-1 overflow-y-auto overflow-x-auto p-4 rounded-xl relative z-10">
           <StatsCards />
           <div className="mt-6 flex-1 min-w-full">
             {children}

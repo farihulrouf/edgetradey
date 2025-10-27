@@ -35,27 +35,34 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
 
   return (
     <>
-      <aside className="w-[260px] flex-shrink-0 border flex flex-col bg-white h-full">
+      <aside className="w-[260px] flex-shrink-0 flex flex-col bg-white h-full">
         {/* Navigation */}
         <nav className="mt-4 px-2 space-y-1">
-          {navigationItems.map(item => {
-            const active = activePath === item.path
-            return (
-              <button
-                key={item.label}
-                onClick={() => router.push(item.path)}
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 text-sm rounded-md transition-colors",
-                  active
-                    ? "bg-blue-500/20 text-blue-600 font-semibold"
-                    : "text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <item.icon className="w-5 h-5" />
-                {item.label}
-              </button>
-            )
-          })}
+          <div className="p-2 bg-white shadow-md">
+            {navigationItems.map(item => {
+              const active = activePath === item.path
+              // Khusus tombol Administration kasih margin top
+              const extraMargin = item.label === "Administration" ? "mt-8" : ""
+
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => router.push(item.path)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 text-sm rounded-md transition-colors",
+                    active
+                      ? "bg-blue-500/20 text-blue-600 font-semibold"
+                      : "text-muted-foreground hover:bg-muted",
+                    extraMargin
+                  )}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {item.label}
+                </button>
+              )
+            })}
+          </div>
+
         </nav>
 
         {/* Pending Deposit & Withdrawal */}
