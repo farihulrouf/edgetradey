@@ -9,7 +9,7 @@ interface StatItem {
 }
 
 interface StatsCardData {
-  items: StatItem[]
+  items: [StatItem, StatItem]
 }
 
 const statsData: StatsCardData[] = [
@@ -35,25 +35,31 @@ const statsData: StatsCardData[] = [
 
 export const StatsCards = () => {
   return (
-    <div className="grid gap-4 mb-3 mt-4 justify-center 
-      grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 mb-3 mt-4 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {statsData.map((card, idx) => (
         <Card
           key={idx}
-          className="p-4 border-2 border-blue-500 w-full mx-auto"
-          style={{ width: 'clamp(220px, 18vw, 320px)' }} // min 220px, max 320px, 18% layar sebagai basis
+          className="p-0 border-2 border-blue-500 w-full mx-auto"
+          style={{ width: 'clamp(220px, 18vw, 320px)' }}
         >
-          <div className="flex flex-col sm:flex-row divide-x divide-blue-500">
+          {/* Flex row kiri-kanan dengan garis tengah 75% */}
+          <div className="flex relative h-full w-full">
             {card.items.map((item, itemIdx) => {
-              const sizeClass = item.value.startsWith("$") 
-                ? "text-[16px] md:text-[18px]" 
+              const sizeClass = item.value.startsWith("$")
+                ? "text-[16px] md:text-[18px]"
                 : "text-[32px]"
 
               return (
                 <div
                   key={itemIdx}
-                  className="flex-1 flex flex-col items-center justify-center text-center px-2 sm:px-4 py-2"
+                  className={`flex-1 flex flex-col items-center justify-center text-center py-4
+                    ${itemIdx === 0 ? 'relative' : ''}`}
                 >
+                  {/* Divider custom di kiri panel */}
+                  {itemIdx === 0 && (
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 h-[75%] border-r border-blue-500"></span>
+                  )}
+
                   <div className={`${sizeClass} font-bold ${item.color} h-[43px] flex items-center justify-center`}>
                     {item.value}
                   </div>
