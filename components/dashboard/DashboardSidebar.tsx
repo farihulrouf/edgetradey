@@ -35,7 +35,7 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
 
   return (
     <>
-      <aside className="w-[260px] flex-shrink-0 flex flex-col border-r border-border bg-white h-full p-2">
+      <aside className="w-[260px] flex-shrink-0 flex flex-col bg-white h-full p-2">
         {/* Navigation */}
         <nav className="mt-4">
           {navigationItems.map(item => {
