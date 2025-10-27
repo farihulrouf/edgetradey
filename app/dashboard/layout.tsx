@@ -15,12 +15,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Navbar />
 
       {/* Grid utama: sidebar kiri, main, action panel kanan */}
-      <div className="flex-1 grid grid-cols-[260px_1fr_260px] gap-4 h-[calc(100vh-4rem)]">
+      <div className="flex-1 grid grid-cols-[260px_1fr_260px] gap-1 h-[calc(100vh-4rem)]">
         {/* Sidebar kiri */}
-        <DashboardSidebar activePath={pathname} />
+        <DashboardSidebar activePath={pathname}/>
 
         {/* Main content */}
-        <main className="flex bg-background flex-col flex-1 overflow-y-auto overflow-x-auto rounded-xl relative z-10 bg-gray-200 ">
+        <main className="flex flex-col flex-1 overflow-y-auto overflow-x-auto rounded-xl relative z-10 bg-gray-200 ">
           <StatsCards />
           <div className="mt-1 flex-1 min-w-full">
             {children}

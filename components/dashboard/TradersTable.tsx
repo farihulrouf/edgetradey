@@ -56,9 +56,9 @@ export const TradersTable = () => {
         </div>
 
         {/* Table wrapper */}
-        <div className="flex-1 overflow-x-auto">
+        <div className="flex-1 overflow-x-auto px-2">
           <table className="w-max min-w-full text-sm border-collapse">
-            <thead className="bg-[#D1D1D6] sticky top-0 rounded-t-lg">
+            <thead className="bg-gray-200 sticky p-4 top-0">
               <tr className="h-10 text-[10px]">
                 <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
                 <th className="p-2 border-b text-left">Status</th>

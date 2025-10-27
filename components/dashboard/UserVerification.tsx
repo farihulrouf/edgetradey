@@ -56,16 +56,7 @@ export const UserVerification = () => {
 
   return (
     <div className="bg-white rounded-lg border border-border">
-      {/* Header */}
-      <div className="p-4 border-b border-border flex items-center justify-between">
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-[#1D6CE9] border-[#1D6CE9] hover:bg-[#1D6CE9] hover:text-white"
-        >
-          Export
-        </Button>
-      </div>
+      
 
       {/* Table */}
       <div className="overflow-x-auto">
@@ -97,17 +88,23 @@ export const UserVerification = () => {
                 <td className="px-4 py-2">{user.email}</td>
                 <td className="px-4 py-2">{user.phone}</td>
                 <td className="px-4 py-2">{user.dateOfBirth}</td>
-                <td className="px-4 py-2">{user.accountSetting}</td>
-                <td
-                  className={`px-4 py-2 font-medium ${user.verification === "Verified"
-                      ? "text-green-600"
-                      : user.verification === "uploaded"
-                        ? "text-yellow-600"
-                        : "text-red-600"
-                    }`}
-                >
-                  {user.verification}
+                <td className="px-4 py-2"><p className="bg-blue-500 p-1 text-white rounded-lg text-center">{user.accountSetting}</p></td>
+                <td className="px-4 py-2">
+                  <p
+                    className={`p-1 px-2 rounded-lg text-center font-medium ${user.verification === "Pending"
+                        ? "bg-gray-100 text-gray-500"
+                        : user.verification === "Uploaded"
+                          ? "bg-blue-100 text-blue-500"
+                          : user.verification === "Approved"
+                            ? "bg-green-50 text-green-500"
+                            : ""
+                      }`}
+                  >
+                    {user.verification}
+                  </p>
                 </td>
+
+
               </tr>
             ))}
           </tbody>
@@ -134,8 +131,8 @@ export const UserVerification = () => {
               size="sm"
               onClick={() => goToPage(i + 1)}
               className={`${i + 1 === currentPage
-                  ? "bg-[#1D6CE9] text-white"
-                  : "text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
+                ? "bg-[#1D6CE9] text-white"
+                : "text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
                 }`}
             >
               {i + 1}
