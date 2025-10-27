@@ -57,8 +57,8 @@ export const UserVerification = () => {
   return (
     <div className="bg-white rounded-lg border border-border">
       {/* Header */}
-      <div className="p-4 border-b border-border flex items-center">
-        
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <h2 className="text-center flex-1 text-lg font-semibold">User Verification</h2>
         <Button
           variant="outline"
           size="sm"
@@ -72,7 +72,7 @@ export const UserVerification = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm border-collapse">
           <thead className="bg-[#D1D1D6] sticky top-0">
-            <tr className="h-[30px]">
+            <tr className="h-[45px]">
               <th className="px-4 py-2 border-b rounded-tl-lg">User ID</th>
               <th className="px-4 py-2 border-b">Name</th>
               <th className="px-4 py-2 border-b">Account Type</th>
@@ -103,7 +103,9 @@ export const UserVerification = () => {
                   className={`px-4 py-2 font-medium ${
                     user.verification === "Verified"
                       ? "text-green-600"
-                      : "text-yellow-600"
+                      : user.verification === "uploaded"
+                      ? "text-yellow-600"
+                      : "text-red-600"
                   }`}
                 >
                   {user.verification}
@@ -116,7 +118,7 @@ export const UserVerification = () => {
 
       {/* Pagination */}
       {!showAll && usersData.length > ITEMS_PER_PAGE && (
-        <div className="flex items-center justify-center gap-2 p-4 border-t border-border">
+        <div className="flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
           <Button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -130,7 +132,7 @@ export const UserVerification = () => {
           {[...Array(totalPages)].map((_, i) => (
             <Button
               key={i}
-              variant={i + 1 === currentPage ? "solid" : "ghost"}
+              variant={i + 1 === currentPage ? "default" : "ghost"} // ganti solid jadi default
               size="sm"
               onClick={() => goToPage(i + 1)}
               className={`${
