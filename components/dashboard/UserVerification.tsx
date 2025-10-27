@@ -55,43 +55,41 @@ export const UserVerification = () => {
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>
 
   return (
-    <div className="bg-card rounded-lg border border-border">
-
+    <div className="bg-white rounded-lg border border-border">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center">
-        <h2 className="flex-1 text-center text-lg font-semibold text-card-foreground">
-          User Verification
-        </h2>
+        
         <Button
           variant="outline"
           size="sm"
-          className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+          className="text-[#1D6CE9] border-[#1D6CE9] hover:bg-[#1D6CE9] hover:text-white"
         >
           Export
         </Button>
       </div>
 
-
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-muted/50 border-b border-border">
-            <tr>
-              <th className="px-4 py-2 text-left">User ID</th>
-              <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Account Type</th>
-              <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Phone</th>
-              <th className="px-4 py-2 text-left">Date of Birth</th>
-              <th className="px-4 py-2 text-left">Account Setting</th>
-              <th className="px-4 py-2 text-left">Verification</th>
+        <table className="min-w-full text-sm border-collapse">
+          <thead className="bg-[#D1D1D6] sticky top-0">
+            <tr className="h-[30px]">
+              <th className="px-4 py-2 border-b rounded-tl-lg">User ID</th>
+              <th className="px-4 py-2 border-b">Name</th>
+              <th className="px-4 py-2 border-b">Account Type</th>
+              <th className="px-4 py-2 border-b">Email</th>
+              <th className="px-4 py-2 border-b">Phone</th>
+              <th className="px-4 py-2 border-b">Date of Birth</th>
+              <th className="px-4 py-2 border-b">Account Setting</th>
+              <th className="px-4 py-2 border-b rounded-tr-lg">Verification</th>
             </tr>
           </thead>
           <tbody>
             {currentUsers.map((user, idx) => (
               <tr
                 key={user.userId}
-                className={`${idx % 2 === 1 ? "bg-muted/30" : ""} hover:bg-muted/70 cursor-pointer`}
+                className={`cursor-pointer hover:bg-[#D1D1D6]/50 ${
+                  idx % 2 === 1 ? "bg-[#D1D1D6]" : "bg-white"
+                }`}
                 onClick={() => handleRowClick(user)}
               >
                 <td className="px-4 py-2">{user.userId}</td>
@@ -102,7 +100,11 @@ export const UserVerification = () => {
                 <td className="px-4 py-2">{user.dateOfBirth}</td>
                 <td className="px-4 py-2">{user.accountSetting}</td>
                 <td
-                  className={`px-4 py-2 font-medium ${user.verification === "Verified" ? "text-green-600" : "text-yellow-600"}`}
+                  className={`px-4 py-2 font-medium ${
+                    user.verification === "Verified"
+                      ? "text-green-600"
+                      : "text-yellow-600"
+                  }`}
                 >
                   {user.verification}
                 </td>
@@ -115,21 +117,48 @@ export const UserVerification = () => {
       {/* Pagination */}
       {!showAll && usersData.length > ITEMS_PER_PAGE && (
         <div className="flex items-center justify-center gap-2 p-4 border-t border-border">
-          <Button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} variant="ghost" size="sm">
+          <Button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            variant="ghost"
+            size="sm"
+            className="text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
+          >
             <ChevronLeft className="w-4 h-4 mr-1" /> Previous
           </Button>
 
           {[...Array(totalPages)].map((_, i) => (
-            <Button key={i} variant={i + 1 === currentPage ? "default" : "ghost"} size="sm" onClick={() => goToPage(i + 1)}>
+            <Button
+              key={i}
+              variant={i + 1 === currentPage ? "solid" : "ghost"}
+              size="sm"
+              onClick={() => goToPage(i + 1)}
+              className={`${
+                i + 1 === currentPage
+                  ? "bg-[#1D6CE9] text-white"
+                  : "text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
+              }`}
+            >
               {i + 1}
             </Button>
           ))}
 
-          <Button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} variant="ghost" size="sm">
+          <Button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            variant="ghost"
+            size="sm"
+            className="text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
+          >
             Next <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
 
-          <Button onClick={handleShowAll} variant="link" size="sm">
+          <Button
+            onClick={handleShowAll}
+            variant="link"
+            size="sm"
+            className="text-[#1D6CE9]"
+          >
             Show all
           </Button>
         </div>
