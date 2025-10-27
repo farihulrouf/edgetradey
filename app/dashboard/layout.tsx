@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar"
 import { Navbar } from "@/components/Navbar"
 import { StatsCards } from "@/components/dashboard/StatsCards"
-//import { ActionPanel } from "@/components/dashboard/ActionPanel"
+import { ActionPanel } from "@/components/dashboard/ActionPanel"
 
 export default function DashboardLayout({
   children,
@@ -30,7 +30,7 @@ export default function DashboardLayout({
         </main>
 
         {/* Action Panel kanan */}
-        {/*<ActionPanel /> */}
+        <ActionPanel />
       </div>
     </div>
   )
