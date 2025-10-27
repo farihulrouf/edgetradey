@@ -8,19 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        card: "var(--card)",
-        "card-foreground": "var(--card-foreground)",
-        ring: "var(--ring)",
-        border: "var(--border)",
+      fontFamily: {
+        roboto: ["Roboto", "sans-serif"],
       },
-      borderRadius: {
-        sm: "var(--radius-sm)",
-        md: "var(--radius-md)",
-        lg: "var(--radius-lg)",
-        xl: "var(--radius-xl)",
+      colors: {
+        background: "#EAEAEA",
+        primary: "#1D6CE9",
+        "primary-hover": "#155BBB",
       },
     },
   },

@@ -35,7 +35,7 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
 
   return (
     <>
-      <aside className="w-[260px] flex-shrink-0 flex flex-col  bg-[#EAEAEA] h-full">
+      <aside className="w-[260px] flex-shrink-0 flex flex-col bg-gray-200 h-full">
         {/* Navigation */}
         <nav className="mt-4 px-2 space-y-1">
           <div className="p-2 bg-white shadow-lg ring-1 ring-white/50 rounded">

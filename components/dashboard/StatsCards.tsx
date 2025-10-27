@@ -38,11 +38,17 @@ export const StatsCards = () => {
   return (
     <div className="grid gap-4 mb-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-4">
       {statsData.map((card, idx) => (
-        <Card key={idx} className="p-4 border-2 border-blue-500 min-w-[260px]">
+        <Card
+          key={idx}
+          className="p-4 border-2 border-blue-500 min-w-[260px]"
+        >
           {/* Flex row kiri-kanan */}
-          <div className="flex flex-col sm:flex-row divide-x divide-border">
+          <div className="flex flex-col sm:flex-row divide-x divide-blue-500">
             {card.items.map((item, itemIdx) => {
-              const sizeClass = item.value.startsWith("$") ? "text-[16px] md:text-[18px]" : "text-[32px]"
+              // Jika value diawali $ pakai ukuran teks lebih kecil
+              const sizeClass = item.value.startsWith("$") 
+                ? "text-[16px] md:text-[18px]" 
+                : "text-[32px]"
 
               return (
                 <div
