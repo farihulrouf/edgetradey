@@ -56,9 +56,12 @@ export const UserVerification = () => {
 
   return (
     <div className="bg-card rounded-lg border border-border">
+
       {/* Header */}
-      <div className="p-4 border-b border-border flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-card-foreground">User Verification</h2>
+      <div className="p-4 border-b border-border flex items-center">
+        <h2 className="flex-1 text-center text-lg font-semibold text-card-foreground">
+          User Verification
+        </h2>
         <Button
           variant="outline"
           size="sm"
@@ -67,6 +70,7 @@ export const UserVerification = () => {
           Export
         </Button>
       </div>
+
 
       {/* Table */}
       <div className="overflow-x-auto">

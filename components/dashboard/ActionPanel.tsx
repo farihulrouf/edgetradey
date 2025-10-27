@@ -16,19 +16,19 @@ const marginCalls = [
 export const ActionPanel = () => {
   return (
     <aside
-  className="w-full py-2 sticky top-16 overflow-y-auto flex flex-col gap-6 p-4"
-  style={{ height: 'calc(100vh - 4rem)' }}
->
-  <MarginCallPanel activePeople={activePeople} marginCalls={marginCalls} />
+      className="w-full py-2 sticky top-16 overflow-y-auto flex flex-col gap-6 p-4"
+      style={{ height: 'calc(100vh - 4rem)' }}
+    >
+      <MarginCallPanel activePeople={activePeople} marginCalls={marginCalls} />
 
-  <div className="flex flex-col gap-2.5">
-    <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Refresh Data</Button>
-    <Button className="w-full bg-primary hover:bg-primary/90" size="lg">New Trader</Button>
-    <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Edit Trader User</Button>
-    <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Block Trader</Button>
-    <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Delete Trader</Button>
-  </div>
-</aside>
+      <div className="flex flex-col gap-2.5">
+        <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Refresh Data</Button>
+        <Button className="w-full bg-primary hover:bg-primary/90" size="lg">New Trader</Button>
+        <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Edit Trader User</Button>
+        <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Block Trader</Button>
+        <Button className="w-full bg-primary hover:bg-primary/90" size="lg">Delete Trader</Button>
+      </div>
+    </aside>
 
   );
 };
