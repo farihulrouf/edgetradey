@@ -15,20 +15,20 @@ interface StatsCardData {
 const statsData: StatsCardData[] = [
   {
     items: [
-      { value: "55", label: "Total Users", color: "text-black" },
-      { value: "$30,000.00", label: "Net\nProfits", color: "text-green-500" },
+      { value: "55", label: "Total Users", color: "!text-black" }, // ✅ hitam kuat
+      { value: "$30,000.00", label: "Net\nProfit", color: "!text-green-500" }, // ✅ hijau
     ],
   },
   {
     items: [
-      { value: "247", label: "Pending\nDeposit", color: "text-blue-500" },
-      { value: "118", label: "Pending\nWithdrawal", color: "text-red-500" },
+      { value: "247", label: "Pending\nDeposit", color: "!text-blue-500" }, // ✅ biru
+      { value: "118", label: "Pending\nWithdrawal", color: "!text-red-500" }, // ✅ merah
     ],
   },
   {
     items: [
-      { value: "$30,000.00", label: "Total\nDeposit", color: "text-blue-500" },
-      { value: "$30,000.00", label: "Total\nWithdrawal", color: "text-red-500" },
+      { value: "$30,000.00", label: "Total\nDeposit", color: "!text-blue-500" }, // ✅ biru
+      { value: "$30,000.00", label: "Total\nWithdrawal", color: "!text-red-500" }, // ✅ merah
     ],
   },
 ]
@@ -39,10 +39,9 @@ export const StatsCards = () => {
       {statsData.map((card, idx) => (
         <Card
           key={idx}
-          className="p-0 border-2 border-blue-500 w-full mx-auto"
+          className="p-0 border-2 border-blue-500 w-full mx-auto bg-white"
           style={{ width: 'clamp(220px, 18vw, 320px)' }}
         >
-          {/* Flex row kiri-kanan dengan garis tengah 75% */}
           <div className="flex relative h-full w-full">
             {card.items.map((item, itemIdx) => {
               const sizeClass = item.value.startsWith("$")
@@ -52,12 +51,11 @@ export const StatsCards = () => {
               return (
                 <div
                   key={itemIdx}
-                  className={`flex-1 flex flex-col items-center justify-center text-center py-4
-                    ${itemIdx === 0 ? 'relative' : ''}`}
+                  className={`flex-1 flex flex-col items-center justify-center text-center py-4 relative`}
                 >
-                  {/* Divider custom di kiri panel */}
+                  {/* Garis pembatas */}
                   {itemIdx === 0 && (
-                    <span className="absolute right-0 top-1/2 -translate-y-1/2 h-[75%] border-r border-blue-500"></span>
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 h-[75%] border-r border-blue-500" />
                   )}
 
                   <div className={`${sizeClass} font-bold ${item.color} h-[43px] flex items-center justify-center`}>

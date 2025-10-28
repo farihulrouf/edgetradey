@@ -85,56 +85,34 @@ export const Administration = () => {
   return (
     <div className="bg-card rounded-lg border border-border">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-border gap-2">
-        <h2 className="text-lg font-semibold text-card-foreground">Admin Users</h2>
-        <div className="flex gap-2 items-center">
-          <Input
-            placeholder="Search by Name, Role, or Email"
-            value={searchQuery}
-            onChange={e => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-64"
-          />
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
-          >
-            Export
-          </Button>
-        </div>
-      </div>
-
       {/* Table */}
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-  <TableRow className="bg-muted/50">
-    <TableHead className="text-[10px]">Name</TableHead>
-    <TableHead className="text-[10px]">Role</TableHead>
-    <TableHead className="text-[10px]">Email</TableHead>
-    <TableHead className="text-[10px]">Password</TableHead>
-  </TableRow>
-</TableHeader>
-<TableBody>
-  {currentAdmins.map((admin, idx) => (
-    <TableRow key={admin.id} className={idx % 2 === 1 ? "bg-muted/50" : ""}>
-      <TableCell className="text-[10px]">{admin.name}</TableCell>
-      <TableCell className="text-[10px]">{admin.role}</TableCell>
-      <TableCell className="text-[10px]">{admin.email}</TableCell>
-      <TableCell className="text-[10px]">{admin.password}</TableCell>
-    </TableRow>
-  ))}
-  {currentAdmins.length === 0 && (
-    <TableRow>
-      <TableCell colSpan={4} className="text-center py-4 text-[10px]">
-        No matching records found
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
+            <TableRow className="bg-muted/50">
+              <TableHead className="text-[10px]">Name</TableHead>
+              <TableHead className="text-[10px]">Role</TableHead>
+              <TableHead className="text-[10px]">Email</TableHead>
+              <TableHead className="text-[10px]">Password</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {currentAdmins.map((admin, idx) => (
+              <TableRow key={admin.id} className={idx % 2 === 1 ? "bg-muted/50" : ""}>
+                <TableCell className="text-[10px]">{admin.name}</TableCell>
+                <TableCell className="text-[10px]">{admin.role}</TableCell>
+                <TableCell className="text-[10px]">{admin.email}</TableCell>
+                <TableCell className="text-[10px]">{admin.password}</TableCell>
+              </TableRow>
+            ))}
+            {currentAdmins.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-4 text-[10px]">
+                  No matching records found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
 
         </Table>
       </div>
