@@ -49,13 +49,13 @@ export function PendingWithdrawalDialog({ open, onOpenChange }: { open: boolean;
           <div className="flex items-center gap-2 mr-4">
             <Button
               onClick={handleDecline}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground text-white"
+              className="bg-destructive hover:bg-destructive/90 text-white"
             >
               Decline
             </Button>
             <Button
               onClick={handleApprove}
-              className="bg-success hover:bg-success/90 text-success-foreground bg-green-500"
+              className="bg-success hover:bg-success/90 text-white bg-green-500 "
             >
               Approve
             </Button>

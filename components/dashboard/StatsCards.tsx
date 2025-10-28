@@ -35,6 +35,13 @@ const statsData: StatsCardData[] = [
 ]
 
 export const StatsCards = () => {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000) // 1 detik loading
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="grid gap-4 mb-3 mt-4 justify-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {statsData.map((card, idx) => (
@@ -44,9 +51,24 @@ export const StatsCards = () => {
           style={{ width: 'clamp(220px, 18vw, 320px)' }}
         >
           <div className="flex relative h-full w-full">
-            {card.items.map((item, itemIdx) => (
-              <AnimatedStat key={itemIdx} item={item} isMoney={item.value.startsWith("$")} hasDivider={itemIdx === 0} />
-            ))}
+            {loading
+              ? card.items.map((_, itemIdx) => (
+                  <div
+                    key={itemIdx}
+                    className="flex-1 flex flex-col items-center justify-center py-4 space-y-2 animate-pulse"
+                  >
+                    <div className="h-8 w-16 bg-gray-300 rounded"></div>
+                    <div className="h-3 w-20 bg-gray-200 rounded"></div>
+                  </div>
+                ))
+              : card.items.map((item, itemIdx) => (
+                  <AnimatedStat
+                    key={itemIdx}
+                    item={item}
+                    isMoney={item.value.startsWith("$")}
+                    hasDivider={itemIdx === 0}
+                  />
+                ))}
           </div>
         </Card>
       ))}
@@ -61,10 +83,10 @@ const AnimatedStat = ({ item, isMoney, hasDivider }: { item: StatItem; isMoney: 
   useEffect(() => {
     let start = 0
     const end = parseFloat(item.value.replace(/\$/g, "").replace(/,/g, ""))
-    if (isNaN(end)) return // skip kalau bukan angka
+    if (isNaN(end)) return
 
-    const duration = 1000 // durasi animasi (ms)
-    const increment = end / (duration / 16) // naik tiap 16ms (~60fps)
+    const duration = 1000
+    const increment = end / (duration / 16)
     const timer = setInterval(() => {
       start += increment
       if (start >= end) {
@@ -79,7 +101,6 @@ const AnimatedStat = ({ item, isMoney, hasDivider }: { item: StatItem; isMoney: 
   }, [item.value])
 
   const sizeClass = isMoney ? "text-[16px] md:text-[18px]" : "text-[32px]"
-
   const formattedValue = isMoney
     ? `$${displayValue.toFixed(2)}`
     : Math.floor(displayValue).toString()
