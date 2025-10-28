@@ -88,7 +88,8 @@ export const TradersTable = () => {
   </div>
 
   {/* Table */}
-  <div className="flex-1 overflow-x-auto px-2">
+  
+  <div className="flex-1 overflow-x-auto px-2 bg-white shadow-lg ring-1 ring-white/50">
     <div className="max-h-[60vh] overflow-y-auto">
       <table className="w-max min-w-full text-sm border-separate border-spacing-0">
         <thead className="bg-[#E0E0E0] text-gray-600 sticky top-0 z-10">

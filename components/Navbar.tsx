@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import * as React from "react"
+import { useLogout } from '@/lib/useLogout'
+
 
 // -------------------- Dropdown Components --------------------
 export const DropdownMenu = React.forwardRef<
@@ -54,10 +56,11 @@ export function Navbar() {
 
   const userRef = React.useRef<HTMLDivElement>(null)
   const notifRef = React.useRef<HTMLDivElement>(null)
+  const logout = useLogout()
 
   const handleLogout = () => {
-    toast.success("Logged out successfully")
-    setUserOpen(false)
+    logout()
+    setUserOpen(false) // close dropdown
   }
 
   // Close dropdown if click outside

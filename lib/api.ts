@@ -66,6 +66,16 @@ export interface Admin {
   password: string
 }
 
+
+export const logout = () => {
+  // Hapus session / token di localStorage / cookies jika ada
+  localStorage.removeItem("token")
+  // Bisa tambah cleanup lain kalau perlu
+
+  // Redirect ke halaman login
+  window.location.href = "/login"
+}
+
 // ===== Fetch All Admins =====
 export const fetchAllAdmins = async (): Promise<Admin[]> => {
   const res = await fetch(`${BASE_URL}/alladmins.json`)
