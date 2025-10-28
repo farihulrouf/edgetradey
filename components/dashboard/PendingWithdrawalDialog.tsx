@@ -1,150 +1,112 @@
-'use client'
+import { useState } from "react";
+import { Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
-import { useState } from "react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Copy } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
-
-interface PendingWithdrawalDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+interface WithdrawalRequest {
+  userId: string;
+  type: "Bank" | "Crypto";
+  time: string;
+  amount: string;
+  receiverAddress: string;
 }
 
-export const PendingWithdrawalDialog = ({ open, onOpenChange }: PendingWithdrawalDialogProps) => {
-  const { toast } = useToast()
-  const [selectedRow, setSelectedRow] = useState<number | null>(null)
-  const [confirmApproveOpen, setConfirmApproveOpen] = useState(false)
+const mockData: WithdrawalRequest[] = [
+  { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
+  { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
+  { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
+  { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
+  { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
+  { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
+  { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
+  { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
+  { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
+  { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
+];
 
-  const withdrawals = [
-    { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
-    { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
-    { userId: "1846456", type: "Bank", time: "07/09/2025\n10:45:56", amount: "$100.00", receiverAddress: "TR12 3456 7890 1234" },
-    { userId: "1846456", type: "Crypto", time: "07/09/2025\n10:45:56", amount: "$200.00", receiverAddress: "TQx9kYvX2aPz6h4GmJb1n" },
-  ]
+export function PendingWithdrawalDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const [withdrawals] = useState<WithdrawalRequest[]>(mockData);
 
   const handleCopy = (address: string) => {
-    navigator.clipboard.writeText(address)
-    toast({
-      title: "Copied!",
-      description: "Address copied to clipboard",
-    })
-  }
+    navigator.clipboard.writeText(address);
+    toast.success("Address copied to clipboard");
+  };
 
   const handleDecline = () => {
-    toast({
-      title: "Declined",
-      description: "Withdrawal requests declined",
-      variant: "destructive",
-    })
-  }
+    toast.error("Withdrawals declined");
+  };
 
   const handleApprove = () => {
-    setConfirmApproveOpen(true)
-  }
-
-  const confirmApprove = () => {
-    setConfirmApproveOpen(false)
-    toast({
-      title: "Approved",
-      description: "Withdrawal requests approved successfully ✅",
-    })
-  }
+    toast.success("Withdrawals approved");
+  };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-[900px] min-w-[872px] min-h-[580px] p-0 gap-0 max-h-[90vh]">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl p-0 gap-0">
+        <DialogHeader className="px-6 pt-6 pb-4 flex flex-row items-center justify-between space-y-0">
+          <DialogTitle className="text-xl font-semibold">Pending Withdrawal</DialogTitle>
+          <div className="flex items-center gap-2 mr-4">
+            <Button
+              onClick={handleDecline}
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground text-white"
+            >
+              Decline
+            </Button>
+            <Button
+              onClick={handleApprove}
+              className="bg-success hover:bg-success/90 text-success-foreground bg-green-500"
+            >
+              Approve
+            </Button>
+          </div>
+        </DialogHeader>
 
-          {/* Header */}
-          <div className="px-6 py-2 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Pending Withdrawal</h2>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                className="h-10 px-4 bg-muted hover:bg-muted/80"
-                onClick={handleDecline}
-              >
-                Decline
-              </Button>
-              <Button className="h-10 px-4" onClick={handleApprove}>Approve</Button>
+        <div className="px-6 pb-6">
+          <div className="rounded-lg overflow-hidden">
+            {/* Header Table Grey */}
+            <div className="grid grid-cols-[100px_80px_140px_100px_1fr_40px] gap-4 px-4 py-3 font-medium text-sm bg-gray-300">
+              <div>User ID</div>
+              <div>Type</div>
+              <div>Time</div>
+              <div>Amount</div>
+              <div>Receiver Address</div>
+              <div></div>
+            </div>
+
+            <div className="max-h-[400px] overflow-y-auto">
+              {withdrawals.map((withdrawal, index) => (
+                <div
+                  key={index}
+                  className={`grid grid-cols-[100px_80px_140px_100px_1fr_40px] gap-4 px-4 py-3 text-sm border-t ${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
+                  }`}
+                >
+                  <div className="flex items-center">{withdrawal.userId}</div>
+                  <div className="flex items-center">{withdrawal.type}</div>
+                  <div className="flex items-center whitespace-pre-line text-xs leading-tight">
+                    {withdrawal.time}
+                  </div>
+                  <div className="flex items-center">{withdrawal.amount}</div>
+                  <div className="flex items-center font-mono text-xs">
+                    {withdrawal.receiverAddress}
+                  </div>
+                  <div className="flex items-center">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                      onClick={() => handleCopy(withdrawal.receiverAddress)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Table */}
-          <div className="overflow-auto max-h-[calc(90vh-80px)] px-4">
-            <Table className="min-w-[700px]">
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-[12px]">User ID</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Receiver Address</TableHead>
-                  <TableHead className="w-12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {withdrawals.map((withdrawal, index) => {
-                  const isSelected = selectedRow === index
-                  const bgClass = isSelected
-                    ? "bg-blue-100 hover:bg-blue-200"
-                    : index % 2 === 0
-                      ? "bg-white hover:bg-gray-100"
-                      : "bg-gray-100 hover:bg-gray-200"
-
-                  return (
-                    <TableRow
-                      key={index}
-                      className={`${bgClass} cursor-pointer transition-colors`}
-                      style={{ minHeight: "45px" }}
-                      onClick={() => setSelectedRow(index)}
-                    >
-                      <TableCell className="font-medium text-[12px]">{withdrawal.userId}</TableCell>
-                      <TableCell className="">{withdrawal.type}</TableCell>
-                      <TableCell className="text-xs whitespace-pre-line ">{withdrawal.time}</TableCell>
-                      <TableCell className="">{withdrawal.amount}</TableCell>
-                      <TableCell className="font-mono text-sm">{withdrawal.receiverAddress}</TableCell>
-                      <TableCell className="">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 bg-primary/10 hover:bg-primary/20"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleCopy(withdrawal.receiverAddress)
-                          }}
-                        >
-                          <Copy className="h-4 w-4 text-primary" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-
-            </Table>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Konfirmasi Approve */}
-      <AlertDialog open={confirmApproveOpen} onOpenChange={setConfirmApproveOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Approve Withdrawals</AlertDialogTitle>
-          </AlertDialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Are you sure you want to approve all selected withdrawals? This action cannot be undone.
-          </p>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmApprove}>Yes, Approve</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
-  )
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }
