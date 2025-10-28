@@ -36,12 +36,11 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
   return (
     <>
       <aside className="w-[260px] flex-shrink-0 flex flex-col bg-gray-200 h-full">
-        {/* Navigation */}
-        <nav className="mt-4 px-2 space-y-1">
+        {/* ===== Navigation ===== */}
+        <nav className="mt-4 px-2">
           <div className="p-2 bg-white shadow-lg ring-1 ring-white/50 rounded">
             {navigationItems.map(item => {
               const active = activePath === item.path
-              // Khusus tombol Administration kasih margin top
               const extraMargin = item.label === "Administration" ? "mt-8" : ""
 
               return (
@@ -62,19 +61,19 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
               )
             })}
           </div>
-
         </nav>
 
-        {/* Pending Deposit & Withdrawal */}
-        <div className="flex-1 flex flex-col justify-start gap-4 p-2">
+        {/* ===== Cards Section (fill remaining height) ===== */}
+        <div className="flex-1 flex flex-col justify-start gap-4 p-2 overflow-y-auto">
           <PendingDeposit deposits={pendingDeposits} />
           <PendingWithdrawal withdrawals={pendingWithdrawals} />
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t text-sm font-semibold text-center">
-          isfinans.trade
-        </div>
+        {/* ===== Footer (sticky bottom) ===== */}
+        <div className="mx-2 mb-3 mt-auto p-3 text-sm font-semibold text-center bg-white rounded-md shadow">
+  isfinans.trade
+</div>
+
       </aside>
 
       {/* Dialog */}

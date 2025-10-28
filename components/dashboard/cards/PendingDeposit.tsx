@@ -15,7 +15,7 @@ interface PendingDepositProps {
 
 export const PendingDeposit = ({ deposits }: PendingDepositProps) => {
   return (
-    <div className="bg-white mt-2 rounded-md p-2 h-[220px] shadow-lg ring-1 ring-white/50 rounded">
+    <div className="bg-white mt-2 rounded-md p-2 h-[230px] shadow-lg ring-1 ring-white/50 rounded">
       <h3 className="font-semibold text-md mb-3 text-center">Pending Deposit</h3>
       <div className="space-y-0">
         {/* Header */}
