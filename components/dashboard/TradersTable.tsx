@@ -49,12 +49,9 @@ export const TradersTable = () => {
       <div className="rounded-lg flex flex-col h-full w-full bg-white">
         {/* Header */}
         <div className="relative flex items-center p-4 border-b border-border flex-shrink-0">
-          {/* Teks selalu di tengah */}
           <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-gray-500 font-semibold">
             Traders Information
           </h2>
-
-          {/* Tombol tetap di kanan */}
           <div className="ml-auto">
             <Button
               variant="outline"
@@ -66,54 +63,53 @@ export const TradersTable = () => {
           </div>
         </div>
 
-
-        {/* Table wrapper */}
+        {/* Table wrapper dengan scroll vertikal */}
         <div className="flex-1 overflow-x-auto px-2">
-          <table className="w-max min-w-full text-sm border-collapse">
-            <thead className="bg-gray-200 sticky p-4 top-0">
-              <tr className="h-10 text-[10px]">
-                <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
-                <th className="p-2 border-b text-left">Status</th>
-                <th className="p-2 border-b text-left">Name</th>
-                <th className="p-2 border-b text-left">Account Type</th>
-                <th className="p-2 border-b text-left">Email</th>
-                <th className="p-2 border-b text-left">Phone</th>
-                <th className="p-2 border-b text-left">Credit</th>
-                <th className="p-2 border-b text-left">Balance</th>
-                <th className="p-2 border-b text-left">Equity</th>
-                <th className="p-2 border-b text-left">Margin</th>
-                <th className="p-2 border-b rounded-tr-md text-left">Free Margin</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {traders.map((trader, idx) => (
-                <tr
-                  key={trader.userId}
-                  className={`cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
-                    }`}
-                  onClick={() => handleRowClick(trader)}
-                >
-                  <td className="p-2 border-b text-[10px]">{trader.userId}</td>
-                  <td className="p-2 border-b flex justify-center text-[10px]">
-                    <div
-                      className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"
-                        }`}
-                    />
-                  </td>
-                  <td className="p-2 border-b text-[10px]">{trader.name}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.accountType}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.email}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.phone}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.credit}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.balance}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.equity}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.margin}</td>
-                  <td className="p-2 border-b text-[10px]">{trader.freeMargin}</td>
+          <div className="max-h-[60vh] overflow-y-auto">
+            <table className="w-max min-w-full text-sm border-collapse">
+              <thead className="bg-gray-200 sticky top-0">
+                <tr className="h-10 text-[10px]">
+                  <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
+                  <th className="p-2 border-b text-left">Status</th>
+                  <th className="p-2 border-b text-left">Name</th>
+                  <th className="p-2 border-b text-left">Account Type</th>
+                  <th className="p-2 border-b text-left">Email</th>
+                  <th className="p-2 border-b text-left">Phone</th>
+                  <th className="p-2 border-b text-left">Credit</th>
+                  <th className="p-2 border-b text-left">Balance</th>
+                  <th className="p-2 border-b text-left">Equity</th>
+                  <th className="p-2 border-b text-left">Margin</th>
+                  <th className="p-2 border-b rounded-tr-md text-left">Free Margin</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {traders.map((trader, idx) => (
+                  <tr
+                    key={trader.userId}
+                    className={`cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"}`}
+                    onClick={() => handleRowClick(trader)}
+                  >
+                    <td className="p-2 border-b text-[10px]">{trader.userId}</td>
+                    <td className="p-2 border-b flex justify-center text-[10px]">
+                      <div
+                        className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"}`}
+                      />
+                    </td>
+                    <td className="p-2 border-b text-[10px]">{trader.name}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.accountType}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.email}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.phone}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.credit}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.balance}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.equity}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.margin}</td>
+                    <td className="p-2 border-b text-[10px]">{trader.freeMargin}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Pagination */}
