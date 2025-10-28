@@ -91,7 +91,7 @@ export const TradersTable = () => {
         <div className="flex-1 overflow-x-auto px-2">
           <div className="max-h-[60vh] overflow-y-auto">
             <table className="w-max min-w-full text-sm border-collapse">
-              <thead className="bg-gray-200 text-gray-600 sticky top-0 rounded-t-md">
+              <thead className="bg-[#E0E0E0] text-gray-600 sticky top-0 rounded-t-md">
 
                 <tr className="h-[45px] text-[10px]">
                   <th className="p-2 text-left font-semibold">User ID</th>
@@ -113,7 +113,7 @@ export const TradersTable = () => {
                   <tr
                     key={trader.userId}
                     className={`h-[45px] cursor-pointer hover:bg-blue-50 ${
-                      idx % 2 === 0 ? "bg-white" : "bg-gray-100"
+                      idx % 2 === 0 ? "bg-white" : "bg-[#E0E0E0]"
                     } transition-all duration-300 ease-in-out ${
                       animating ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"
                     }`}

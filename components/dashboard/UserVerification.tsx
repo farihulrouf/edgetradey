@@ -7,7 +7,7 @@ import { UserVerificationDialog } from "./UserVerificationDialog"
 import { fetchAllUsersVerification, UserVerificationData } from "@/lib/api"
 
 // jumlah data per halaman
-const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 12
 
 export const UserVerification = () => {
   const [usersData, setUsersData] = useState<UserVerificationData[]>([])
