@@ -17,6 +17,7 @@ export const TradersTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [animating, setAnimating] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -30,9 +31,18 @@ export const TradersTable = () => {
   }, [])
 
   useEffect(() => {
+    setAnimating(true)
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
-    setTraders(allTraders.slice(startIndex, endIndex))
+    const newTraders = allTraders.slice(startIndex, endIndex)
+
+    // delay untuk animasi
+    const timer = setTimeout(() => {
+      setTraders(newTraders)
+      setAnimating(false)
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [allTraders, currentPage, itemsPerPage])
 
   const totalPages = Math.ceil(allTraders.length / itemsPerPage)
@@ -87,7 +97,8 @@ export const TradersTable = () => {
                 {traders.map((trader, idx) => (
                   <tr
                     key={trader.userId}
-                    className={`cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"}`}
+                    className={`cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
+                      } transition-all duration-300 ease-in-out transform ${animating ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"}`}
                     onClick={() => handleRowClick(trader)}
                   >
                     <td className="p-2 border-b text-[10px]">{trader.userId}</td>
