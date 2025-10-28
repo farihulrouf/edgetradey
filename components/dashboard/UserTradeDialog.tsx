@@ -8,13 +8,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { X } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import tradesData from "@/data/trades.json";
+import { Trader } from "@/lib/api";
 
 interface UserTradeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  user: Trader;
 }
 
-export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) => {
+export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogProps) => {
   const [activeTab, setActiveTab] = useState("open-positions");
 
   const [openPositions, setOpenPositions] = useState(tradesData.tradePositions);
@@ -52,7 +54,6 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
     if (e.key === "Enter" || e.key === "Escape") setEditingCell(null);
   };
 
-  // 🔹 Universal date parser
   const parseFlexibleDate = (value: string): Date | null => {
     if (!value) return null;
     let date: Date | null = null;
@@ -77,7 +78,7 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
   const formatDateTime = (value: string) => {
     const d = parseFlexibleDate(value);
     if (!d) return value;
-    const date = d.toLocaleDateString("en-GB"); // 07/09/2025
+    const date = d.toLocaleDateString("en-GB");
     const time = d.toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -87,17 +88,20 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
   };
 
   const renderEditableTable = (tab: string, data: any[], setData: any) => (
-    <Table>
+    <Table className="text-[12px] mx-2 border h-[405px]">
       <TableHeader>
         <TableRow>
           {Object.keys(data[0] || {}).map((key) => (
-            <TableHead key={key}>{key}</TableHead>
+            <TableHead key={key} className="px-2 py-2 whitespace-nowrap">
+              {key}
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>
+
       <TableBody>
         {data.map((row, rowIndex) => (
-          <TableRow key={rowIndex} className="h-[40px]">
+          <TableRow key={rowIndex} className="h-[38px]">
             {Object.keys(row).map((key) => {
               const isEditable = true;
               const isEditing =
@@ -114,21 +118,20 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
                 <TableCell
                   key={key}
                   onClick={() => isEditable && setEditingCell({ tab, row: rowIndex, field: key })}
-                  className={`cursor-pointer align-middle h-[40px] ${
-                    isDirectionField
+                  className={`cursor-pointer align-middle h-[36px] px-2 py-1 ${isDirectionField
                       ? row[key] === "BUY"
                         ? "text-green-600 font-medium"
                         : "text-red-600 font-medium"
                       : ""
-                  }`}
+                    }`}
                   style={{
                     verticalAlign: "middle",
-                    minWidth: "100px",
+                    minWidth: "90px",
                     whiteSpace: isDateField ? "pre-line" : "nowrap",
                   }}
                 >
                   {isEditing ? (
-                    <div className="h-[36px] flex items-center justify-center">
+                    <div className="h-[32px] flex items-center justify-center">
                       {isDateField ? (
                         <input
                           type="date"
@@ -139,10 +142,7 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
                           }
                           onBlur={handleBlur}
                           onKeyDown={handleKeyDown}
-                          className="border rounded-sm px-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-[28px] w-[120px]"
-                          style={{
-                            lineHeight: "28px",
-                          }}
+                          className="border rounded-sm px-1 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[110px]"
                         />
                       ) : isDirectionField ? (
                         <select
@@ -150,7 +150,7 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
                           value={row[key]}
                           onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
                           onBlur={handleBlur}
-                          className="border rounded-sm px-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-[28px] w-[80px]"
+                          className="border rounded-sm px-1 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[70px]"
                         >
                           <option value="BUY">BUY</option>
                           <option value="SELL">SELL</option>
@@ -163,15 +163,14 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
                           onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
                           onBlur={handleBlur}
                           onKeyDown={handleKeyDown}
-                          className="border rounded-sm px-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary h-[28px] w-full"
+                          className="border rounded-sm px-1 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-full"
                         />
                       )}
                     </div>
                   ) : (
                     <div
-                      className={`h-[36px] flex items-center justify-start ${
-                        isDateField ? "whitespace-pre-line text-xs" : "truncate"
-                      }`}
+                      className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
+                        }`}
                     >
                       {isDateField ? formatDateTime(row[key]) : row[key]}
                     </div>
@@ -187,35 +186,78 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1400px] p-0 gap-0 max-h-[90vh]">
+      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh]">
         <DialogTitle>
           <VisuallyHidden>User Trade Details</VisuallyHidden>
         </DialogTitle>
 
-        {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8 text-sm">
-              <div><span className="text-muted-foreground">User ID:</span> <span className="font-medium">11768855</span></div>
-              <div><span className="text-muted-foreground">Name:</span> <span className="font-medium">Emma Brown</span></div>
-              <div><span className="text-muted-foreground">Balance:</span> <span className="font-medium">$181.50</span></div>
-            </div>
-            <button onClick={() => onOpenChange(false)} className="opacity-70 hover:opacity-100 transition-opacity">
-              <X className="h-5 w-5" />
-            </button>
+        {/* Tombol Close di kanan atas */}
+        <button
+          onClick={() => onOpenChange(false)}
+          className="absolute top-3 right-3 opacity-70 hover:opacity-100 transition-opacity"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* Header Info Trader */}
+        {/* Header Info Trader */}
+        <DialogHeader className="px-4 pt-6 pb-4 border-b bg-gray-50">
+          <div className="flex flex-wrap gap-3 text-sm leading-tight">
+            {[
+              { label: "User ID", value: user.userId },
+              { label: "Name", value: user.name },
+              { label: "Account Type", value: user.accountType },
+              { label: "Credit", value: user.credit },
+              { label: "Balance", value: user.balance, color: "text-blue-600" },
+              { label: "Equity", value: user.equity },
+              { label: "Margin", value: user.margin },
+              { label: "Free Margin", value: user.freeMargin },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col justify-center rounded-md bg-white px-3 py-2"
+                style={{ width: "125px", height: "67px" }}
+              >
+                <span className="text-gray-500 text-[12px]">{item.label}</span>
+                <span className={`font-semibold text-[13px] ${item.color || ""}`}>
+                  {item.value}
+                </span>
+              </div>
+            ))}
           </div>
         </DialogHeader>
 
-        {/* Tabs */}
+        {/* Tabs Section */}
         <div className="px-6 pt-4 pb-3 border-b flex items-center justify-between">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="h-auto p-0 bg-transparent">
-              <TabsTrigger value="open-positions">Open Positions</TabsTrigger>
-              <TabsTrigger value="order-positions">Order Positions</TabsTrigger>
-              <TabsTrigger value="closed-positions">Closed Positions</TabsTrigger>
-              <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsList className="h-auto p-0 bg-transparent flex justify-start gap-1">
+              <TabsTrigger
+                value="open-positions"
+                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+              >
+                Open Positions
+              </TabsTrigger>
+              <TabsTrigger
+                value="order-positions"
+                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+              >
+                Order Positions
+              </TabsTrigger>
+              <TabsTrigger
+                value="closed-positions"
+                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+              >
+                Closed Positions
+              </TabsTrigger>
+              <TabsTrigger
+                value="transactions"
+                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+              >
+                Transactions
+              </TabsTrigger>
             </TabsList>
           </Tabs>
+
           <div className="flex gap-2 ml-4">
             <Button>Refresh</Button>
             <Button variant="secondary">Save Changes</Button>
@@ -225,10 +267,18 @@ export const UserTradeDialog = ({ open, onOpenChange }: UserTradeDialogProps) =>
         {/* Tables */}
         <div className="overflow-auto max-h-[500px]">
           <Tabs value={activeTab} className="w-full">
-            <TabsContent value="open-positions">{renderEditableTable("open-positions", openPositions, setOpenPositions)}</TabsContent>
-            <TabsContent value="order-positions">{renderEditableTable("order-positions", orderPositions, setOrderPositions)}</TabsContent>
-            <TabsContent value="closed-positions">{renderEditableTable("closed-positions", closedPositions, setClosedPositions)}</TabsContent>
-            <TabsContent value="transactions">{renderEditableTable("transactions", transactions, setTransactions)}</TabsContent>
+            <TabsContent value="open-positions">
+              {renderEditableTable("open-positions", openPositions, setOpenPositions)}
+            </TabsContent>
+            <TabsContent value="order-positions">
+              {renderEditableTable("order-positions", orderPositions, setOrderPositions)}
+            </TabsContent>
+            <TabsContent value="closed-positions">
+              {renderEditableTable("closed-positions", closedPositions, setClosedPositions)}
+            </TabsContent>
+            <TabsContent value="transactions">
+              {renderEditableTable("transactions", transactions, setTransactions)}
+            </TabsContent>
           </Tabs>
         </div>
       </DialogContent>

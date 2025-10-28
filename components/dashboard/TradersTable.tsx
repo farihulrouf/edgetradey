@@ -202,7 +202,12 @@ export const TradersTable = () => {
       </div>
 
       {selectedUser && (
-        <UserTradeDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+        <UserTradeDialog
+  open={isDialogOpen}
+  onOpenChange={setIsDialogOpen}
+  user={selectedUser}
+/>
+
       )}
     </>
   )
