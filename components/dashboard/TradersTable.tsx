@@ -48,12 +48,24 @@ export const TradersTable = () => {
     <>
       <div className="rounded-lg flex flex-col h-full w-full bg-white">
         {/* Header */}
-        <div className="flex items-center p-4 border-b border-border flex-shrink-0">
-          <h2 className="flex-1 text-center text-2xl text-gray-500 font-semibold">Traders Information</h2>
-          <Button variant="outline" size="sm" className="flex items-center">
-            <Download className="w-4 h-4 mr-2" /> Export to Excel
-          </Button>
+        <div className="relative flex items-center p-4 border-b border-border flex-shrink-0">
+          {/* Teks selalu di tengah */}
+          <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-gray-500 font-semibold">
+            Traders Information
+          </h2>
+
+          {/* Tombol tetap di kanan */}
+          <div className="ml-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex items-center border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+            >
+              <Download className="w-4 h-4 mr-2" /> Export to Excel
+            </Button>
+          </div>
         </div>
+
 
         {/* Table wrapper */}
         <div className="flex-1 overflow-x-auto px-2">
@@ -78,17 +90,15 @@ export const TradersTable = () => {
               {traders.map((trader, idx) => (
                 <tr
                   key={trader.userId}
-                  className={`cursor-pointer hover:bg-accent/50 ${
-                    idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
-                  }`}
+                  className={`cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
+                    }`}
                   onClick={() => handleRowClick(trader)}
                 >
                   <td className="p-2 border-b text-[10px]">{trader.userId}</td>
                   <td className="p-2 border-b flex justify-center text-[10px]">
                     <div
-                      className={`w-4 h-4 rounded-full border ${
-                        trader.status ? "bg-green-500" : "bg-red-500"
-                      }`}
+                      className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"
+                        }`}
                     />
                   </td>
                   <td className="p-2 border-b text-[10px]">{trader.name}</td>
@@ -124,11 +134,10 @@ export const TradersTable = () => {
                 key={i}
                 size="sm"
                 onClick={() => goToPage(i + 1)}
-                className={`${
-                  isActive
-                    ? "bg-[#1D6CE9] text-white hover:bg-[#1b62c0]"
-                    : "bg-white text-black hover:bg-[#e6f0ff]"
-                }`}
+                className={`${isActive
+                  ? "bg-[#1D6CE9] text-white hover:bg-[#1b62c0]"
+                  : "bg-white text-black hover:bg-[#e6f0ff]"
+                  }`}
               >
                 {i + 1}
               </Button>
