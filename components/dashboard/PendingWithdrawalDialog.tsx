@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from "react"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { X, Copy } from "lucide-react"
+import { Copy } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 
@@ -56,34 +56,29 @@ export const PendingWithdrawalDialog = ({ open, onOpenChange }: PendingWithdrawa
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-[900px] p-0 gap-0 max-h-[90vh]">
+        <DialogContent className="max-w-[900px] min-w-[872px] min-h-[580px] p-0 gap-0 max-h-[90vh]">
+
           {/* Header */}
-          <div className="px-6 py-4 border-b flex items-center justify-between">
+          <div className="px-6 py-2 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Pending Withdrawal</h2>
             <div className="flex items-center gap-2">
               <Button
                 variant="secondary"
-                className="bg-muted hover:bg-muted/80"
+                className="h-10 px-4 bg-muted hover:bg-muted/80"
                 onClick={handleDecline}
               >
                 Decline
               </Button>
-              <Button onClick={handleApprove}>Approve</Button>
-              <button
-                onClick={() => onOpenChange(false)}
-                className="ml-2 rounded-sm opacity-70 hover:opacity-100 transition-opacity"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <Button className="h-10 px-4" onClick={handleApprove}>Approve</Button>
             </div>
           </div>
 
           {/* Table */}
-          <div className="overflow-auto max-h-[calc(90vh-80px)]">
-            <Table>
+          <div className="overflow-auto max-h-[calc(90vh-80px)] px-4">
+            <Table className="min-w-[700px]">
               <TableHeader>
                 <TableRow className="bg-muted/50">
-                  <TableHead>User ID</TableHead>
+                  <TableHead className="text-[12px]">User ID</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Time</TableHead>
                   <TableHead>Amount</TableHead>
@@ -94,25 +89,31 @@ export const PendingWithdrawalDialog = ({ open, onOpenChange }: PendingWithdrawa
               <TableBody>
                 {withdrawals.map((withdrawal, index) => {
                   const isSelected = selectedRow === index
-                  const bgClass = isSelected ? "bg-blue-100 hover:bg-blue-200" : index % 2 === 0 ? "bg-background hover:bg-muted/50" : "bg-muted/30 hover:bg-muted/50"
+                  const bgClass = isSelected
+                    ? "bg-blue-100 hover:bg-blue-200"
+                    : index % 2 === 0
+                      ? "bg-white hover:bg-gray-100"
+                      : "bg-gray-100 hover:bg-gray-200"
+
                   return (
                     <TableRow
                       key={index}
                       className={`${bgClass} cursor-pointer transition-colors`}
+                      style={{ minHeight: "45px" }}
                       onClick={() => setSelectedRow(index)}
                     >
-                      <TableCell className="font-medium">{withdrawal.userId}</TableCell>
-                      <TableCell>{withdrawal.type}</TableCell>
-                      <TableCell className="text-xs whitespace-pre-line">{withdrawal.time}</TableCell>
-                      <TableCell>{withdrawal.amount}</TableCell>
+                      <TableCell className="font-medium text-[12px]">{withdrawal.userId}</TableCell>
+                      <TableCell className="">{withdrawal.type}</TableCell>
+                      <TableCell className="text-xs whitespace-pre-line ">{withdrawal.time}</TableCell>
+                      <TableCell className="">{withdrawal.amount}</TableCell>
                       <TableCell className="font-mono text-sm">{withdrawal.receiverAddress}</TableCell>
-                      <TableCell>
+                      <TableCell className="">
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 bg-primary/10 hover:bg-primary/20"
                           onClick={(e) => {
-                            e.stopPropagation() // jangan trigger row selection
+                            e.stopPropagation()
                             handleCopy(withdrawal.receiverAddress)
                           }}
                         >
@@ -123,12 +124,13 @@ export const PendingWithdrawalDialog = ({ open, onOpenChange }: PendingWithdrawa
                   )
                 })}
               </TableBody>
+
             </Table>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* ✅ Konfirmasi Approve */}
+      {/* Konfirmasi Approve */}
       <AlertDialog open={confirmApproveOpen} onOpenChange={setConfirmApproveOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
