@@ -7,9 +7,17 @@ import { toast } from "sonner"
 import * as React from "react"
 
 // -------------------- Dropdown Components --------------------
-export function DropdownMenu({ children }: { children: React.ReactNode }) {
-  return <div className="relative inline-block text-left">{children}</div>
-}
+export const DropdownMenu = React.forwardRef<
+  HTMLDivElement,
+  { children: React.ReactNode }
+>(({ children }, ref) => {
+  return (
+    <div ref={ref} className="relative inline-block text-left">
+      {children}
+    </div>
+  )
+})
+DropdownMenu.displayName = "DropdownMenu"
 
 export const DropdownMenuContent = React.forwardRef<
   HTMLDivElement,
@@ -44,16 +52,33 @@ export function Navbar() {
   const [userOpen, setUserOpen] = React.useState(false)
   const [notifOpen, setNotifOpen] = React.useState(false)
 
+  const userRef = React.useRef<HTMLDivElement>(null)
+  const notifRef = React.useRef<HTMLDivElement>(null)
+
   const handleLogout = () => {
     toast.success("Logged out successfully")
     setUserOpen(false)
   }
 
+  // Close dropdown if click outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userRef.current && !userRef.current.contains(event.target as Node)) {
+        setUserOpen(false)
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setNotifOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
   return (
     <header className="border-b bg-background px-6 py-3 h-16">
       <div className="flex items-center justify-between gap-4">
         {/* User Dropdown */}
-        <DropdownMenu>
+        <DropdownMenu ref={userRef}>
           <Button
             variant="ghost"
             className="flex items-center gap-1 hover:bg-accent"
@@ -87,7 +112,7 @@ export function Navbar() {
         </div>
 
         {/* Notification Dropdown */}
-        <DropdownMenu>
+        <DropdownMenu ref={notifRef}>
           <Button
             variant="ghost"
             size="icon"
