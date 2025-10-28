@@ -6,7 +6,7 @@ import { Download, ChevronLeft, ChevronRight } from "lucide-react"
 import { UserTradeDialog } from "./UserTradeDialog"
 import { fetchAllTraders, Trader } from "@/lib/api"
 
-const ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 8
 
 export const TradersTable = () => {
   const [allTraders, setAllTraders] = useState<Trader[]>([])
@@ -78,7 +78,7 @@ export const TradersTable = () => {
           <div className="max-h-[60vh] overflow-y-auto">
             <table className="w-max min-w-full text-sm border-collapse">
               <thead className="bg-gray-200 sticky top-0">
-                <tr className="h-10 text-[10px]">
+                <tr className="h-[45px] text-[10px]">
                   <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
                   <th className="p-2 border-b text-left">Status</th>
                   <th className="p-2 border-b text-left">Name</th>
@@ -97,14 +97,16 @@ export const TradersTable = () => {
                 {traders.map((trader, idx) => (
                   <tr
                     key={trader.userId}
-                    className={`cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
-                      } transition-all duration-300 ease-in-out transform ${animating ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"}`}
+                    className={`h-[45px] cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
+                      } transition-all duration-300 ease-in-out transform ${animating ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"
+                      }`}
                     onClick={() => handleRowClick(trader)}
                   >
                     <td className="p-2 border-b text-[10px]">{trader.userId}</td>
                     <td className="p-2 border-b flex justify-center text-[10px]">
                       <div
-                        className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"}`}
+                        className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"
+                          }`}
                       />
                     </td>
                     <td className="p-2 border-b text-[10px]">{trader.name}</td>
@@ -119,6 +121,7 @@ export const TradersTable = () => {
                   </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
         </div>
