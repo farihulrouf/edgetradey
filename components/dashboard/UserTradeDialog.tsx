@@ -119,10 +119,10 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                   key={key}
                   onClick={() => isEditable && setEditingCell({ tab, row: rowIndex, field: key })}
                   className={`cursor-pointer align-middle h-[36px] px-2 py-1 ${isDirectionField
-                      ? row[key] === "BUY"
-                        ? "text-green-600 font-medium"
-                        : "text-red-600 font-medium"
-                      : ""
+                    ? row[key] === "BUY"
+                      ? "text-green-600 font-medium"
+                      : "text-red-600 font-medium"
+                    : ""
                     }`}
                   style={{
                     verticalAlign: "middle",
@@ -201,7 +201,7 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
 
         {/* Header Info Trader */}
         {/* Header Info Trader */}
-        <DialogHeader className="px-4 pt-6 pb-4 border-b bg-gray-50">
+        <DialogHeader className="px-4 pt-6 pb-4 bg-gray-50">
           <div className="flex flex-wrap gap-3 text-sm leading-tight">
             {[
               { label: "User ID", value: user.userId },
@@ -228,35 +228,36 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
         </DialogHeader>
 
         {/* Tabs Section */}
-        <div className="px-6 pt-4 pb-3 border-b flex items-center justify-between">
+        <div className="px-2 pt-4 pb-3 flex items-center justify-between bg-gray-50">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="h-auto p-0 bg-transparent flex justify-start gap-1">
+            <TabsList className="h-auto p-0 bg-transparent flex justify-start gap-2">
               <TabsTrigger
                 value="open-positions"
-                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
               >
                 Open Positions
               </TabsTrigger>
               <TabsTrigger
                 value="order-positions"
-                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
               >
                 Order Positions
               </TabsTrigger>
               <TabsTrigger
                 value="closed-positions"
-                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
               >
                 Closed Positions
               </TabsTrigger>
               <TabsTrigger
                 value="transactions"
-                className="px-3 py-1.5 text-sm rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-500 data-[state=active]:text-white transition"
+                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
               >
                 Transactions
               </TabsTrigger>
             </TabsList>
           </Tabs>
+
 
           <div className="flex gap-2 ml-4">
             <Button>Refresh</Button>
