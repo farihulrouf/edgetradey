@@ -36,7 +36,6 @@ export const TradersTable = () => {
     const endIndex = startIndex + itemsPerPage
     const newTraders = allTraders.slice(startIndex, endIndex)
 
-    // delay untuk animasi
     const timer = setTimeout(() => {
       setTraders(newTraders)
       setAnimating(false)
@@ -46,20 +45,35 @@ export const TradersTable = () => {
   }, [allTraders, currentPage, itemsPerPage])
 
   const totalPages = Math.ceil(allTraders.length / itemsPerPage)
-  const goToPage = (page: number) => { if (page >= 1 && page <= totalPages) setCurrentPage(page) }
-  const handleShowAll = () => { setItemsPerPage(allTraders.length); setCurrentPage(1) }
-  const handleResetPagination = () => { setItemsPerPage(ITEMS_PER_PAGE); setCurrentPage(1) }
-  const handleRowClick = (user: Trader) => { setSelectedUser(user); setIsDialogOpen(true) }
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page)
+  }
 
-  if (loading) return <div className="p-6 text-center text-muted-foreground">Loading traders...</div>
+  const handleShowAll = () => {
+    setItemsPerPage(allTraders.length)
+    setCurrentPage(1)
+  }
+
+  const handleResetPagination = () => {
+    setItemsPerPage(ITEMS_PER_PAGE)
+    setCurrentPage(1)
+  }
+
+  const handleRowClick = (user: Trader) => {
+    setSelectedUser(user)
+    setIsDialogOpen(true)
+  }
+
+  if (loading)
+    return <div className="p-6 text-center text-muted-foreground">Loading traders...</div>
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>
 
   return (
     <>
-      <div className="rounded-lg flex flex-col h-full w-full bg-white">
+      <div className="rounded-lg flex flex-col h-full w-full bg-white shadow-sm rounded">
         {/* Header */}
-        <div className="relative flex items-center p-4 border-b border-border flex-shrink-0">
-          <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-gray-500 font-semibold">
+        <div className="relative flex items-center p-4 border-b border-gray-200 flex-shrink-0 bg-white">
+          <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-gray-600 font-semibold">
             Traders Information
           </h2>
           <div className="ml-auto">
@@ -73,23 +87,24 @@ export const TradersTable = () => {
           </div>
         </div>
 
-        {/* Table wrapper dengan scroll vertikal */}
+        {/* Table */}
         <div className="flex-1 overflow-x-auto px-2">
           <div className="max-h-[60vh] overflow-y-auto">
             <table className="w-max min-w-full text-sm border-collapse">
-              <thead className="bg-gray-200 sticky top-0">
+              <thead className="bg-gray-200 text-gray-600 sticky top-0 rounded-t-md">
+
                 <tr className="h-[45px] text-[10px]">
-                  <th className="p-2 border-b rounded-tl-md text-left">User ID</th>
-                  <th className="p-2 border-b text-left">Status</th>
-                  <th className="p-2 border-b text-left">Name</th>
-                  <th className="p-2 border-b text-left">Account Type</th>
-                  <th className="p-2 border-b text-left">Email</th>
-                  <th className="p-2 border-b text-left">Phone</th>
-                  <th className="p-2 border-b text-left">Credit</th>
-                  <th className="p-2 border-b text-left">Balance</th>
-                  <th className="p-2 border-b text-left">Equity</th>
-                  <th className="p-2 border-b text-left">Margin</th>
-                  <th className="p-2 border-b rounded-tr-md text-left">Free Margin</th>
+                  <th className="p-2 text-left font-semibold">User ID</th>
+                  <th className="p-2 text-left font-semibold">Status</th>
+                  <th className="p-2 text-left font-semibold">Name</th>
+                  <th className="p-2 text-left font-semibold">Account Type</th>
+                  <th className="p-2 text-left font-semibold">Email</th>
+                  <th className="p-2 text-left font-semibold">Phone</th>
+                  <th className="p-2 text-left font-semibold">Credit</th>
+                  <th className="p-2 text-left font-semibold">Balance</th>
+                  <th className="p-2 text-left font-semibold">Equity</th>
+                  <th className="p-2 text-left font-semibold">Margin</th>
+                  <th className="p-2 text-left font-semibold">Free Margin</th>
                 </tr>
               </thead>
 
@@ -97,37 +112,39 @@ export const TradersTable = () => {
                 {traders.map((trader, idx) => (
                   <tr
                     key={trader.userId}
-                    className={`h-[45px] cursor-pointer hover:bg-accent/50 ${idx % 2 === 0 ? "bg-white" : "bg-[#D1D1D6]"
-                      } transition-all duration-300 ease-in-out transform ${animating ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"
-                      }`}
+                    className={`h-[45px] cursor-pointer hover:bg-blue-50 ${
+                      idx % 2 === 0 ? "bg-white" : "bg-gray-100"
+                    } transition-all duration-300 ease-in-out ${
+                      animating ? "opacity-0 -translate-y-2" : "opacity-100 translate-y-0"
+                    }`}
                     onClick={() => handleRowClick(trader)}
                   >
-                    <td className="p-2 border-b text-[10px]">{trader.userId}</td>
-                    <td className="p-2 border-b flex justify-center text-[10px]">
+                    <td className="p-2 text-[10px]">{trader.userId}</td>
+                    <td className="p-2 flex justify-center text-[10px]">
                       <div
-                        className={`w-4 h-4 rounded-full border ${trader.status ? "bg-green-500" : "bg-red-500"
-                          }`}
+                        className={`w-3.5 h-3.5 rounded-full ${
+                          trader.status ? "bg-green-500" : "bg-red-500"
+                        }`}
                       />
                     </td>
-                    <td className="p-2 border-b text-[10px]">{trader.name}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.accountType}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.email}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.phone}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.credit}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.balance}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.equity}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.margin}</td>
-                    <td className="p-2 border-b text-[10px]">{trader.freeMargin}</td>
+                    <td className="p-2 text-[10px]">{trader.name}</td>
+                    <td className="p-2 text-[10px]">{trader.accountType}</td>
+                    <td className="p-2 text-[10px]">{trader.email}</td>
+                    <td className="p-2 text-[10px]">{trader.phone}</td>
+                    <td className="p-2 text-[10px]">{trader.credit}</td>
+                    <td className="p-2 text-[10px]">{trader.balance}</td>
+                    <td className="p-2 text-[10px]">{trader.equity}</td>
+                    <td className="p-2 text-[10px]">{trader.margin}</td>
+                    <td className="p-2 text-[10px]">{trader.freeMargin}</td>
                   </tr>
                 ))}
               </tbody>
-
             </table>
           </div>
         </div>
 
         {/* Pagination */}
-        <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
+        <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-gray-200 flex-wrap bg-white">
           <Button
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -144,10 +161,11 @@ export const TradersTable = () => {
                 key={i}
                 size="sm"
                 onClick={() => goToPage(i + 1)}
-                className={`${isActive
-                  ? "bg-[#1D6CE9] text-white hover:bg-[#1b62c0]"
-                  : "bg-white text-black hover:bg-[#e6f0ff]"
-                  }`}
+                className={`${
+                  isActive
+                    ? "bg-[#1D6CE9] text-white hover:bg-[#1b62c0]"
+                    : "bg-white text-black hover:bg-[#e6f0ff]"
+                }`}
               >
                 {i + 1}
               </Button>
