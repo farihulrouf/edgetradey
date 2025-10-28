@@ -88,11 +88,14 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
   };
 
   const renderEditableTable = (tab: string, data: any[], setData: any) => (
-    <Table className="text-[12px] mx-2 border h-[405px]">
-      <TableHeader>
+    <Table className="text-[12px] border h-[405px] table-auto w-full rounded-lg overflow-hidden">
+      <TableHeader className="bg-gray-200">
         <TableRow>
           {Object.keys(data[0] || {}).map((key) => (
-            <TableHead key={key} className="px-2 py-2 whitespace-nowrap">
+            <TableHead
+              key={key}
+              className="px-2 py-1 whitespace-nowrap first:rounded-tl-lg last:rounded-tr-lg"
+            >
               {key}
             </TableHead>
           ))}
@@ -101,32 +104,33 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
 
       <TableBody>
         {data.map((row, rowIndex) => (
-          <TableRow key={rowIndex} className="h-[38px]">
+          <TableRow
+            key={rowIndex}
+            className={`h-[38px] ${rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
+          >
             {Object.keys(row).map((key) => {
-              const isEditable = true;
+              const isDirectionField = key === "direction";
+              const isDateField = key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
               const isEditing =
                 editingCell &&
                 editingCell.row === rowIndex &&
                 editingCell.field === key &&
                 editingCell.tab === tab;
-
-              const isDateField = key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
-              const isDirectionField = key === "direction";
               const dateObj = isDateField ? parseFlexibleDate(row[key]) : null;
 
               return (
                 <TableCell
                   key={key}
-                  onClick={() => isEditable && setEditingCell({ tab, row: rowIndex, field: key })}
-                  className={`cursor-pointer align-middle h-[36px] px-2 py-1 ${isDirectionField
-                    ? row[key] === "BUY"
-                      ? "text-green-600 font-medium"
-                      : "text-red-600 font-medium"
-                    : ""
-                    }`}
+                  onClick={() => setEditingCell({ tab, row: rowIndex, field: key })}
+                  className={`cursor-pointer align-middle h-[36px] ${isDirectionField
+                      ? row[key] === "BUY"
+                        ? "text-green-600 font-medium"
+                        : "text-red-600 font-medium"
+                      : ""
+                    } px-2 py-1`}
                   style={{
                     verticalAlign: "middle",
-                    minWidth: "90px",
+                    minWidth: isDateField ? "95px" : "80px",
                     whiteSpace: isDateField ? "pre-line" : "nowrap",
                   }}
                 >
@@ -142,7 +146,7 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                           }
                           onBlur={handleBlur}
                           onKeyDown={handleKeyDown}
-                          className="border rounded-sm px-1 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[110px]"
+                          className="border rounded-sm text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[110px]"
                         />
                       ) : isDirectionField ? (
                         <select
@@ -150,7 +154,7 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                           value={row[key]}
                           onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
                           onBlur={handleBlur}
-                          className="border rounded-sm px-1 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[70px]"
+                          className="border rounded-sm text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[70px]"
                         >
                           <option value="BUY">BUY</option>
                           <option value="SELL">SELL</option>
@@ -163,7 +167,7 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                           onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
                           onBlur={handleBlur}
                           onKeyDown={handleKeyDown}
-                          className="border rounded-sm px-1 text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-full"
+                          className="border rounded-sm text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-full"
                         />
                       )}
                     </div>
@@ -176,17 +180,20 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                     </div>
                   )}
                 </TableCell>
+
               );
             })}
           </TableRow>
         ))}
       </TableBody>
     </Table>
+
+
   );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh]">
+      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh] bg-gray-50">
         <DialogTitle>
           <VisuallyHidden>User Trade Details</VisuallyHidden>
         </DialogTitle>
@@ -202,24 +209,24 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
         {/* Header Info Trader */}
         {/* Header Info Trader */}
         <DialogHeader className="px-4 pt-6 pb-4 bg-gray-50">
-          <div className="flex flex-wrap gap-3 text-sm leading-tight">
+          <div className="flex flex-wrap gap-3 leading-tight">
             {[
               { label: "User ID", value: user.userId },
               { label: "Name", value: user.name },
-              { label: "Account Type", value: user.accountType },
+              { label: "Balance", value: user.balance },
               { label: "Credit", value: user.credit },
-              { label: "Balance", value: user.balance, color: "text-blue-600" },
+              { label: "Profit", value: user.balance },
               { label: "Equity", value: user.equity },
               { label: "Margin", value: user.margin },
-              { label: "Free Margin", value: user.freeMargin },
+              { label: "F Margin", value: user.freeMargin },
             ].map((item, idx) => (
               <div
                 key={idx}
                 className="flex flex-col justify-center rounded-md bg-white px-3 py-2"
                 style={{ width: "125px", height: "67px" }}
               >
-                <span className="text-gray-500 text-[12px]">{item.label}</span>
-                <span className={`font-semibold text-[13px] ${item.color || ""}`}>
+                <span className="text-gray-500 text-lg font-semibold">{item.label}</span>
+                <span className="font-semibold text-sm text-gray-500">
                   {item.value}
                 </span>
               </div>
@@ -264,7 +271,21 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
             <Button variant="secondary">Save Changes</Button>
           </div>
         </div>
-
+        {/* Summary Section */}
+        <div className="bg-white px-6 py-4 flex flex-wrap gap-4 mb-4">
+          <div className="text-md font-medium">
+            <span className="text-gray-500">All Swaps:</span> <span className="font-semibold">0.08</span>
+          </div>
+          <div className="text-md font-medium">
+            <span className="text-gray-500">All Commission:</span> <span className="font-semibold">0.08</span>
+          </div>
+          <div className="text-md font-medium">
+            <span className="text-gray-500">All Profit:</span> <span className="font-semibold text-green-600">-$174.21</span>
+          </div>
+          <div className="text-md font-medium">
+            <span className="text-gray-500">All Total Profit:</span> <span className="font-semibold text-green-600">-$174.21</span>
+          </div>
+        </div>
         {/* Tables */}
         <div className="overflow-auto max-h-[500px]">
           <Tabs value={activeTab} className="w-full">
