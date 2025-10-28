@@ -52,11 +52,9 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[1100px] p-0 gap-0">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b flex justify-between items-center">
+        <DialogHeader className="px-6 pt-6 pb-4 flex justify-between items-center">
           <DialogTitle className="text-lg font-medium">User Verification</DialogTitle>
-          <button onClick={() => onOpenChange(false)} className="rounded-sm opacity-70 hover:opacity-100 transition-opacity">
-            <X className="h-5 w-5" />
-          </button>
+          
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-6 p-6">
@@ -99,7 +97,7 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
               <Input value={formData.balance} onChange={(e) => handleInputChange("balance", e.target.value)} className="bg-background"/>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button className="flex-1">Edit</Button>
+              <Button className="flex-1 bg-blue-600 py-2">Edit</Button>
               <Button variant="secondary" className="flex-1">Save</Button>
             </div>
           </div>
@@ -110,33 +108,33 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
               <p className="text-sm text-muted-foreground">Download the file uploaded by user</p>
               <div className="flex gap-3">
                 <Button variant="secondary" className="flex-1">Download</Button>
-                <Button className="flex-1">Verify User</Button>
+                <Button className="flex-1 bg-blue-600 py-2">Verify User</Button>
               </div>
               <div className="pt-2">
                 <p className="text-sm text-muted-foreground mb-2">
                   Account Type : <span className="text-foreground font-medium">{accountType === "standard" ? "Standard Active" : "Premium Active"}</span>
                 </p>
                 <div className="flex gap-3">
-                  <Button variant={accountType === "standard" ? "default" : "secondary"} onClick={() => setAccountType("standard")} className="flex-1">Standard</Button>
+                  <Button variant={accountType === "standard" ? "default" : "secondary"} onClick={() => setAccountType("standard")} className="flex-1 bg-blue-600 py-2">Standard</Button>
                   <Button variant={accountType === "premium" ? "default" : "secondary"} onClick={() => setAccountType("premium")} className="flex-1">Premium</Button>
                 </div>
               </div>
             </div>
 
             <div className="bg-muted rounded-lg p-6 space-y-4">
-              <Button className="w-full">Credit</Button>
+              <Button className="bg-blue-600 py-2">Credit</Button>
               <div className="space-y-2">
                 <Label>Add Credit</Label>
                 <div className="flex gap-2">
                   <Input placeholder="Enter Amount" value={addCreditAmount} onChange={(e) => setAddCreditAmount(e.target.value)} className="bg-background"/>
-                  <Button>Add Credit</Button>
+                  <Button className="bg-blue-600 py-2">Add Credit</Button>
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Remove Credit</Label>
                 <div className="flex gap-2">
                   <Input placeholder="Enter Amount" value={removeCreditAmount} onChange={(e) => setRemoveCreditAmount(e.target.value)} className="bg-background"/>
-                  <Button>Remove Credit</Button>
+                  <Button className="bg-blue-600 py-2">Remove Credit</Button>
                 </div>
               </div>
             </div>
