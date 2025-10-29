@@ -150,16 +150,24 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                     }}
                   >
                     {isEditing ? (
-                      <div className="h-[32px] flex items-center justify-center"></div>
+                      <input
+                        type="text"
+                        defaultValue={row[key]}
+                        autoFocus
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
+                        className="h-[28px] w-full text-[12px] text-gray-800 bg-yellow-50 border border-gray-300 rounded px-2"
+                      />
                     ) : (
                       <div
-                        className={`h-[32px] flex items-center justify-start ${
-                          isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
-                        }`}
+                        className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
+                          }`}
                       >
                         {isDateField ? formatDateTime(row[key]) : row[key]}
                       </div>
                     )}
+
                   </TableCell>
                 );
               })}
@@ -243,9 +251,8 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
             <div key={idx} className="text-sm font-medium">
               <span className="text-gray-500">{item.label}: </span>
               <span
-                className={`font-semibold ${
-                  item.value.includes("-") ? "text-red-600" : "text-green-600"
-                }`}
+                className={`font-semibold ${item.value.includes("-") ? "text-red-600" : "text-green-600"
+                  }`}
               >
                 {item.value}
               </span>
