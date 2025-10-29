@@ -2,7 +2,8 @@
 
 import { BankingCard } from "@/components/dashboard/cards/BankingCard"
 import { CryptoDepositCard } from "./cards/CryptoDepositCard";
-
+import BankFeeSettings from "./cards/BankFeeSettings"
+import CryptoFeeSettings from "./cards/CryptoFeeSettings"
 import FeeSettingsCard from "./cards/FeeSettingsCard";
 
 export const DepositSetup = () => {
@@ -30,12 +31,12 @@ export const DepositSetup = () => {
           <CryptoDepositCard />
         </div>
         <div className="w-full">
-          <FeeSettingsCard text="Bank Fee Settings" />
+          <BankFeeSettings />
 
         </div>
 
         <div className="w-full">
-          <FeeSettingsCard text="Crypto Fee Settings" />
+          <CryptoFeeSettings />
 
         </div>
       </div>
