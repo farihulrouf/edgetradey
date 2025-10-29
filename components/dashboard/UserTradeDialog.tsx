@@ -150,15 +150,48 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                     }}
                   >
                     {isEditing ? (
-                      <input
-                        type="text"
-                        defaultValue={row[key]}
-                        autoFocus
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
-                        onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
-                        className="h-[28px] w-full text-[12px] text-gray-800 bg-yellow-50 border border-gray-300 rounded px-2"
-                      />
+                      isDirectionField ? (
+                        // 🔽 Dropdown untuk BUY / SELL
+                        <select
+                          value={row[key]}
+                          autoFocus
+                          onBlur={handleBlur}
+                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
+                          className="h-[28px] w-full text-[12px] bg-yellow-50 border border-gray-300 rounded px-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                        >
+                          <option value="BUY" className="text-green-600 font-semibold">BUY</option>
+                          <option value="SELL" className="text-red-600 font-semibold">SELL</option>
+                        </select>
+                      ) : key.toLowerCase() === "symbol" ? (
+                        // 🔽 Dropdown untuk pasangan mata uang
+                        <select
+                          value={row[key]}
+                          autoFocus
+                          onBlur={handleBlur}
+                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
+                          className="h-[28px] w-full text-[12px] bg-yellow-50 border border-gray-300 rounded px-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                        >
+                          {[
+                            "AUDUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDCHF", "NZDUSD",
+                            "XAUUSD", "BTCUSD", "ETHUSD", "US30", "NAS100", "SPX500"
+                          ].map((pair) => (
+                            <option key={pair} value={pair}>
+                              {pair}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        // ✏️ Input teks biasa
+                        <input
+                          type="text"
+                          defaultValue={row[key]}
+                          autoFocus
+                          onBlur={handleBlur}
+                          onKeyDown={handleKeyDown}
+                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
+                          className="h-[28px] w-full text-[12px] text-gray-800 bg-yellow-50 border border-gray-300 rounded px-2 transition focus:ring-2 focus:ring-blue-400 outline-none"
+                        />
+                      )
                     ) : (
                       <div
                         className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
@@ -167,6 +200,7 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                         {isDateField ? formatDateTime(row[key]) : row[key]}
                       </div>
                     )}
+
 
                   </TableCell>
                 );
@@ -212,7 +246,7 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                 style={{ width: "125px", height: "67px" }}
               >
                 <span className="text-gray-500 text-sm font-semibold">{item.label}</span>
-                <span className="font-semibold text-gray-700 text-[13px]">{item.value}</span>
+                <span className="font-semibold text-gray-700 text-[13px] mt-2">{item.value}</span>
               </div>
             ))}
           </div>
