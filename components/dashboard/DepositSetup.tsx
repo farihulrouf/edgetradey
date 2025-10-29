@@ -30,12 +30,12 @@ export const DepositSetup = () => {
           <CryptoDepositCard />
         </div>
         <div className="w-full">
-          <FeeSettingsCard text="Bank Transfer Fee Settings" />
+          <FeeSettingsCard text="Bank Fee Settings" />
 
         </div>
 
         <div className="w-full">
-          <FeeSettingsCard text="Crypto Withdrawal Fee Settings" />
+          <FeeSettingsCard text="Crypto Fee Settings" />
 
         </div>
       </div>
