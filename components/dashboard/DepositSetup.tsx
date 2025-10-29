@@ -3,6 +3,8 @@
 import { BankingCard } from "@/components/dashboard/cards/BankingCard"
 import { CryptoDepositCard } from "./cards/CryptoDepositCard";
 
+import FeeSettingsCard from "./cards/FeeSettingsCard";
+
 export const DepositSetup = () => {
   return (
     <div className="bg-card rounded-lg border border-border p-6">
@@ -27,9 +29,15 @@ export const DepositSetup = () => {
         <div className="w-full">
           <CryptoDepositCard />
         </div>
+        <div className="w-full">
+          <FeeSettingsCard text="Bank Transfer Fee Settings" />
 
-      
+        </div>
 
+        <div className="w-full">
+          <FeeSettingsCard text="Crypto Withdrawal Fee Settings" />
+
+        </div>
       </div>
     </div>
   );

@@ -125,7 +125,7 @@ export const BankingCard = ({
 
   return (
     <>
-      <Card className="w-full max-w-2xl overflow-hidden bg-card border shadow-sm">
+      <Card className="w-full max-w-2xl overflow-hidden bg-card border shadow-sm h-[320px]">
         {/* Header */}
         <div className="bg-[#D1D1D6] px-6 py-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Bank Deposit Information</h2>
