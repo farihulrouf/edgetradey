@@ -10,24 +10,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col min-h-screen bg-background font-roboto bg-gray-200">
+    <div className="flex flex-col h-screen bg-gray-200 font-roboto overflow-hidden">
       {/* Navbar */}
       <Navbar />
 
-      {/* Grid utama: sidebar kiri, main, action panel kanan */}
-      <div className="flex-1 grid grid-cols-[260px_1fr_260px] gap-1 h-[calc(100vh-4rem)]">
+      {/* Grid utama */}
+      <div className="flex-1 grid grid-cols-[260px_1fr_260px] gap-1 overflow-hidden">
         {/* Sidebar kiri */}
-        <DashboardSidebar activePath={pathname}/>
+        <DashboardSidebar activePath={pathname} />
 
         {/* Main content */}
-        <main className="flex flex-col flex-1 overflow-y-auto overflow-x-auto rounded-xl relative z-10 bg-gray-200 ">
-          <StatsCards />
-          <div className="mt-1 flex-1 min-w-full">
+        <main className="flex flex-col bg-gray-200 rounded-xl overflow-hidden">
+          {/* StatsCards di atas */}
+          <div className="flex-shrink-0">
+            <StatsCards />
+          </div>
+
+          {/* Isi konten scrollable */}
+          <div className="flex-1 overflow-auto px-1 mb-3 mt-1">
             {children}
           </div>
         </main>
 
-        {/* Action Panel kanan */}
+        {/* Action panel kanan */}
         <ActionPanel />
       </div>
     </div>
