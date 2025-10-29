@@ -2,7 +2,6 @@
 
 import { BankingCard } from "@/components/dashboard/cards/BankingCard"
 import { CryptoDepositCard } from "./cards/CryptoDepositCard";
-import { WithdrawSettingsCard } from "./cards/WithdrawSettingsCard";
 
 export const DepositSetup = () => {
   return (
@@ -29,10 +28,7 @@ export const DepositSetup = () => {
           <CryptoDepositCard />
         </div>
 
-        <div className="w-full">
-          <WithdrawSettingsCard />
-        </div>
-
+      
 
       </div>
     </div>
