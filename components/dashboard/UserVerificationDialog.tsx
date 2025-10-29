@@ -10,10 +10,11 @@ import { X } from "lucide-react";
 interface UserVerificationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  user: any;
+  user?: any; // user bisa undefined jika mode add
+  mode: "add" | "edit";
 }
 
-export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerificationDialogProps) => {
+export const UserVerificationDialog = ({ open, onOpenChange, user, mode }: UserVerificationDialogProps) => {
   const [accountType, setAccountType] = useState<"standard" | "premium">("standard");
   const [addCreditAmount, setAddCreditAmount] = useState("");
   const [removeCreditAmount, setRemoveCreditAmount] = useState("");
@@ -29,8 +30,9 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
     balance: "",
   });
 
+  // Set default data saat user berubah atau mode add
   useEffect(() => {
-    if (user) {
+    if (mode === "edit" && user) {
       setFormData({
         nameSurname: user.name,
         idNo: user.userId.toString(),
@@ -38,23 +40,40 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
         dateOfBirth: user.dateOfBirth,
         phone: user.phone,
         password: "",
+        leverage: user.leverage || "200",
+        balance: user.balance || "$1000",
+      });
+      setAccountType(user.accountType?.toLowerCase() === "premium" ? "premium" : "standard");
+    } else if (mode === "add") {
+      setFormData({
+        nameSurname: "",
+        idNo: "",
+        email: "",
+        dateOfBirth: "",
+        phone: "",
+        password: "",
         leverage: "200",
         balance: "$1000",
       });
-      setAccountType(user.accountType.toLowerCase() === "premium" ? "premium" : "standard");
+      setAccountType("standard");
     }
-  }, [user]);
+  }, [user, mode]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    console.log(mode === "add" ? "Add user data" : "Update user data", formData, accountType);
+    onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[1100px] p-0 gap-0">
         <DialogHeader className="px-6 pt-6 pb-4 flex justify-between items-center">
-          <DialogTitle className="text-lg font-medium">User Verification</DialogTitle>
-          
+          <DialogTitle className="text-lg font-medium">{mode === "add" ? "Add User" : "Edit User"}</DialogTitle>
+         
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-6 p-6">
@@ -97,8 +116,8 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
               <Input value={formData.balance} onChange={(e) => handleInputChange("balance", e.target.value)} className="bg-background"/>
             </div>
             <div className="flex gap-3 pt-2">
-              <Button className="flex-1 bg-blue-600 py-2">Edit</Button>
-              <Button variant="secondary" className="flex-1">Save</Button>
+              <Button onClick={handleSave} className="flex-1 bg-blue-600 py-2">{mode === "add" ? "Add User" : "Save Changes"}</Button>
+              {mode === "edit" && <Button variant="secondary" className="flex-1">Cancel</Button>}
             </div>
           </div>
 
@@ -139,7 +158,6 @@ export const UserVerificationDialog = ({ open, onOpenChange, user }: UserVerific
               </div>
             </div>
 
-            {/* Label / Text biasa sebagai pengganti Tab */}
             <div className="text-center text-sm text-muted-foreground">
               User Verification info displayed here
             </div>

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight, Download } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { UserVerificationDialog } from "./UserVerificationDialog"
-import { fetchAllUsersVerification, UserVerificationData } from "@/lib/api"
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { UserVerificationDialog } from './UserVerificationDialog'
+import { UserVerificationData, fetchAllUsersVerification } from '@/lib/api'
 
 const ITEMS_PER_PAGE = 8
 
@@ -13,6 +13,7 @@ export const UserVerification = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserVerificationData | null>(null)
+  const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add')
   const [showAll, setShowAll] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -21,10 +22,7 @@ export const UserVerification = () => {
     setLoading(true)
     fetchAllUsersVerification()
       .then((data) => setUsersData(data))
-      .catch((err) => {
-        console.error(err)
-        setError("Failed to load users data")
-      })
+      .catch(() => setError('Failed to load users data'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -47,6 +45,13 @@ export const UserVerification = () => {
 
   const handleRowClick = (user: UserVerificationData) => {
     setSelectedUser(user)
+    setDialogMode('edit')
+    setDialogOpen(true)
+  }
+
+  const handleAddUser = () => {
+    setSelectedUser(null)
+    setDialogMode('add')
     setDialogOpen(true)
   }
 
@@ -65,8 +70,9 @@ export const UserVerification = () => {
             variant="outline"
             size="sm"
             className="flex items-center border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+            onClick={handleAddUser}
           >
-            <Download className="w-4 h-4 mr-2" /> Export to Excel
+            Add User
           </Button>
         </div>
       </div>
@@ -83,17 +89,14 @@ export const UserVerification = () => {
                 <th className="p-2 text-left font-semibold">Email</th>
                 <th className="p-2 text-left font-semibold">Phone</th>
                 <th className="p-2 text-left font-semibold">Date of Birth</th>
-                <th className="p-2 text-left font-semibold">Account Setting</th>
                 <th className="p-2 text-left font-semibold last:rounded-tr-lg">Verification</th>
               </tr>
             </thead>
-
             <tbody>
               {currentUsers.map((user, idx) => (
                 <tr
                   key={user.userId}
-                  className={`h-[45px] cursor-pointer hover:bg-blue-50 ${idx % 2 === 0 ? "bg-white" : "bg-[#F5F5F5]"
-                    } transition-all duration-300 ease-in-out`}
+                  className={`h-[45px] cursor-pointer hover:bg-blue-50 ${idx % 2 === 0 ? 'bg-white' : 'bg-[#F5F5F5]'} transition-all duration-300 ease-in-out`}
                   onClick={() => handleRowClick(user)}
                 >
                   <td className="p-2 text-[10px]">{user.userId}</td>
@@ -103,20 +106,16 @@ export const UserVerification = () => {
                   <td className="p-2 text-[10px]">{user.phone}</td>
                   <td className="p-2 text-[10px]">{user.dateOfBirth}</td>
                   <td className="p-2 text-[10px]">
-                    <p className="bg-blue-500 p-1 text-white rounded-lg text-center">
-                      {user.accountSetting}
-                    </p>
-                  </td>
-                  <td className="p-2 text-[10px]">
                     <p
-                      className={`p-1 px-2 rounded-lg text-center font-medium ${user.verification === "Pending"
-                          ? "bg-gray-100 text-gray-500"
-                          : user.verification === "Uploaded"
-                            ? "bg-blue-100 text-blue-500"
-                            : user.verification === "Approved"
-                              ? "bg-green-50 text-green-500"
-                              : ""
-                        }`}
+                      className={`p-1 px-2 rounded-lg text-center font-medium ${
+                        user.verification === 'Pending'
+                          ? 'bg-gray-100 text-gray-500'
+                          : user.verification === 'Uploaded'
+                          ? 'bg-blue-100 text-blue-500'
+                          : user.verification === 'Approved'
+                          ? 'bg-green-50 text-green-500'
+                          : ''
+                      }`}
                     >
                       {user.verification}
                     </p>
@@ -146,8 +145,7 @@ export const UserVerification = () => {
               key={i}
               size="sm"
               onClick={() => goToPage(i + 1)}
-              className={`${isActive ? "bg-[#1D6CE9] text-white" : "bg-white text-black hover:bg-[#e6f0ff]"
-                }`}
+              className={`${isActive ? 'bg-[#1D6CE9] text-white' : 'bg-white text-black hover:bg-[#e6f0ff]'} `}
             >
               {i + 1}
             </Button>
@@ -164,30 +162,23 @@ export const UserVerification = () => {
         </Button>
 
         {!showAll ? (
-          <Button
-            onClick={handleShowAll}
-            size="sm"
-            className="bg-white text-black hover:bg-[#e6f0ff]"
-          >
+          <Button onClick={handleShowAll} size="sm" className="bg-white text-black hover:bg-[#e6f0ff]">
             Show all
           </Button>
         ) : (
-          <Button
-            onClick={() => setShowAll(false)}
-            size="sm"
-            className="bg-white text-black hover:bg-[#e6f0ff]"
-          >
+          <Button onClick={() => setShowAll(false)} size="sm" className="bg-white text-black hover:bg-[#e6f0ff]">
             Show paginated
           </Button>
         )}
       </div>
 
       {/* Dialog */}
-      {selectedUser && (
+      {(selectedUser || dialogMode === 'add') && (
         <UserVerificationDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
-          user={selectedUser}
+          user={selectedUser || undefined}
+          mode={dialogMode}
         />
       )}
     </div>
