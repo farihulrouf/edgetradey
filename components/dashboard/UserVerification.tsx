@@ -1,13 +1,12 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UserVerificationDialog } from "./UserVerificationDialog"
 import { fetchAllUsersVerification, UserVerificationData } from "@/lib/api"
 
-// jumlah data per halaman
-const ITEMS_PER_PAGE = 12
+const ITEMS_PER_PAGE = 8
 
 export const UserVerification = () => {
   const [usersData, setUsersData] = useState<UserVerificationData[]>([])
@@ -55,110 +54,133 @@ export const UserVerification = () => {
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>
 
   return (
-    <div className="bg-white rounded-lg border border-border">
-      
+    <div className="rounded-lg flex flex-col h-full w-full bg-white shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="relative flex items-center p-4 border-b border-gray-200 flex-shrink-0 bg-white rounded-t-lg">
+        <h2 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-gray-600 font-semibold">
+          Users Information
+        </h2>
+        <div className="ml-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+          >
+            <Download className="w-4 h-4 mr-2" /> Export to Excel
+          </Button>
+        </div>
+      </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-[10px] border-collapse">
-          <thead className="bg-[#D1D1D6] sticky top-0">
-            <tr className="h-[45px]">
-              <th className="px-4 py-2 border-b rounded-tl-lg text-left">User ID</th>
-              <th className="px-4 py-2 border-b text-left">Name</th>
-              <th className="px-4 py-2 border-b text-left">Account Type</th>
-              <th className="px-4 py-2 border-b text-left">Email</th>
-              <th className="px-4 py-2 border-b text-left">Phone</th>
-              <th className="px-4 py-2 border-b text-left">Date of Birth</th>
-              <th className="px-4 py-2 border-b text-left">Account Setting</th>
-              <th className="px-4 py-2 border-b rounded-tr-lg text-left">Verification</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {currentUsers.map((user, idx) => (
-              <tr
-                key={user.userId}
-                className={`cursor-pointer hover:bg-[#D1D1D6]/50 ${idx % 2 === 1 ? "bg-[#D1D1D6]" : "bg-white"
-                  }`}
-                onClick={() => handleRowClick(user)}
-              >
-                <td className="px-4 py-2">{user.userId}</td>
-                <td className="px-4 py-2">{user.name}</td>
-                <td className="px-4 py-2">{user.accountType}</td>
-                <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2">{user.phone}</td>
-                <td className="px-4 py-2">{user.dateOfBirth}</td>
-                <td className="px-4 py-2"><p className="bg-blue-500 p-1 text-white rounded-lg text-center">{user.accountSetting}</p></td>
-                <td className="px-4 py-2">
-                  <p
-                    className={`p-1 px-2 rounded-lg text-center font-medium ${user.verification === "Pending"
-                        ? "bg-gray-100 text-gray-500"
-                        : user.verification === "Uploaded"
-                          ? "bg-blue-100 text-blue-500"
-                          : user.verification === "Approved"
-                            ? "bg-green-50 text-green-500"
-                            : ""
-                      }`}
-                  >
-                    {user.verification}
-                  </p>
-                </td>
-
-
+      <div className="flex-1 overflow-x-auto px-2 bg-white shadow-lg ring-1 ring-white/50">
+        <div className="max-h-[60vh] overflow-y-auto">
+          <table className="w-max min-w-full text-sm border-separate border-spacing-0">
+            <thead className="bg-[#E0E0E0] text-gray-600 sticky top-0 z-10">
+              <tr className="h-[45px] text-[10px]">
+                <th className="p-2 text-left font-semibold first:rounded-tl-lg">User ID</th>
+                <th className="p-2 text-left font-semibold">Name</th>
+                <th className="p-2 text-left font-semibold">Account Type</th>
+                <th className="p-2 text-left font-semibold">Email</th>
+                <th className="p-2 text-left font-semibold">Phone</th>
+                <th className="p-2 text-left font-semibold">Date of Birth</th>
+                <th className="p-2 text-left font-semibold">Account Setting</th>
+                <th className="p-2 text-left font-semibold last:rounded-tr-lg">Verification</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {currentUsers.map((user, idx) => (
+                <tr
+                  key={user.userId}
+                  className={`h-[45px] cursor-pointer hover:bg-blue-50 ${idx % 2 === 0 ? "bg-white" : "bg-[#F5F5F5]"
+                    } transition-all duration-300 ease-in-out`}
+                  onClick={() => handleRowClick(user)}
+                >
+                  <td className="p-2 text-[10px]">{user.userId}</td>
+                  <td className="p-2 text-[10px]">{user.name}</td>
+                  <td className="p-2 text-[10px]">{user.accountType}</td>
+                  <td className="p-2 text-[10px]">{user.email}</td>
+                  <td className="p-2 text-[10px]">{user.phone}</td>
+                  <td className="p-2 text-[10px]">{user.dateOfBirth}</td>
+                  <td className="p-2 text-[10px]">
+                    <p className="bg-blue-500 p-1 text-white rounded-lg text-center">
+                      {user.accountSetting}
+                    </p>
+                  </td>
+                  <td className="p-2 text-[10px]">
+                    <p
+                      className={`p-1 px-2 rounded-lg text-center font-medium ${user.verification === "Pending"
+                          ? "bg-gray-100 text-gray-500"
+                          : user.verification === "Uploaded"
+                            ? "bg-blue-100 text-blue-500"
+                            : user.verification === "Approved"
+                              ? "bg-green-50 text-green-500"
+                              : ""
+                        }`}
+                    >
+                      {user.verification}
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pagination */}
-      {!showAll && usersData.length > ITEMS_PER_PAGE && (
-        <div className="flex items-center justify-center gap-2 p-4 border-t border-border flex-wrap">
-          <Button
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            variant="ghost"
-            size="sm"
-            className="text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
-          >
-            <ChevronLeft className="w-4 h-4 mr-1" /> Previous
-          </Button>
+      <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-gray-200 flex-wrap bg-white rounded-b-lg">
+        <Button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          size="sm"
+          className="bg-white text-black hover:bg-[#e6f0ff]"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1" /> Previous
+        </Button>
 
-          {[...Array(totalPages)].map((_, i) => (
+        {[...Array(totalPages)].map((_, i) => {
+          const isActive = i + 1 === currentPage
+          return (
             <Button
               key={i}
-              variant={i + 1 === currentPage ? "default" : "ghost"} // ganti solid jadi default
               size="sm"
               onClick={() => goToPage(i + 1)}
-              className={`${i + 1 === currentPage
-                ? "bg-[#1D6CE9] text-white"
-                : "text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
+              className={`${isActive ? "bg-[#1D6CE9] text-white" : "bg-white text-black hover:bg-[#e6f0ff]"
                 }`}
             >
               {i + 1}
             </Button>
-          ))}
+          )
+        })}
 
-          <Button
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            variant="ghost"
-            size="sm"
-            className="text-[#1D6CE9] hover:bg-[#1D6CE9]/20"
-          >
-            Next <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
+        <Button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          size="sm"
+          className="bg-white text-black hover:bg-[#e6f0ff]"
+        >
+          Next <ChevronRight className="w-4 h-4 ml-1" />
+        </Button>
 
+        {!showAll ? (
           <Button
             onClick={handleShowAll}
-            variant="link"
             size="sm"
-            className="text-[#1D6CE9]"
+            className="bg-white text-black hover:bg-[#e6f0ff]"
           >
             Show all
           </Button>
-        </div>
-      )}
+        ) : (
+          <Button
+            onClick={() => setShowAll(false)}
+            size="sm"
+            className="bg-white text-black hover:bg-[#e6f0ff]"
+          >
+            Show paginated
+          </Button>
+        )}
+      </div>
 
       {/* Dialog */}
       {selectedUser && (

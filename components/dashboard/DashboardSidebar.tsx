@@ -71,8 +71,8 @@ export const DashboardSidebar = ({ activePath }: DashboardSidebarProps) => {
 
         {/* ===== Footer (sticky bottom) ===== */}
         <div className="mx-2 mb-3 mt-auto p-3 text-sm font-semibold text-center bg-white rounded-md shadow">
-  isfinans.trade
-</div>
+          isfinans.trade
+        </div>
 
       </aside>
 
