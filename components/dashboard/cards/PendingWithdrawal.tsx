@@ -35,7 +35,7 @@ export const PendingWithdrawal = ({ withdrawals }: PendingWithdrawalProps) => {
     <div className="bg-white rounded-md p-2 h-[230px] shadow-lg ring-1 ring-white/50">
       <h3 className="font-semibold text-center text-md mb-3">Pending Withdrawal</h3>
       <div className="space-y-0">
-        <div className="flex items-center justify-between text-xs font-medium px-2 rounded-t-lg h-8 bg-gray-200">
+        <div className="flex items-center justify-between text-xs font-medium px-2 rounded-t-lg h-8 bg-[#D1D1D6]">
           <span className="flex-1">User</span>
           <span className="flex-1 text-center">Type</span>
           <span className="flex-1 text-right">Action</span>
@@ -47,7 +47,7 @@ export const PendingWithdrawal = ({ withdrawals }: PendingWithdrawalProps) => {
                 .fill(0)
                 .map((_, idx) => <div key={idx}>{renderSkeletonRow()}</div>)
             : withdrawals.map((w, idx) => {
-                const rowBg = idx % 2 === 0 ? "bg-white" : "bg-gray-100";
+                const rowBg = idx % 2 === 0 ? "bg-white" : "bg-[#EFEFF4]";
                 const rowRounded = idx === withdrawals.length - 1 ? "rounded-b-lg" : "";
                 return (
                   <div

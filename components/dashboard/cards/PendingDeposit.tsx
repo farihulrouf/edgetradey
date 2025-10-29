@@ -39,7 +39,7 @@ export const PendingDeposit = ({ deposits }: PendingDepositProps) => {
 
       <div className="space-y-0">
         {/* Header */}
-        <div className="flex items-center text-black justify-between text-[12px] font-medium px-2 rounded-t-lg h-8 bg-gray-200">
+        <div className="flex items-center text-black justify-between text-[12px] font-medium px-2 rounded-t-lg h-8 bg-[#D1D1D6]">
           <span className="flex-[2] whitespace-nowrap">User</span>
           <span className="flex-[1] text-center whitespace-nowrap">Type</span>
           <span className="flex-[2] text-right whitespace-nowrap">Approve Amount</span>
@@ -52,7 +52,7 @@ export const PendingDeposit = ({ deposits }: PendingDepositProps) => {
                 .fill(0)
                 .map((_, idx) => <div key={idx}>{renderSkeletonRow()}</div>)
             : deposits.map((d, idx) => {
-                const rowBg = idx % 2 === 0 ? "bg-white" : "bg-gray-100";
+                const rowBg = idx % 2 === 0 ? "bg-white" : "bg-[#EFEFF4]";
                 const rowRounded = idx === deposits.length - 1 ? "rounded-b-lg" : "";
                 return (
                   <div
