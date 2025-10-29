@@ -87,10 +87,11 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
     return `${date}\n${time}`;
   };
 
+  // 🔹 Table renderer
   const renderEditableTable = (tab: string, data: any[], setData: any) => (
     <div className="p-2">
-      <Table className="text-[12px] h-[405px] table-auto w-full rounded-lg overflow-hidden">
-        <TableHeader className="bg-gray-300">
+      <Table className="text-[12px] h-[405px] table-auto w-full rounded-lg overflow-hidden shadow-md ring-1 ring-gray-200">
+        <TableHeader className="bg-[#D1D1D6]">
           <TableRow>
             {Object.keys(data[0] || {}).map((key) => (
               <TableHead
@@ -107,19 +108,14 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
           {data.map((row, rowIndex) => (
             <TableRow
               key={rowIndex}
-              className={`h-[38px] ${rowIndex % 2 === 0 ? "bg-white" : "bg-gray-300"
-                } ${rowIndex === data.length - 1
-                  ? "rounded-b-lg overflow-hidden" // ⬅️ tambahkan ini
-                  : ""
-                }`}
+              className={`h-[38px] ${rowIndex % 2 === 0 ? "bg-white" : "bg-[#E0E0E0]"}
+                ${rowIndex === data.length - 1 ? "[&>td:first-child]:rounded-bl-lg [&>td:last-child]:rounded-br-lg" : ""}
+              `}
             >
               {Object.keys(row).map((key) => {
                 const isDirectionField = key === "direction";
-                const isDateField =
-                  key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
-
-                const isProfitField =
-                  key.toLowerCase() === "profit" || key.toLowerCase() === "netprofit";
+                const isDateField = key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
+                const isProfitField = key.toLowerCase() === "profit" || key.toLowerCase() === "netprofit";
 
                 const isEditing =
                   editingCell &&
@@ -132,10 +128,9 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                 // 🎨 Tentukan warna text
                 let textColor = "";
                 if (isDirectionField) {
-                  textColor =
-                    row[key] === "BUY"
-                      ? "text-green-600 font-medium"
-                      : "text-red-600 font-medium";
+                  textColor = row[key] === "BUY"
+                    ? "text-green-600 font-medium"
+                    : "text-red-600 font-medium";
                 } else if (isProfitField) {
                   const value = String(row[key] || "");
                   textColor = value.includes("-")
@@ -155,13 +150,12 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
                     }}
                   >
                     {isEditing ? (
-                      <div className="h-[32px] flex items-center justify-center">
-                        {/* ...input/select block tetap sama */}
-                      </div>
+                      <div className="h-[32px] flex items-center justify-center"></div>
                     ) : (
                       <div
-                        className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
-                          }`}
+                        className={`h-[32px] flex items-center justify-start ${
+                          isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
+                        }`}
                       >
                         {isDateField ? formatDateTime(row[key]) : row[key]}
                       </div>
@@ -172,20 +166,18 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
             </TableRow>
           ))}
         </TableBody>
-
       </Table>
     </div>
   );
 
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh] bg-gray-100">
+      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh] bg-gray-100 overflow-hidden rounded-xl shadow-2xl">
         <DialogTitle>
           <VisuallyHidden>User Trade Details</VisuallyHidden>
         </DialogTitle>
 
-        {/* Tombol Close di kanan atas */}
+        {/* Tombol Close */}
         <button
           onClick={() => onOpenChange(false)}
           className="absolute top-3 right-3 opacity-70 hover:opacity-100 transition-opacity"
@@ -193,9 +185,8 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
           <X className="h-5 w-5" />
         </button>
 
-        {/* Header Info Trader */}
-        {/* Header Info Trader */}
-        <DialogHeader className="px-4 pt-6 pb-4 bg-gray-50">
+        {/* ===== Header Info Trader ===== */}
+        <DialogHeader className="px-6 pt-6 pb-4">
           <div className="flex flex-wrap gap-3 leading-tight">
             {[
               { label: "User ID", value: user.userId },
@@ -209,72 +200,61 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="flex flex-col justify-center rounded-md bg-white px-3 py-2"
+                className="flex flex-col justify-center rounded-md bg-white px-3 py-2 shadow-sm border border-gray-100"
                 style={{ width: "125px", height: "67px" }}
               >
-                <span className="text-gray-500 text-lg font-semibold">{item.label}</span>
-                <span className="font-semibold text-sm text-gray-500">
-                  {item.value}
-                </span>
+                <span className="text-gray-500 text-sm font-semibold">{item.label}</span>
+                <span className="font-semibold text-gray-700 text-[13px]">{item.value}</span>
               </div>
             ))}
           </div>
         </DialogHeader>
 
-        {/* Tabs Section */}
-        <div className="px-2 pt-4 pb-3 flex items-center justify-between bg-gray-50">
+        {/* ===== Tabs Section ===== */}
+        <div className="px-6 py-3 flex items-center justify-between">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="h-auto p-0 bg-transparent flex justify-start gap-2">
-              <TabsTrigger
-                value="open-positions"
-                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
-              >
-                Open Positions
-              </TabsTrigger>
-              <TabsTrigger
-                value="order-positions"
-                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
-              >
-                Order Positions
-              </TabsTrigger>
-              <TabsTrigger
-                value="closed-positions"
-                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
-              >
-                Closed Positions
-              </TabsTrigger>
-              <TabsTrigger
-                value="transactions"
-                className="w-44 h-12 text-xl font-bold font-roboto rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition px-6"
-              >
-                Transactions
-              </TabsTrigger>
+              {["open-positions", "order-positions", "closed-positions", "transactions"].map((tab) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab}
+                  className="w-44 h-10 text-sm font-semibold rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition"
+                >
+                  {tab.replace("-", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </Tabs>
 
-
           <div className="flex gap-2 ml-4">
             <Button>Refresh</Button>
-            <Button variant="secondary">Save Changes</Button>
+            <Button variant="secondary">Save</Button>
           </div>
         </div>
-        {/* Summary Section */}
-        <div className="bg-white px-6 py-4 flex flex-wrap gap-4 mb-4">
-          <div className="text-md font-medium">
-            <span className="text-gray-500">All Swaps:</span> <span className="font-semibold">0.08</span>
-          </div>
-          <div className="text-md font-medium">
-            <span className="text-gray-500">All Commission:</span> <span className="font-semibold">0.08</span>
-          </div>
-          <div className="text-md font-medium">
-            <span className="text-gray-500">All Profit:</span> <span className="font-semibold text-green-600">-$174.21</span>
-          </div>
-          <div className="text-md font-medium">
-            <span className="text-gray-500">All Total Profit:</span> <span className="font-semibold text-green-600">-$174.21</span>
-          </div>
+
+        {/* ===== Summary Section ===== */}
+        <div className="bg-white px-6 py-4 flex flex-wrap gap-6 mb-4 mx-4 mt-4 rounded-lg shadow-lg ring-1 ring-white/50">
+          {[
+            { label: "All Swaps", value: "0.08" },
+            { label: "All Commission", value: "0.08" },
+            { label: "All Profit", value: "-$174.21" },
+            { label: "All Total Profit", value: "-$174.21" },
+          ].map((item, idx) => (
+            <div key={idx} className="text-sm font-medium">
+              <span className="text-gray-500">{item.label}: </span>
+              <span
+                className={`font-semibold ${
+                  item.value.includes("-") ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {item.value}
+              </span>
+            </div>
+          ))}
         </div>
-        {/* Tables */}
-        <div className="overflow-auto max-h-[500px]">
+
+        {/* ===== Tables ===== */}
+        <div className="overflow-auto max-h-[500px] px-2 pb-6">
           <Tabs value={activeTab} className="w-full">
             <TabsContent value="open-positions">
               {renderEditableTable("open-positions", openPositions, setOpenPositions)}
