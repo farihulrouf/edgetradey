@@ -2,6 +2,7 @@
 
 import { BankingCard } from "@/components/dashboard/cards/BankingCard"
 import { CryptoDepositCard } from "./cards/CryptoDepositCard";
+import { WithdrawSettingsCard } from "./cards/WithdrawSettingsCard";
 
 export const DepositSetup = () => {
   return (
@@ -25,12 +26,14 @@ export const DepositSetup = () => {
 
         {/* Kotak kanan - Crypto Deposit Card */}
         <div className="w-full">
-          <CryptoDepositCard
-            cryptoName="USDT"
-            network="TRC20 (Tron)"
-            walletAddress="TXYZabc123def456ghi789jkl012mno345pqr"
-          />
+          <CryptoDepositCard />
         </div>
+
+        <div className="w-full">
+          <WithdrawSettingsCard />
+        </div>
+
+
       </div>
     </div>
   );
