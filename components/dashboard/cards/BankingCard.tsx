@@ -284,7 +284,7 @@ export const BankingCard = ({
             <Button variant="outline" onClick={() => setIsEditOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button className="bg-blue-600" onClick={handleSave}>
               Save Changes
             </Button>
           </DialogFooter>

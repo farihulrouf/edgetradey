@@ -281,7 +281,7 @@ export const CryptoDepositCard = ({
             <Button variant="outline" onClick={() => setIsEditOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button onClick={handleSave} className="bg-blue-500">
               Save Changes
             </Button>
           </DialogFooter>
