@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Download, ChevronLeft, ChevronRight } from "lucide-react"
 import { UserTradeDialog } from "./UserTradeDialog"
 import { fetchAllTraders, Trader } from "@/lib/api"
+import { Inter } from "next/font/google"
 
 const ITEMS_PER_PAGE = 8
 
