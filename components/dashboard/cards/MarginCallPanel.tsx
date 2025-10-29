@@ -47,7 +47,7 @@ export const MarginCallPanel = ({ activePeople, marginCalls }: Props) => {
         </h3>
 
         {/* Header */}
-        <div className="grid grid-cols-3 text-xs font-medium text-black bg-[#D1D1D6] px-2 h-11 items-center rounded-t-md">
+        <div className="grid grid-cols-3 text-xs font-medium text-black bg-[#D1D1D6] px-2 h-8 items-center rounded-t-md">
           <span>Status</span>
           <span>User</span>
           <span className="text-right whitespace-nowrap">Margin Level</span>
@@ -64,7 +64,7 @@ export const MarginCallPanel = ({ activePeople, marginCalls }: Props) => {
                 return (
                   <div
                     key={idx}
-                    className={`grid grid-cols-3 text-[11px] items-center px-2 h-11
+                    className={`grid grid-cols-3 text-[11px] items-center px-2 h-9
                     ${idx % 2 === 0 ? "bg-white" : "bg-[#EFEFF4]"}
                     ${isLast ? "rounded-b-md" : ""}`}
                   >
@@ -90,7 +90,7 @@ export const MarginCallPanel = ({ activePeople, marginCalls }: Props) => {
         </h3>
 
         {/* Header */}
-        <div className="grid grid-cols-3 text-[11px] font-medium bg-[#D1D1D6] px-2 h-11 items-center rounded-t-md">
+        <div className="grid grid-cols-3 text-[11px] font-medium bg-[#D1D1D6] px-2 h-8 items-center rounded-t-md">
           <span>User</span>
           <span className="text-center">Margin</span>
           <span className="text-right whitespace-nowrap">Margin Level</span>
@@ -107,7 +107,7 @@ export const MarginCallPanel = ({ activePeople, marginCalls }: Props) => {
                 return (
                   <div
                     key={idx}
-                    className={`grid grid-cols-3 text-[11px] items-center px-2 h-11
+                    className={`grid grid-cols-3 text-[11px] items-center px-2 h-9
                     ${idx % 2 === 0 ? "bg-white" : "bg-[#EFEFF4]"}
                     ${isLast ? "rounded-b-md" : ""}`}
                   >
