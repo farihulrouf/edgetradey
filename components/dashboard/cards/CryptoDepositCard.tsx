@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Pencil } from "lucide-react";
+import { Pencil, Plus, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -19,77 +19,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface CryptoDepositCardProps {
-  cryptoName: string;
-  network: string;
-  walletAddress: string;
   onUpdate?: (data: CryptoDepositCardData) => void;
+  onAdd?: (data: CryptoDepositCardData) => void;
 }
 
 export interface CryptoDepositCardData {
   cryptoName: string;
   network: string;
   walletAddress: string;
+  withdrawFee?: string;
 }
-
-// Ikon untuk cryptocurrency (gunakan ikon asli atau placeholder)
-const CryptoIcon = ({ crypto }: { crypto: string }) => {
-  const getCryptoIcon = (cryptoName: string) => {
-    const icons: { [key: string]: string } = {
-      BTC: "₿",
-      ETH: "Ξ",
-      USDT: "💵",
-      USDC: "💲",
-      BNB: "🟡",
-      SOL: "🔴",
-      XRP: "✕",
-      ADA: "A",
-      DOGE: "Ð",
-    };
-    return icons[cryptoName.toUpperCase()] || "₿";
-  };
-
-  return (
-    <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-      {getCryptoIcon(crypto)}
-    </span>
-  );
-};
-
-// Ikon untuk network
-const NetworkIcon = ({ network }: { network: string }) => {
-  const getNetworkIcon = (networkName: string) => {
-    const icons: { [key: string]: string } = {
-      "TRC20": "🟣",
-      "ERC20": "🔷", 
-      "BEP20": "🟡",
-      "Polygon": "🟣",
-      "Arbitrum": "🔵",
-      "Optimism": "🔴"
-    };
-    
-    for (const [key, icon] of Object.entries(icons)) {
-      if (networkName.includes(key)) {
-        return icon;
-      }
-    }
-    return "🌐";
-  };
-
-  return (
-    <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-      {getNetworkIcon(network)}
-    </span>
-  );
-};
-
-// Ikon untuk wallet address
-const WalletIcon = () => (
-  <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-    🏦
-  </span>
-);
 
 const NETWORKS = [
   "TRC20 (Tron)",
@@ -97,142 +46,203 @@ const NETWORKS = [
   "BEP20 (BSC)",
   "Polygon",
   "Arbitrum",
-  "Optimism"
+  "Optimism",
 ];
 
-export const CryptoDepositCard = ({ 
-  cryptoName, 
-  network, 
-  walletAddress,
-  onUpdate 
+// Sample data for the table
+const sampleCryptoData: CryptoDepositCardData[] = [
+  {
+    cryptoName: "USDT",
+    network: "TRC20 (Tron)",
+    walletAddress: "TQ5r8Xy9z0a1b2c3d4e5f6g7h8i9j0k1l2m3n4",
+    withdrawFee: "1 USDT"
+  },
+  {
+    cryptoName: "BTC",
+    network: "ERC20 (Ethereum)",
+    walletAddress: "0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t",
+    withdrawFee: "0.0005 BTC"
+  },
+  {
+    cryptoName: "ETH",
+    network: "ERC20 (Ethereum)",
+    walletAddress: "0x3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u",
+    withdrawFee: "0.01 ETH"
+  }
+];
+
+export const CryptoDepositCard = ({
+  onUpdate,
+  onAdd,
 }: CryptoDepositCardProps) => {
-  const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editData, setEditData] = useState({
-    cryptoName,
-    network,
-    walletAddress
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editData, setEditData] = useState<CryptoDepositCardData>({
+    cryptoName: "",
+    network: "",
+    walletAddress: "",
+    withdrawFee: "",
   });
-  const [currentData, setCurrentData] = useState({
-    cryptoName,
-    network,
-    walletAddress
-  });
+  const [cryptoData, setCryptoData] = useState<CryptoDepositCardData[]>(sampleCryptoData);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
+
   const { toast } = useToast();
 
-  const copyToClipboard = (text: string, fieldName: string) => {
+  // Copy wallet address to clipboard
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedField(fieldName);
+    setCopiedAddress(text);
     toast({
       title: "Copied!",
-      description: `${fieldName} copied to clipboard`,
+      description: "Wallet address copied to clipboard",
     });
-    setTimeout(() => setCopiedField(null), 2000);
+    setTimeout(() => setCopiedAddress(null), 2000);
   };
 
-  const handleEdit = () => {
-    setEditData(currentData);
-    setIsEditOpen(true);
+  // Open Edit dialog
+  const handleEdit = (index: number) => {
+    setEditData(cryptoData[index]);
+    setEditingIndex(index);
+    setIsAddMode(false);
+    setIsDialogOpen(true);
+  };
+
+  // Open Add dialog
+  const handleAdd = () => {
+    setEditData({
+      cryptoName: "",
+      network: "",
+      walletAddress: "",
+      withdrawFee: "",
+    });
+    setEditingIndex(null);
+    setIsAddMode(true);
+    setIsDialogOpen(true);
   };
 
   const handleSave = () => {
-    if (!editData.cryptoName.trim() || !editData.network.trim() || 
-        !editData.walletAddress.trim()) {
+    if (!editData.cryptoName.trim() || !editData.network.trim() || !editData.walletAddress.trim()) {
       toast({
         title: "Error",
-        description: "All fields are required",
+        description: "Crypto Name, Network and Wallet Address are required",
         variant: "destructive",
       });
       return;
     }
 
-    setCurrentData(editData);
-    onUpdate?.(editData);
-    setIsEditOpen(false);
-    toast({
-      title: "Updated!",
-      description: "Crypto deposit information updated successfully",
-    });
+    if (isAddMode) {
+      // Add new crypto
+      const newData = [...cryptoData, editData];
+      setCryptoData(newData);
+      onAdd?.(editData);
+      toast({
+        title: "Added!",
+        description: "New crypto deposit added successfully",
+      });
+    } else if (editingIndex !== null) {
+      // Edit existing crypto
+      const updatedData = [...cryptoData];
+      updatedData[editingIndex] = editData;
+      setCryptoData(updatedData);
+      onUpdate?.(editData);
+      toast({
+        title: "Updated!",
+        description: "Crypto deposit information updated successfully",
+      });
+    }
+
+    setIsDialogOpen(false);
+    setEditingIndex(null);
+    setIsAddMode(false);
   };
 
-  const InfoRow = ({ 
-    label, 
-    value, 
-    fieldName, 
-    icon 
-  }: { 
-    label: string; 
-    value: string; 
-    fieldName: string;
-    icon: React.ReactNode;
-  }) => (
-    <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
-      <div className="flex-1 flex items-center justify-between">
-        <div className="flex items-center min-w-[140px]">
-          {icon}
-          <p className="text-sm text-muted-foreground">{label}:</p>
-        </div>
-        <p className="text-sm font-medium text-foreground flex-1 text-right mr-2 break-all">{value}</p>
-      </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 flex-shrink-0"
-        onClick={() => copyToClipboard(value, fieldName)}
-      >
-        {copiedField === fieldName ? (
-          <Check className="h-4 w-4 text-primary" />
-        ) : (
-          <Copy className="h-4 w-4 text-muted-foreground hover:text-primary" />
-        )}
-      </Button>
-    </div>
-  );
+  const formatWalletAddress = (address: string) => {
+    if (address.length <= 16) return address;
+    return `${address.slice(0, 8)}...${address.slice(-8)}`;
+  };
 
   return (
     <>
-      <Card className="w-full max-w-2xl overflow-hidden bg-card border shadow-sm">
+      <Card className="w-full overflow-hidden bg-card border shadow-sm h-full flex flex-col">
         {/* Header */}
         <div className="bg-[#D1D1D6] px-6 py-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">Crypto Deposit Information</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            Crypto Deposit Information
+          </h2>
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleEdit}
-            className="h-8 w-8"
+            onClick={handleAdd}
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+            size="sm"
           >
-            <Pencil className="h-4 w-4" />
+            <Plus className="h-4 w-4 mr-2" />
+            Add Crypto
           </Button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 min-h-[280px]">
-          <InfoRow 
-            label="Crypto" 
-            value={currentData.cryptoName}
-            fieldName="Crypto"
-            icon={<CryptoIcon crypto={currentData.cryptoName} />}
-          />
-          <InfoRow 
-            label="Network" 
-            value={currentData.network}
-            fieldName="Network"
-            icon={<NetworkIcon network={currentData.network} />}
-          />
-          <InfoRow 
-            label="Wallet Address" 
-            value={currentData.walletAddress}
-            fieldName="Wallet Address"
-            icon={<WalletIcon />}
-          />
+        {/* Content - Adjusted height to match BankingCard */}
+        <div className="p-6 flex-1">
+          <div className="h-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Crypto</TableHead>
+                  <TableHead>Network</TableHead>
+                  <TableHead>Wallet Address</TableHead>
+                  <TableHead className="text-right w-[100px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {cryptoData.map((crypto, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">
+                      {crypto.cryptoName}
+                    </TableCell>
+                    <TableCell>
+                      {crypto.network}
+                    </TableCell>
+                    <TableCell className="font-mono text-sm">
+                      <div className="flex items-center justify-between">
+                        <span>{formatWalletAddress(crypto.walletAddress)}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => copyToClipboard(crypto.walletAddress)}
+                          className="h-6 w-6 ml-2"
+                        >
+                          {copiedAddress === crypto.walletAddress ? (
+                            <Check className="h-3 w-3 text-green-500" />
+                          ) : (
+                            <Copy className="h-3 w-3 text-muted-foreground hover:text-primary" />
+                          )}
+                        </Button>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(index)}
+                        className="h-8 w-8"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </Card>
 
-      {/* Edit Dialog */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+      {/* Dialog for Edit/Add */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Edit Crypto Deposit Information</DialogTitle>
+            <DialogTitle>
+              {isAddMode ? "Add Crypto Deposit" : "Edit Crypto Deposit"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -247,20 +257,14 @@ export const CryptoDepositCard = ({
             </div>
             <div className="space-y-2">
               <Label htmlFor="network">Network</Label>
-              <Select
-                value={editData.network}
-                onValueChange={(value) => setEditData({ ...editData, network: value })}
-              >
+              <Select value={editData.network} onValueChange={(value) => setEditData({ ...editData, network: value })}>
                 <SelectTrigger id="network">
                   <SelectValue placeholder="Select network" />
                 </SelectTrigger>
                 <SelectContent>
                   {NETWORKS.map((net) => (
                     <SelectItem key={net} value={net}>
-                      <div className="flex items-center">
-                        <NetworkIcon network={net} />
-                        <span>{net}</span>
-                      </div>
+                      {net}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -278,11 +282,11 @@ export const CryptoDepositCard = ({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
             <Button onClick={handleSave} className="bg-blue-500">
-              Save Changes
+              {isAddMode ? "Add Crypto" : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>

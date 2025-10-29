@@ -30,41 +30,6 @@ export interface BankingCardData {
   swiftCode: string;
 }
 
-// Ikon untuk Bank Name
-const BankIcon = () => (
-  <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-    🏦
-  </span>
-);
-
-// Ikon untuk Account Name
-const AccountNameIcon = () => (
-  <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-    👤
-  </span>
-);
-
-// Ikon untuk Account Number
-const AccountNumberIcon = () => (
-  <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-    🔢
-  </span>
-);
-
-// Ikon untuk IBAN
-const IbanIcon = () => (
-  <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-    🌐
-  </span>
-);
-
-// Ikon untuk Swift Code
-const SwiftCodeIcon = () => (
-  <span className="w-6 h-6 flex items-center justify-center bg-muted rounded-full text-sm mr-2">
-    ⚡
-  </span>
-);
-
 export const BankingCard = ({ 
   bankName, 
   accountName, 
@@ -130,18 +95,15 @@ export const BankingCard = ({
   const InfoRow = ({ 
     label, 
     value, 
-    fieldName, 
-    icon 
+    fieldName,
   }: { 
     label: string; 
     value: string; 
     fieldName: string;
-    icon: React.ReactNode;
   }) => (
     <div className="flex items-center justify-between py-3 border-b border-border last:border-0">
       <div className="flex-1 flex items-center justify-between">
         <div className="flex items-center min-w-[140px]">
-          {icon}
           <p className="text-sm text-muted-foreground">{label}:</p>
         </div>
         <p className="text-sm font-medium text-foreground flex-1 text-right mr-2">{value}</p>
@@ -183,31 +145,26 @@ export const BankingCard = ({
             label="Bank Name" 
             value={currentData.bankName}
             fieldName="Bank Name"
-            icon={<BankIcon />}
           />
           <InfoRow 
             label="Account Name" 
             value={currentData.accountName}
             fieldName="Account Name"
-            icon={<AccountNameIcon />}
           />
           <InfoRow 
             label="Account Number" 
             value={currentData.accountNumber}
             fieldName="Account Number"
-            icon={<AccountNumberIcon />}
           />
           <InfoRow 
             label="IBAN" 
             value={currentData.iban}
             fieldName="IBAN"
-            icon={<IbanIcon />}
           />
           <InfoRow 
             label="Swift Code" 
             value={currentData.swiftCode}
             fieldName="Swift Code"
-            icon={<SwiftCodeIcon />}
           />
         </div>
       </Card>
@@ -220,10 +177,7 @@ export const BankingCard = ({
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <BankIcon />
-                <Label htmlFor="bankName">Bank Name</Label>
-              </div>
+              <Label htmlFor="bankName">Bank Name</Label>
               <Input
                 id="bankName"
                 value={editData.bankName}
@@ -232,10 +186,7 @@ export const BankingCard = ({
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <AccountNameIcon />
-                <Label htmlFor="accountName">Account Name</Label>
-              </div>
+              <Label htmlFor="accountName">Account Name</Label>
               <Input
                 id="accountName"
                 value={editData.accountName}
@@ -244,10 +195,7 @@ export const BankingCard = ({
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <AccountNumberIcon />
-                <Label htmlFor="accountNumber">Account Number</Label>
-              </div>
+              <Label htmlFor="accountNumber">Account Number</Label>
               <Input
                 id="accountNumber"
                 value={editData.accountNumber}
@@ -256,10 +204,7 @@ export const BankingCard = ({
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <IbanIcon />
-                <Label htmlFor="iban">IBAN</Label>
-              </div>
+              <Label htmlFor="iban">IBAN</Label>
               <Input
                 id="iban"
                 value={editData.iban}
@@ -268,10 +213,7 @@ export const BankingCard = ({
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <SwiftCodeIcon />
-                <Label htmlFor="swiftCode">Swift Code</Label>
-              </div>
+              <Label htmlFor="swiftCode">Swift Code</Label>
               <Input
                 id="swiftCode"
                 value={editData.swiftCode}
