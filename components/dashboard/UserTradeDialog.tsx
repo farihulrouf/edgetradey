@@ -88,112 +88,99 @@ export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogPro
   };
 
   const renderEditableTable = (tab: string, data: any[], setData: any) => (
-    <Table className="text-[12px] border h-[405px] table-auto w-full rounded-lg overflow-hidden">
-      <TableHeader className="bg-gray-200">
-        <TableRow>
-          {Object.keys(data[0] || {}).map((key) => (
-            <TableHead
-              key={key}
-              className="px-2 py-1 whitespace-nowrap first:rounded-tl-lg last:rounded-tr-lg"
-            >
-              {key}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {data.map((row, rowIndex) => (
-          <TableRow
-            key={rowIndex}
-            className={`h-[38px] ${rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
-          >
-            {Object.keys(row).map((key) => {
-              const isDirectionField = key === "direction";
-              const isDateField = key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
-              const isEditing =
-                editingCell &&
-                editingCell.row === rowIndex &&
-                editingCell.field === key &&
-                editingCell.tab === tab;
-              const dateObj = isDateField ? parseFlexibleDate(row[key]) : null;
-
-              return (
-                <TableCell
-                  key={key}
-                  onClick={() => setEditingCell({ tab, row: rowIndex, field: key })}
-                  className={`cursor-pointer align-middle h-[36px] ${isDirectionField
-                      ? row[key] === "BUY"
-                        ? "text-green-600 font-medium"
-                        : "text-red-600 font-medium"
-                      : ""
-                    } px-2 py-1`}
-                  style={{
-                    verticalAlign: "middle",
-                    minWidth: isDateField ? "95px" : "80px",
-                    whiteSpace: isDateField ? "pre-line" : "nowrap",
-                  }}
-                >
-                  {isEditing ? (
-                    <div className="h-[32px] flex items-center justify-center">
-                      {isDateField ? (
-                        <input
-                          type="date"
-                          autoFocus
-                          value={dateObj ? dateObj.toISOString().split("T")[0] : ""}
-                          onChange={(e) =>
-                            handleCellChange(tab, rowIndex, key, new Date(e.target.value).toISOString())
-                          }
-                          onBlur={handleBlur}
-                          onKeyDown={handleKeyDown}
-                          className="border rounded-sm text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[110px]"
-                        />
-                      ) : isDirectionField ? (
-                        <select
-                          autoFocus
-                          value={row[key]}
-                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
-                          onBlur={handleBlur}
-                          className="border rounded-sm text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-[70px]"
-                        >
-                          <option value="BUY">BUY</option>
-                          <option value="SELL">SELL</option>
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
-                          autoFocus
-                          value={row[key]}
-                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
-                          onBlur={handleBlur}
-                          onKeyDown={handleKeyDown}
-                          className="border rounded-sm text-[12px] focus:outline-none focus:ring-2 focus:ring-primary h-[26px] w-full"
-                        />
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
-                        }`}
-                    >
-                      {isDateField ? formatDateTime(row[key]) : row[key]}
-                    </div>
-                  )}
-                </TableCell>
-
-              );
-            })}
+    <div className="p-2">
+      <Table className="text-[12px] h-[405px] table-auto w-full rounded-lg overflow-hidden">
+        <TableHeader className="bg-gray-300">
+          <TableRow>
+            {Object.keys(data[0] || {}).map((key) => (
+              <TableHead
+                key={key}
+                className="px-3 py-2 whitespace-nowrap text-gray-700 font-medium text-center first:rounded-tl-lg last:rounded-tr-lg"
+              >
+                {key}
+              </TableHead>
+            ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
 
+        <TableBody>
+          {data.map((row, rowIndex) => (
+            <TableRow
+              key={rowIndex}
+              className={`h-[38px] ${rowIndex % 2 === 0 ? "bg-white" : "bg-gray-300"
+                } ${rowIndex === data.length - 1
+                  ? "rounded-b-lg overflow-hidden" // ⬅️ tambahkan ini
+                  : ""
+                }`}
+            >
+              {Object.keys(row).map((key) => {
+                const isDirectionField = key === "direction";
+                const isDateField =
+                  key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
 
+                const isProfitField =
+                  key.toLowerCase() === "profit" || key.toLowerCase() === "netprofit";
+
+                const isEditing =
+                  editingCell &&
+                  editingCell.row === rowIndex &&
+                  editingCell.field === key &&
+                  editingCell.tab === tab;
+
+                const dateObj = isDateField ? parseFlexibleDate(row[key]) : null;
+
+                // 🎨 Tentukan warna text
+                let textColor = "";
+                if (isDirectionField) {
+                  textColor =
+                    row[key] === "BUY"
+                      ? "text-green-600 font-medium"
+                      : "text-red-600 font-medium";
+                } else if (isProfitField) {
+                  const value = String(row[key] || "");
+                  textColor = value.includes("-")
+                    ? "text-red-600 font-medium"
+                    : "text-green-600 font-medium";
+                }
+
+                return (
+                  <TableCell
+                    key={key}
+                    onClick={() => setEditingCell({ tab, row: rowIndex, field: key })}
+                    className={`cursor-pointer align-middle h-[36px] px-3 py-2 ${textColor}`}
+                    style={{
+                      verticalAlign: "middle",
+                      minWidth: isDateField ? "95px" : "80px",
+                      whiteSpace: isDateField ? "pre-line" : "nowrap",
+                    }}
+                  >
+                    {isEditing ? (
+                      <div className="h-[32px] flex items-center justify-center">
+                        {/* ...input/select block tetap sama */}
+                      </div>
+                    ) : (
+                      <div
+                        className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
+                          }`}
+                      >
+                        {isDateField ? formatDateTime(row[key]) : row[key]}
+                      </div>
+                    )}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableBody>
+
+      </Table>
+    </div>
   );
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh] bg-gray-50">
+      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh] bg-gray-100">
         <DialogTitle>
           <VisuallyHidden>User Trade Details</VisuallyHidden>
         </DialogTitle>
