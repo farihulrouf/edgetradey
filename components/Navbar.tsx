@@ -106,12 +106,7 @@ export function Navbar() {
 
         {/* Search Bar */}
         <div className="flex-1 max-w-md relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Quick search"
-            className="pl-9 bg-muted/50"
-          />
+         
         </div>
 
         {/* Notification Dropdown */}
