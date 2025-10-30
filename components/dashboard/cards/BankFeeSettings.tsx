@@ -53,7 +53,7 @@ const BankFeeSettings = () => {
     <Card className="w-full shadow-[var(--shadow-elevated)] border-border/50 transition-all duration-300 hover:shadow-[var(--shadow-card)]">
       {/* Header compact dengan background #D1D1D6 */}
       <CardHeader
-        className="border-b border-border/50"
+        className="border-b rounded-t-lg border-border/50"
         style={{ backgroundColor: "#D1D1D6", padding: "0.5rem 1rem" }}
       >
         <div className="flex items-center justify-between">
