@@ -65,7 +65,9 @@ export interface LoginResponse {
 }
 
 // ====== Base URL ======
-const BASE_URL = "http://91.108.122.156/api/v1";
+const BASE_URL = "https://edgetade-backend-2.onrender.com/api";
+
+
 
 // ====== Login ======
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
