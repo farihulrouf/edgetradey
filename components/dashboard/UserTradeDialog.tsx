@@ -128,7 +128,7 @@ export const UserTradeDialog = ({
             return (
               <TableRow
                 key={i}
-                className={`hover:bg-gray-50 transition-colors ${isSelectedRow ? "" : ""
+                className={`hover:bg-gray-50 transition-colors text-center ${isSelectedRow ? "" : ""
                   }`}
                 style={{ height: "26px" }}
               >
@@ -156,12 +156,13 @@ export const UserTradeDialog = ({
                       }}
                     >
                       <div
-                        className={`${col === "createdTime" ? "w-[120px]" : "w-[60px]"} h-[26px] flex items-center justify-center ${isSelectedRow &&
-                          !["userId", "pidNo", "profit", "netprofit"].includes(col)
-                          ? "bg-[#BFBFBF40]"
-                          : "bg-white"
+                        className={`${["createdTime", "closeTime"].includes(col) ? "w-[120px]" : "w-[60px]"
+                          } h-[26px] flex items-center justify-center ${isSelectedRow && !["userId", "pidNo", "profit", "netprofit"].includes(col)
+                            ? "bg-[#BFBFBF40]"
+                            : "bg-white"
                           }`}
                       >
+
                         {/* === Editable Cells === */}
                         {isEditingCell && col === "direction" ? (
                           <select
@@ -249,7 +250,7 @@ export const UserTradeDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[1200px] bg-[#EAEAEA] rounded-xl shadow-2xl border border-gray-200 overflow-hidden p-0 flex items-center justify-center">
+      <DialogContent className="max-w-[1280px] bg-[#EAEAEA] rounded-xl shadow-2xl border border-gray-200 overflow-hidden p-0 flex items-center justify-center">
         <div className="relative h-full flex flex-col w-full">
           <div className="flex-1 overflow-auto p-2">
             {selectedUser ? (
@@ -324,36 +325,35 @@ export const UserTradeDialog = ({
                         </TabsTrigger>
                       </TabsList>
                     </Tabs>
-
-
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 text-white">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={handleRefresh}
-                        className="flex items-center gap-1 h-9 py-2"
+                        className="flex items-center bg-blue-600 gap-1 h-12 py-3 hover:bg-blue-600 hover:text-white"
                       >
-                        <RefreshCcw className="w-4 h-6" /> Refresh
+                        <RefreshCcw className="w-4 h-6" /> Refresh Data
                       </Button>
 
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={handleEdit}
-                        className="flex items-center gap-1 h-9 py-2"
+                        className="flex items-center bg-gray-500 gap-1 h-12 py-3 hover:bg-blue-600 hover:text-white"
                       >
-                        <Pencil className="w-4 h-4" /> Edit Position
+                        <Pencil className="w-4 h-6" /> Edit Position
                       </Button>
 
                       <Button
                         variant="destructive"
                         size="sm"
                         onClick={handleClosePosition}
-                        className="flex items-center gap-1 h-9 py-2"
+                        className="flex items-center bg-gray-500 gap-1 h-12 py-3 hover:bg-blue-600 hover:text-white"
                       >
-                        <XCircle className="w-4 h-4" /> Close Position
+                        <XCircle className="w-4 h-6" /> Close Position
                       </Button>
                     </div>
+
 
                   </div>
 
@@ -390,6 +390,25 @@ export const UserTradeDialog = ({
                         "price",
                         "stopLoss",
                         "takeProfit",
+                      ])}
+                    </TabsContent>
+                    <TabsContent value="closed" className="flex-1 overflow-auto">
+                      {renderTable(data.closedPositions, [
+                        "userId",
+                        "pidNo",
+                        "symbol",
+                        "createdTime",
+                        "closeTime",
+                        "volume",
+                        "direction",
+                        "enterPrice",
+                        "closePrice",
+                        "stopLoss",
+                        "takeProfit",
+                        "swap",
+                        "commission",
+                        "profit",
+                        "netProfit",
                       ])}
                     </TabsContent>
                     <TabsContent value="transactions" className="flex-1 overflow-auto">
