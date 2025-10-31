@@ -128,7 +128,7 @@ export const UserTradeDialog = ({
             return (
               <TableRow
                 key={i}
-                className={`hover:bg-gray-50 transition-colors ${isSelectedRow ? "bg-blue-50" : ""
+                className={`hover:bg-gray-50 transition-colors ${isSelectedRow ? "" : ""
                   }`}
                 style={{ height: "26px" }}
               >
@@ -390,6 +390,15 @@ export const UserTradeDialog = ({
                         "price",
                         "stopLoss",
                         "takeProfit",
+                      ])}
+                    </TabsContent>
+                    <TabsContent value="transactions" className="flex-1 overflow-auto">
+                      {renderTable(data.transactions || [], [
+                        "userId",
+                        "type",
+                        "place",
+                        "time",
+                        "amount",
                       ])}
                     </TabsContent>
                   </Tabs>
