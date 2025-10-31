@@ -217,3 +217,11 @@ export const fetchPendingWithdrawals = async (): Promise<PendingWithdrawalData[]
 export const fetchMarginCalls = async (): Promise<{ activePeople: ActivePerson[]; marginCalls: MarginCall[] }> => {
   return fetchWithAuth(`${BASE_URL}/admin/dashboard/margin-calls`)
 }
+
+
+export const fetchAllAdmins = async (): Promise<Admin[]> => {
+  const res = await fetch('/data/alladmins.json'); // path sesuai public folder
+  if (!res.ok) throw new Error("Failed to load admins JSON");
+  const data = await res.json();
+  return data.admins; // ambil array admins
+};
