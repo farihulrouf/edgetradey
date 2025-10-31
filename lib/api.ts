@@ -1,4 +1,4 @@
-// ===== Trader =====
+// lib/api.ts
 export interface Trader {
   userId: number;
   status: boolean;
@@ -13,7 +13,6 @@ export interface Trader {
   freeMargin: string;
 }
 
-// ===== User Verification =====
 export interface UserVerificationData {
   userId: string;
   name: string;
@@ -22,10 +21,9 @@ export interface UserVerificationData {
   phone: string;
   dateOfBirth: string;
   accountSetting: string;
-  verification: string; // Pending / Approved / Rejected
+  verification: string;
 }
 
-// ===== Pending Deposit =====
 export interface PendingDepositData {
   user: string;
   type: string;
@@ -33,13 +31,11 @@ export interface PendingDepositData {
   approved: string;
 }
 
-// ===== Pending Withdrawal =====
 export interface PendingWithdrawalData {
   user: string;
   type: string;
 }
 
-// ===== Margin Call =====
 export interface ActivePerson {
   user: string;
   marginLevel: string;
@@ -52,7 +48,6 @@ export interface MarginCall {
   marginLevel: string;
 }
 
-// ===== Admin =====
 export interface Admin {
   id: number;
   name: string;
@@ -61,49 +56,13 @@ export interface Admin {
   password: string;
 }
 
-// ===== Login Response =====
 export interface LoginResponse {
   access_token: string;
   refresh_token: string;
   user_name?: string;
 }
 
-// ===== Base URL API =====
-const BASE_URL = "http://91.108.122.156/api/v1"
-
-// ===== Helper fetch with auth =====
-const fetchWithAuth = async (url: string) => {
-  const token = localStorage.getItem("access_token")
-  if (!token) {
-    window.location.href = "/login"
-    throw new Error("Not logged in. Access token missing.")
-  }
-
-  const res = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
-  if (res.status === 401) {
-    try {
-      await refreshToken()
-      return fetchWithAuth(url)
-    } catch {
-      logout()
-      throw new Error("Unauthorized. Please login again.")
-    }
-  }
-
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}))
-    throw new Error(errData.message || `HTTP error! status: ${res.status}`)
-  }
-
-  return res.json()
-}
+const BASE_URL = "http://91.108.122.156/api/v1";
 
 // ===== Login =====
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
@@ -111,58 +70,111 @@ export const login = async (email: string, password: string): Promise<LoginRespo
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({ email, password }),
-  })
+  });
 
   if (!res.ok) {
-    const errData = await res.json().catch(() => ({}))
-    throw new Error(errData.message || "Login failed")
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.message || "Login failed");
   }
 
-  const data = await res.json()
-  localStorage.setItem("access_token", data.access_token)
-  localStorage.setItem("refresh_token", data.refresh_token)
-  if (data.user_name) localStorage.setItem("user_name", data.user_name)
-  return data
-}
+  const data: LoginResponse = await res.json();
+  localStorage.setItem("access_token", data.access_token);
+  localStorage.setItem("refresh_token", data.refresh_token);
+  if (data.user_name) localStorage.setItem("user_name", data.user_name);
+  return data;
+};
 
-// ===== Refresh Token =====
-export const refreshToken = async (): Promise<LoginResponse> => {
-  const refresh_token = localStorage.getItem("refresh_token")
-  if (!refresh_token) throw new Error("No refresh token found")
+// ===== Refresh Token (Queue) =====
+let refreshingToken: Promise<void> | null = null;
 
-  const res = await fetch(`${BASE_URL}/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ refresh_token }),
-  })
+export const refreshToken = async (): Promise<void> => {
+  const refresh_token = localStorage.getItem("refresh_token");
+  if (!refresh_token) throw new Error("No refresh token found");
 
-  if (!res.ok) {
-    localStorage.removeItem("access_token")
-    localStorage.removeItem("refresh_token")
-    localStorage.removeItem("user_name")
-    throw new Error("Failed to refresh token")
+  if (!refreshingToken) {
+    refreshingToken = (async () => {
+      const res = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ refresh_token }),
+      });
+
+      if (!res.ok) {
+        logout();
+        throw new Error("Failed to refresh token");
+      }
+
+      const data: LoginResponse = await res.json();
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+    })().finally(() => {
+      refreshingToken = null;
+    });
   }
 
-  const data = await res.json()
-  localStorage.setItem("access_token", data.access_token)
-  localStorage.setItem("refresh_token", data.refresh_token)
-  return data
-}
+  return refreshingToken;
+};
 
 // ===== Logout =====
 export const logout = () => {
-  localStorage.removeItem("access_token")
-  localStorage.removeItem("refresh_token")
-  localStorage.removeItem("user_name")
-  window.location.href = "/login"
-}
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user_name");
+  window.location.href = "/login";
+};
 
 // ===== Check login status =====
-export const isLoggedIn = (): boolean => !!localStorage.getItem("access_token")
+export const isLoggedIn = (): boolean => {
+  const token = localStorage.getItem("access_token");
+  if (!token) return false;
 
-// ===== Fetch All Traders =====
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+};
+
+// ===== Fetch With Auth (Generic + Retry) =====
+export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}): Promise<T> => {
+  let token = localStorage.getItem("access_token");
+  if (!token) throw new Error("Not logged in");
+
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      ...(options.headers || {}),
+    },
+  });
+
+  if (res.status === 401) {
+    try {
+      await refreshToken();
+      token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No token after refresh");
+
+      return fetchWithAuth<T>(url, options); // retry
+    } catch {
+      logout();
+      throw new Error("Unauthorized. Please login again.");
+    }
+  }
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.message || `HTTP error! status: ${res.status}`);
+  }
+
+  return res.json();
+};
+
+// ===== Example Fetch Functions =====
 export const fetchAllTraders = async (skip = 0, limit = 50): Promise<{ traders: Trader[]; total: number }> => {
-  const data = await fetchWithAuth(`${BASE_URL}/admin/dashboard/traders?skip=${skip}&limit=${limit}`)
+  const data = await fetchWithAuth(`${BASE_URL}/admin/dashboard/traders?skip=${skip}&limit=${limit}`);
   const traders: Trader[] = (data.traders ?? []).map((t: any) => ({
     userId: t.user_id,
     status: t.status === true || t.status === "true",
@@ -175,17 +187,13 @@ export const fetchAllTraders = async (skip = 0, limit = 50): Promise<{ traders: 
     equity: t.equity?.toString() ?? "0",
     margin: t.margin?.toString() ?? "0",
     freeMargin: t.free_margin?.toString() ?? "0",
-  }))
-  return { traders, total: data.total ?? traders.length }
-}
+  }));
+  return { traders, total: data.total ?? traders.length };
+};
 
-// ===== Fetch Users Verification (Paginated) =====
-export const fetchUsersVerificationPage = async (
-  skip = 0,
-  limit = 8
-): Promise<{ users: UserVerificationData[]; total: number }> => {
-  const data = await fetchWithAuth(`${BASE_URL}/admin/users?skip=${skip}&limit=${limit}`)
-  const rawUsers = Array.isArray(data) ? data : []
+export const fetchUsersVerificationPage = async (skip = 0, limit = 8): Promise<{ users: UserVerificationData[]; total: number }> => {
+  const data = await fetchWithAuth(`${BASE_URL}/admin/users?skip=${skip}&limit=${limit}`);
+  const rawUsers = Array.isArray(data) ? data : [];
 
   const users: UserVerificationData[] = rawUsers.map((t: any) => ({
     userId: t.id?.toString() ?? '',
@@ -198,30 +206,26 @@ export const fetchUsersVerificationPage = async (
     verification: t.kyc_status
       ? t.kyc_status.charAt(0).toUpperCase() + t.kyc_status.slice(1)
       : 'Pending',
-  }))
+  }));
 
-  return { users, total: rawUsers.length }
-}
+  return { users, total: rawUsers.length };
+};
 
-// ===== Fetch Pending Deposits =====
 export const fetchPendingDeposits = async (): Promise<PendingDepositData[]> => {
-  return fetchWithAuth(`${BASE_URL}/admin/dashboard/pending-deposits`)
-}
+  return fetchWithAuth(`${BASE_URL}/admin/dashboard/pending-deposits`);
+};
 
-// ===== Fetch Pending Withdrawals =====
 export const fetchPendingWithdrawals = async (): Promise<PendingWithdrawalData[]> => {
-  return fetchWithAuth(`${BASE_URL}/admin/dashboard/pending-withdrawals`)
-}
+  return fetchWithAuth(`${BASE_URL}/admin/dashboard/pending-withdrawals`);
+};
 
-// ===== Fetch Margin Calls =====
 export const fetchMarginCalls = async (): Promise<{ activePeople: ActivePerson[]; marginCalls: MarginCall[] }> => {
-  return fetchWithAuth(`${BASE_URL}/admin/dashboard/margin-calls`)
-}
-
+  return fetchWithAuth(`${BASE_URL}/admin/dashboard/margin-calls`);
+};
 
 export const fetchAllAdmins = async (): Promise<Admin[]> => {
-  const res = await fetch('/data/alladmins.json'); // path sesuai public folder
+  const res = await fetch('/data/alladmins.json'); 
   if (!res.ok) throw new Error("Failed to load admins JSON");
   const data = await res.json();
-  return data.admins; // ambil array admins
+  return data.admins;
 };

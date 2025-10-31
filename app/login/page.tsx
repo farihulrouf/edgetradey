@@ -1,3 +1,4 @@
+// pages/login.tsx
 'use client'
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -19,10 +20,9 @@ export default function LoginPage() {
     const checkLogin = async () => {
       if (isLoggedIn()) {
         try {
-          await refreshToken();
+          await refreshToken(); // silent refresh
         } catch {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
+          localStorage.clear();
         }
         router.replace("/dashboard");
       }
@@ -48,10 +48,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const data = await login(email, password);
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
-      localStorage.setItem("user_name", data.user_name || email);
+      await login(email, password);
       router.replace("/dashboard");
     } catch (err: any) {
       setErrorMsg(err.message || "Login gagal");
