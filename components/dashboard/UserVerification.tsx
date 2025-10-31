@@ -4,44 +4,42 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { UserVerificationDialog } from './UserVerificationDialog'
-import { UserVerificationData, fetchAllUsersVerification } from '@/lib/api'
+import { UserVerificationData, fetchUsersVerificationPage } from '@/lib/api'
 
 const ITEMS_PER_PAGE = 8
 
 export const UserVerification = () => {
   const [usersData, setUsersData] = useState<UserVerificationData[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserVerificationData | null>(null)
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add')
-  const [showAll, setShowAll] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+
+  // Load page data
+  const loadPage = async (page: number) => {
     setLoading(true)
-    fetchAllUsersVerification()
-      .then((data) => setUsersData(data))
-      .catch(() => setError('Failed to load users data'))
-      .finally(() => setLoading(false))
-  }, [])
-
-  const totalPages = Math.ceil(usersData.length / ITEMS_PER_PAGE)
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-  const endIndex = showAll ? usersData.length : startIndex + ITEMS_PER_PAGE
-  const currentUsers = usersData.slice(startIndex, endIndex)
-
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
+    try {
+      const skip = (page - 1) * ITEMS_PER_PAGE
+      const { users, total } = await fetchUsersVerificationPage(skip, ITEMS_PER_PAGE)
+      setUsersData(users)
+      setTotalItems(total)
       setCurrentPage(page)
-      setShowAll(false)
+      setError(null)
+    } catch (err: any) {
+      setError(err.message || 'Failed to load users')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleShowAll = () => {
-    setShowAll(true)
-    setCurrentPage(1)
-  }
+  useEffect(() => {
+    loadPage(1)
+  }, [])
 
   const handleRowClick = (user: UserVerificationData) => {
     setSelectedUser(user)
@@ -93,10 +91,16 @@ export const UserVerification = () => {
               </tr>
             </thead>
             <tbody>
-              {currentUsers.map((user, idx) => (
+              {usersData.map((user, idx) => (
                 <tr
                   key={user.userId}
-                  className={`h-[45px] cursor-pointer hover:bg-blue-50 ${idx % 2 === 0 ? 'bg-white' : 'bg-[#F5F5F5]'} transition-all duration-300 ease-in-out`}
+                  className={`h-[45px] cursor-pointer hover:bg-blue-50 transition-all duration-300 ${
+                    selectedUser?.userId === user.userId
+                      ? 'border-t-2 border-b-2 border-blue-400'
+                      : idx % 2 === 0
+                      ? 'bg-white'
+                      : 'bg-[#F5F5F5]'
+                  }`}
                   onClick={() => handleRowClick(user)}
                 >
                   <td className="p-2 text-[10px]">{user.userId}</td>
@@ -110,10 +114,10 @@ export const UserVerification = () => {
                       className={`p-1 px-2 rounded-lg text-center font-medium ${
                         user.verification === 'Pending'
                           ? 'bg-gray-100 text-gray-500'
-                          : user.verification === 'Uploaded'
-                          ? 'bg-blue-100 text-blue-500'
                           : user.verification === 'Approved'
                           ? 'bg-green-50 text-green-500'
+                          : user.verification === 'Rejected'
+                          ? 'bg-red-100 text-red-500'
                           : ''
                       }`}
                     >
@@ -130,7 +134,7 @@ export const UserVerification = () => {
       {/* Pagination */}
       <div className="flex-shrink-0 flex items-center justify-center gap-2 p-4 border-t border-gray-200 flex-wrap bg-white rounded-b-lg">
         <Button
-          onClick={() => goToPage(currentPage - 1)}
+          onClick={() => loadPage(currentPage - 1)}
           disabled={currentPage === 1}
           size="sm"
           className="bg-white text-black hover:bg-[#e6f0ff]"
@@ -144,7 +148,7 @@ export const UserVerification = () => {
             <Button
               key={i}
               size="sm"
-              onClick={() => goToPage(i + 1)}
+              onClick={() => loadPage(i + 1)}
               className={`${isActive ? 'bg-[#1D6CE9] text-white' : 'bg-white text-black hover:bg-[#e6f0ff]'} `}
             >
               {i + 1}
@@ -153,23 +157,13 @@ export const UserVerification = () => {
         })}
 
         <Button
-          onClick={() => goToPage(currentPage + 1)}
+          onClick={() => loadPage(currentPage + 1)}
           disabled={currentPage === totalPages}
           size="sm"
           className="bg-white text-black hover:bg-[#e6f0ff]"
         >
           Next <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
-
-        {!showAll ? (
-          <Button onClick={handleShowAll} size="sm" className="bg-white text-black hover:bg-[#e6f0ff]">
-            Show all
-          </Button>
-        ) : (
-          <Button onClick={() => setShowAll(false)} size="sm" className="bg-white text-black hover:bg-[#e6f0ff]">
-            Show paginated
-          </Button>
-        )}
       </div>
 
       {/* Dialog */}

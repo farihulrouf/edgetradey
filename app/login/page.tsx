@@ -5,7 +5,7 @@ import { Eye, EyeOff, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login, isLoggedIn } from "@/lib/api";
+import { login, isLoggedIn, refreshToken } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,14 +16,33 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    if (isLoggedIn()) router.replace("/dashboard");
+    const checkLogin = async () => {
+      if (isLoggedIn()) {
+        try {
+          await refreshToken();
+        } catch {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+        }
+        router.replace("/dashboard");
+      }
+    };
+    checkLogin();
   }, [router]);
+
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+
     if (!email || !password) {
       setErrorMsg("Email dan password wajib diisi.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrorMsg("Format email tidak valid.");
       return;
     }
 
@@ -32,16 +51,14 @@ export default function LoginPage() {
       const data = await login(email, password);
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
-      localStorage.setItem("user_name", email);
-      router.push("/dashboard");
+      localStorage.setItem("user_name", data.user_name || email);
+      router.replace("/dashboard");
     } catch (err: any) {
       setErrorMsg(err.message || "Login gagal");
     } finally {
       setLoading(false);
     }
   };
-
-  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gray-50">
@@ -50,10 +67,7 @@ export default function LoginPage() {
         <p className="text-muted-foreground">Intelligent Service</p>
       </div>
 
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-sm bg-white p-8 rounded-lg shadow-lg space-y-6"
-      >
+      <form onSubmit={handleLogin} className="w-full max-w-sm bg-white p-8 rounded-lg shadow-lg space-y-6">
         <h2 className="text-2xl font-semibold text-gray-700 text-center">Welcome back!</h2>
         {errorMsg && <div className="text-red-500 text-sm text-center">{errorMsg}</div>}
 

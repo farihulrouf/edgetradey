@@ -1,3 +1,4 @@
+// UserTradeDialog.tsx
 'use client'
 
 import { useState } from "react"
@@ -8,7 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import data from "@/data/trades.json"
 
-interface User {
+// tipe user yang digunakan dialog, userId string
+export interface TraderDialogUser {
   userId: string
   name: string
   email: string
@@ -24,7 +26,7 @@ type TradeRow = Record<string, any>
 interface UserTradeDialogProps {
   isOpen: boolean
   onClose: () => void
-  selectedUser: User | null
+  selectedUser: TraderDialogUser | null
 }
 
 export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDialogProps) => {
@@ -85,12 +87,7 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
         <TableHeader>
           <TableRow className="bg-gray-100">
             {columns.map((col) => (
-              <TableHead
-                key={col}
-                className="text-[11px] font-semibold text-gray-600 whitespace-nowrap"
-              >
-                {col}
-              </TableHead>
+              <TableHead key={col} className="text-[11px] font-semibold text-gray-600 whitespace-nowrap">{col}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -100,12 +97,9 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
             const isSelectedRow = selectedRowIndex === i
 
             return (
-              <TableRow
-                key={i}
-                className={`transition-all duration-150 hover:bg-gray-50
+              <TableRow key={i} className={`transition-all duration-150 hover:bg-gray-50
                 ${isSelectedRow ? "border-t-2 border-b-2 border-black" : "border-t border-gray-200"}
-              `}
-              >
+              `}>
                 {columns.map((col, j) => {
                   const isEditingCell = isEditingRow && editingCell?.col === col
                   const cellValue = renderValue(row[col])
@@ -119,15 +113,10 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
                       : "text-gray-700"
 
                   return (
-                    <TableCell
-                      key={j}
-                      className="relative text-[11px] whitespace-nowrap px-1 cursor-pointer"
-                      onClick={() => handleCellClick(i, col, row[col])}
-                    >
+                    <TableCell key={j} className="relative text-[11px] whitespace-nowrap px-1 cursor-pointer"
+                      onClick={() => handleCellClick(i, col, row[col])}>
                       {isEditingCell && col === "direction" ? (
-                        // Dropdown langsung muncul saat klik cell direction
-                        <select
-                          className="absolute inset-0 w-full h-full rounded-sm px-1 py-0.5 text-[11px] focus:outline-none"
+                        <select className="absolute inset-0 w-full h-full rounded-sm px-1 py-0.5 text-[11px] focus:outline-none"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
                           onBlur={handleEditSave}
@@ -137,8 +126,7 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
                           <option value="SELL">SELL</option>
                         </select>
                       ) : isEditingCell && col !== "direction" ? (
-                        <input
-                          className="absolute inset-0 w-full h-full px-1 py-0.5 text-[11px] focus:outline-none"
+                        <input className="absolute inset-0 w-full h-full px-1 py-0.5 text-[11px] focus:outline-none"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
                           onBlur={handleEditSave}
@@ -173,7 +161,6 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
           <div className="flex-1 overflow-auto p-6">
             {selectedUser ? (
               <>
-                {/* User Info */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   {[
                     ["User ID", selectedUser.userId],
@@ -188,7 +175,6 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
                   ))}
                 </div>
 
-                {/* Tabs + Buttons */}
                 <div className="bg-white border rounded-md shadow-sm p-4">
                   <div className="flex items-center justify-between mb-4">
                     <Tabs value={subTab} onValueChange={setSubTab}>
@@ -213,7 +199,6 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
                     </div>
                   </div>
 
-                  {/* Summary Info */}
                   <div className="flex items-center space-x-[10px] text-xs text-gray-700 mb-4">
                     <p>All Swaps: 0.08</p>
                     <p>All Commissions: 0.08</p>
@@ -221,74 +206,21 @@ export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDial
                     <p>All Total Profit: -$174.21</p>
                   </div>
 
-                  {/* Table content */}
                   <Tabs value={subTab} onValueChange={setSubTab}>
                     <TabsContent value="open">
-                      {renderTable(
-                        openPositions,
-                        [
-                          "userId",
-                          "pidNo",
-                          "symbol",
-                          "createdTime",
-                          "volume",
-                          "direction",
-                          "enterPrice",
-                          "price",
-                          "stopLoss",
-                          "takeProfit",
-                          "swap",
-                          "commission",
-                          "profit",
-                          "netprofit",
-                        ],
-                        true
-                      )}
+                      {renderTable(openPositions, ["userId","pidNo","symbol","createdTime","volume","direction","enterPrice","price","stopLoss","takeProfit","swap","commission","profit","netprofit"], true)}
                     </TabsContent>
 
                     <TabsContent value="order">
-                      {renderTable(data.orderPositions as TradeRow[], [
-                        "userId",
-                        "pidNo",
-                        "symbol",
-                        "createdTime",
-                        "volume",
-                        "direction",
-                        "orderPrice",
-                        "price",
-                        "stopLoss",
-                        "takeProfit",
-                      ])}
+                      {renderTable(data.orderPositions as TradeRow[], ["userId","pidNo","symbol","createdTime","volume","direction","orderPrice","price","stopLoss","takeProfit"])}
                     </TabsContent>
 
                     <TabsContent value="closed">
-                      {renderTable(data.closedPositions as TradeRow[], [
-                        "userId",
-                        "pidNo",
-                        "symbol",
-                        "createdTime",
-                        "closeTime",
-                        "volume",
-                        "direction",
-                        "enterPrice",
-                        "closePrice",
-                        "stopLoss",
-                        "takeProfit",
-                        "swap",
-                        "commission",
-                        "profit",
-                        "netProfit",
-                      ])}
+                      {renderTable(data.closedPositions as TradeRow[], ["userId","pidNo","symbol","createdTime","closeTime","volume","direction","enterPrice","closePrice","stopLoss","takeProfit","swap","commission","profit","netProfit"])}
                     </TabsContent>
 
                     <TabsContent value="transactions">
-                      {renderTable(data.transactions as TradeRow[], [
-                        "userId",
-                        "type",
-                        "place",
-                        "time",
-                        "amount",
-                      ])}
+                      {renderTable(data.transactions as TradeRow[], ["userId","type","place","time","amount"])}
                     </TabsContent>
                   </Tabs>
                 </div>

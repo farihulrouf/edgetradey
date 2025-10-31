@@ -1,52 +1,41 @@
 'use client'
-
 import { Search, Bell, ChevronDown, Shield, LogOut } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
 import * as React from "react"
 import { useLogout } from '@/lib/useLogout'
-
+import { useRouter } from "next/navigation"
 
 // -------------------- Dropdown Components --------------------
-export const DropdownMenu = React.forwardRef<
-  HTMLDivElement,
-  { children: React.ReactNode }
->(({ children }, ref) => {
-  return (
-    <div ref={ref} className="relative inline-block text-left">
+export const DropdownMenu = React.forwardRef<HTMLDivElement, { children: React.ReactNode }>(
+  ({ children }, ref) => <div ref={ref} className="relative inline-block text-left">{children}</div>
+)
+DropdownMenu.displayName = "DropdownMenu"
+
+export const DropdownMenuContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => (
+    <div
+      ref={ref}
+      {...props}
+      className={`absolute z-50 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black/5 focus:outline-none ${className}`}
+    >
       {children}
     </div>
   )
-})
-DropdownMenu.displayName = "DropdownMenu"
-
-export const DropdownMenuContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ children, className, ...props }, ref) => (
-  <div
-    ref={ref}
-    {...props}
-    className={`absolute z-50 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black/5 focus:outline-none ${className}`}
-  >
-    {children}
-  </div>
-))
+)
 DropdownMenuContent.displayName = "DropdownMenuContent"
 
-export const DropdownMenuItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ children, className, ...props }, ref) => (
-  <div
-    ref={ref}
-    {...props}
-    className={`flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 ${className}`}
-  >
-    {children}
-  </div>
-))
+export const DropdownMenuItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => (
+    <div
+      ref={ref}
+      {...props}
+      className={`flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 ${className}`}
+    >
+      {children}
+    </div>
+  )
+)
 DropdownMenuItem.displayName = "DropdownMenuItem"
 
 // -------------------- Navbar Component --------------------
@@ -57,21 +46,18 @@ export function Navbar() {
   const userRef = React.useRef<HTMLDivElement>(null)
   const notifRef = React.useRef<HTMLDivElement>(null)
   const logout = useLogout()
+  const router = useRouter()
 
   const handleLogout = () => {
     logout()
-    setUserOpen(false) // close dropdown
+    setUserOpen(false)
+    router.push("/login")
   }
 
-  // Close dropdown if click outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (userRef.current && !userRef.current.contains(event.target as Node)) {
-        setUserOpen(false)
-      }
-      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
-        setNotifOpen(false)
-      }
+      if (userRef.current && !userRef.current.contains(event.target as Node)) setUserOpen(false)
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) setNotifOpen(false)
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
@@ -82,11 +68,7 @@ export function Navbar() {
       <div className="flex items-center justify-between gap-4">
         {/* User Dropdown */}
         <DropdownMenu ref={userRef}>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-1 hover:bg-accent"
-            onClick={() => setUserOpen(!userOpen)}
-          >
+          <Button variant="ghost" className="flex items-center gap-1 hover:bg-accent" onClick={() => setUserOpen(!userOpen)}>
             <span className="font-medium">Dominique Ch.</span>
             <ChevronDown className="h-4 w-4" />
           </Button>
@@ -106,17 +88,12 @@ export function Navbar() {
 
         {/* Search Bar */}
         <div className="flex-1 max-w-md relative">
-         
+          <Input placeholder="Search..." className="w-full" />
         </div>
 
         {/* Notification Dropdown */}
         <DropdownMenu ref={notifRef}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
-            onClick={() => setNotifOpen(!notifOpen)}
-          >
+          <Button variant="ghost" size="icon" className="relative" onClick={() => setNotifOpen(!notifOpen)}>
             <Bell className="h-5 w-5 text-blue-500" />
             <span className="absolute top-1 right-1 h-2 w-2 bg-blue-500 rounded-full" />
           </Button>
@@ -126,26 +103,7 @@ export function Navbar() {
                 <h3 className="font-semibold text-sm">Notifications</h3>
               </div>
               <div className="max-h-96 overflow-y-auto">
-                <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                  <span className="font-medium text-sm">New withdrawal request</span>
-                  <span className="text-xs text-muted-foreground">User #1846456 requested $200.00 withdrawal</span>
-                  <span className="text-xs text-blue-500">2 minutes ago</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                  <span className="font-medium text-sm">Withdrawal approved</span>
-                  <span className="text-xs text-muted-foreground">Withdrawal for user #1846455 has been processed</span>
-                  <span className="text-xs text-blue-500">15 minutes ago</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                  <span className="font-medium text-sm">System maintenance</span>
-                  <span className="text-xs text-muted-foreground">Scheduled maintenance at 2:00 AM tonight</span>
-                  <span className="text-xs text-blue-500">1 hour ago</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-                  <span className="font-medium text-sm">Security alert</span>
-                  <span className="text-xs text-muted-foreground">New login from unknown device detected</span>
-                  <span className="text-xs text-blue-500">3 hours ago</span>
-                </DropdownMenuItem>
+                {/* Contoh notifikasi */}
               </div>
             </DropdownMenuContent>
           )}
