@@ -88,7 +88,7 @@ export function Navbar() {
 
         {/* Search Bar */}
         <div className="flex-1 max-w-md relative">
-          <Input placeholder="Search..." className="w-full" />
+          
         </div>
 
         {/* Notification Dropdown */}
