@@ -358,7 +358,7 @@ export const UserTradeDialog = ({
                   </div>
 
                   <Tabs value={subTab} onValueChange={setSubTab}>
-                    <TabsContent value="open">
+                    <TabsContent value="open" className="flex-1 overflow-auto">
                       {renderTable(openPositions, [
                         "userId",
                         "pidNo",
@@ -374,6 +374,22 @@ export const UserTradeDialog = ({
                         "commission",
                         "profit",
                         "netprofit",
+                      ])}
+                    </TabsContent>
+
+                    {/* Order Positions */}
+                    <TabsContent value="order" className="flex-1 overflow-auto">
+                      {renderTable(data.orderPositions, [
+                        "userId",
+                        "pidNo",
+                        "symbol",
+                        "createdTime",
+                        "volume",
+                        "direction",
+                        "orderPrice",
+                        "price",
+                        "stopLoss",
+                        "takeProfit",
                       ])}
                     </TabsContent>
                   </Tabs>
