@@ -158,7 +158,7 @@ export const UserTradeDialog = ({
                       <div
                         className={`${col === "createdTime" ? "w-[120px]" : "w-[60px]"} h-[26px] flex items-center justify-center ${isSelectedRow &&
                           !["userId", "pidNo", "profit", "netprofit"].includes(col)
-                          ? "bg-blue-100"
+                          ? "bg-[#BFBFBF40]"
                           : "bg-white"
                           }`}
                       >
@@ -249,7 +249,7 @@ export const UserTradeDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[1200px] bg-gray-50 rounded-xl shadow-2xl border border-gray-200 overflow-hidden p-0 flex items-center justify-center">
+      <DialogContent className="max-w-[1200px] bg-[#EAEAEA] rounded-xl shadow-2xl border border-gray-200 overflow-hidden p-0 flex items-center justify-center">
         <div className="relative h-full flex flex-col w-full">
           <div className="flex-1 overflow-auto p-2">
             {selectedUser ? (
