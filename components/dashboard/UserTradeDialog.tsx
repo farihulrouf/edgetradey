@@ -240,6 +240,7 @@ export const UserTradeDialog = ({
   }
 
   return (
+    
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[1280px] bg-[#EAEAEA] rounded-xl shadow-2xl border border-gray-200 overflow-hidden p-0 flex items-center justify-center">
         <div className="relative h-full flex flex-col w-full">

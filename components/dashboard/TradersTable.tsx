@@ -1,4 +1,3 @@
-// TradersTable.tsx
 'use client'
 
 import { useState, useEffect } from "react"
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Download, ChevronLeft, ChevronRight } from "lucide-react"
 import { fetchAllTraders, Trader } from "@/lib/api"
 import { UserTradeDialog, TraderDialogUser } from "./UserTradeDialog"
+import { motion, AnimatePresence } from "framer-motion"
 
 const ITEMS_PER_PAGE = 8
 
@@ -100,29 +100,36 @@ export const TradersTable = () => {
                   <th className="p-2 font-semibold last:rounded-tr-lg">Free Margin</th>
                 </tr>
               </thead>
-              <tbody>
-                {traders.map((trader, idx) => (
-                  <tr
-                    key={trader.userId}
-                    className={`h-[45px] cursor-pointer hover:bg-blue-50 ${idx % 2 === 0 ? "bg-white" : "bg-[#E0E0E0]"}`}
-                    onClick={() => handleRowClick(trader)}
-                  >
-                    <td className="p-2 text-[10px]">{trader.userId}</td>
-                    <td className="p-2 text-center">
-                      <div className={`w-2 h-2 rounded-full ${trader.status ? "bg-green-500" : "bg-red-500"} mx-auto`} />
-                    </td>
-                    <td className="p-2 text-[10px]">{trader.name}</td>
-                    <td className="p-2 text-[10px]">{trader.accountType}</td>
-                    <td className="p-2 text-[10px]">{trader.email}</td>
-                    <td className="p-2 text-[10px]">{trader.phone}</td>
-                    <td className="p-2 text-[10px]">{trader.credit}</td>
-                    <td className="p-2 text-[10px]">{trader.balance}</td>
-                    <td className="p-2 text-[10px]">{trader.equity}</td>
-                    <td className="p-2 text-[10px]">{trader.margin}</td>
-                    <td className="p-2 text-[10px]">{trader.freeMargin}</td>
-                  </tr>
-                ))}
-              </tbody>
+              <AnimatePresence mode="popLayout">
+                <motion.tbody layout>
+                  {traders.map((trader, idx) => (
+                    <motion.tr
+                      key={trader.userId}
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.35 }}
+                      className={`h-[45px] cursor-pointer hover:bg-blue-50 ${idx % 2 === 0 ? "bg-white" : "bg-[#E0E0E0]"}`}
+                      onClick={() => handleRowClick(trader)}
+                    >
+                      <td className="p-2 text-[10px]">{trader.userId}</td>
+                      <td className="p-2 text-center">
+                        <div className={`w-2 h-2 rounded-full ${trader.status ? "bg-green-500" : "bg-red-500"} mx-auto`} />
+                      </td>
+                      <td className="p-2 text-[10px]">{trader.name}</td>
+                      <td className="p-2 text-[10px]">{trader.accountType}</td>
+                      <td className="p-2 text-[10px]">{trader.email}</td>
+                      <td className="p-2 text-[10px]">{trader.phone}</td>
+                      <td className="p-2 text-[10px]">{trader.credit}</td>
+                      <td className="p-2 text-[10px]">{trader.balance}</td>
+                      <td className="p-2 text-[10px]">{trader.equity}</td>
+                      <td className="p-2 text-[10px]">{trader.margin}</td>
+                      <td className="p-2 text-[10px]">{trader.freeMargin}</td>
+                    </motion.tr>
+                  ))}
+                </motion.tbody>
+              </AnimatePresence>
             </table>
           </div>
         </div>

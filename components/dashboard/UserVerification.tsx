@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { UserVerificationDialog } from './UserVerificationDialog'
 import { UserVerificationData, fetchUsersVerificationPage } from '@/lib/api'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const ITEMS_PER_PAGE = 8
 
@@ -20,7 +21,6 @@ export const UserVerification = () => {
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
-  // Load page data
   const loadPage = async (page: number) => {
     setLoading(true)
     try {
@@ -90,43 +90,52 @@ export const UserVerification = () => {
                 <th className="p-2 text-left font-semibold last:rounded-tr-lg">Verification</th>
               </tr>
             </thead>
-            <tbody>
-              {usersData.map((user, idx) => (
-                <tr
-                  key={user.userId}
-                  className={`h-[45px] cursor-pointer hover:bg-blue-50 transition-all duration-300 ${
-                    selectedUser?.userId === user.userId
-                      ? 'border-t-2 border-b-2 border-blue-400'
-                      : idx % 2 === 0
-                      ? 'bg-white'
-                      : 'bg-[#F5F5F5]'
-                  }`}
-                  onClick={() => handleRowClick(user)}
-                >
-                  <td className="p-2 text-[10px]">{user.userId}</td>
-                  <td className="p-2 text-[10px]">{user.name}</td>
-                  <td className="p-2 text-[10px]">{user.accountType}</td>
-                  <td className="p-2 text-[10px]">{user.email}</td>
-                  <td className="p-2 text-[10px]">{user.phone}</td>
-                  <td className="p-2 text-[10px]">{user.dateOfBirth}</td>
-                  <td className="p-2 text-[10px]">
-                    <p
-                      className={`p-1 px-2 rounded-lg text-center font-medium ${
-                        user.verification === 'Pending'
-                          ? 'bg-gray-100 text-gray-500'
-                          : user.verification === 'Approved'
-                          ? 'bg-green-50 text-green-500'
-                          : user.verification === 'Rejected'
-                          ? 'bg-red-100 text-red-500'
-                          : ''
-                      }`}
-                    >
-                      {user.verification}
-                    </p>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+
+            {/* AnimatePresence & Motion Tbody */}
+            <AnimatePresence mode="popLayout">
+              <motion.tbody layout>
+                {usersData.map((user, idx) => (
+                  <motion.tr
+                    key={user.userId}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.35 }}
+                    className={`h-[45px] cursor-pointer hover:bg-blue-50 transition-all duration-300 ${
+                      selectedUser?.userId === user.userId
+                        ? 'border-t-2 border-b-2 border-blue-400'
+                        : idx % 2 === 0
+                        ? 'bg-white'
+                        : 'bg-[#F5F5F5]'
+                    }`}
+                    onClick={() => handleRowClick(user)}
+                  >
+                    <td className="p-2 text-[10px]">{user.userId}</td>
+                    <td className="p-2 text-[10px]">{user.name}</td>
+                    <td className="p-2 text-[10px]">{user.accountType}</td>
+                    <td className="p-2 text-[10px]">{user.email}</td>
+                    <td className="p-2 text-[10px]">{user.phone}</td>
+                    <td className="p-2 text-[10px]">{user.dateOfBirth}</td>
+                    <td className="p-2 text-[10px]">
+                      <p
+                        className={`p-1 px-2 rounded-lg text-center font-medium ${
+                          user.verification === 'Pending'
+                            ? 'bg-gray-100 text-gray-500'
+                            : user.verification === 'Approved'
+                            ? 'bg-green-50 text-green-500'
+                            : user.verification === 'Rejected'
+                            ? 'bg-red-100 text-red-500'
+                            : ''
+                        }`}
+                      >
+                        {user.verification}
+                      </p>
+                    </td>
+                  </motion.tr>
+                ))}
+              </motion.tbody>
+            </AnimatePresence>
           </table>
         </div>
       </div>

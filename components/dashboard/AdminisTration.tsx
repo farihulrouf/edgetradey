@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 import { fetchAllAdmins } from "@/lib/api"
 
 interface Admin {
@@ -52,7 +53,13 @@ const AdminDialog = ({ open, onClose, onSave, admin }: AdminDialogProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="bg-white rounded-lg shadow-lg w-[400px] p-6 relative">
+      <motion.div
+        className="bg-white rounded-lg shadow-lg w-[400px] p-6 relative"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+      >
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
           onClick={onClose}
@@ -97,7 +104,7 @@ const AdminDialog = ({ open, onClose, onSave, admin }: AdminDialogProps) => {
             {admin ? "Save Changes" : "Add"}
           </Button>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -204,25 +211,36 @@ export const Administration = () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedAdmins.map((admin, idx) => (
-                <tr
-                  key={admin.id}
-                  className={`h-[45px] ${idx % 2 === 0 ? "bg-white" : "bg-[#F5F5F5]"} hover:bg-blue-50 transition-all duration-300 ease-in-out cursor-pointer`}
-                  onClick={() => { setSelectedAdmin(admin); setDialogOpen(true) }}
-                >
-                  <td className="p-2 text-[10px] w-[250px]">{admin.name}</td>
-                  <td className="p-2 text-[10px] w-[120px]">{admin.role}</td>
-                  <td className="p-2 text-[10px] w-[200px]">{admin.email}</td>
-                  <td className="p-2 text-[10px] w-[80px]">****</td>
-                </tr>
-              ))}
-              {paginatedAdmins.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="text-center py-6 text-gray-500 text-[11px]">
-                    No matching records found
-                  </td>
-                </tr>
-              )}
+              <AnimatePresence mode="popLayout">
+                {paginatedAdmins.map((admin, idx) => (
+                  <motion.tr
+                    key={admin.id}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.35 }}
+                    className={`h-[45px] ${idx % 2 === 0 ? "bg-white" : "bg-[#F5F5F5]"} hover:bg-blue-50 transition-all duration-300 ease-in-out cursor-pointer`}
+                    onClick={() => { setSelectedAdmin(admin); setDialogOpen(true) }}
+                  >
+                    <td className="p-2 text-[10px] w-[250px]">{admin.name}</td>
+                    <td className="p-2 text-[10px] w-[120px]">{admin.role}</td>
+                    <td className="p-2 text-[10px] w-[200px]">{admin.email}</td>
+                    <td className="p-2 text-[10px] w-[80px]">****</td>
+                  </motion.tr>
+                ))}
+                {paginatedAdmins.length === 0 && (
+                  <motion.tr
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <td colSpan={4} className="text-center py-6 text-gray-500 text-[11px]">
+                      No matching records found
+                    </td>
+                  </motion.tr>
+                )}
+              </AnimatePresence>
             </tbody>
           </table>
         </div>
