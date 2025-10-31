@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import data from "@/data/trades.json"
+import { motion, AnimatePresence } from "framer-motion"
 
 export interface TraderDialogUser {
   userId: string
@@ -44,7 +45,7 @@ export const UserTradeDialog = ({
   const [editingCell, setEditingCell] = useState<{ row: number; col: string } | null>(null)
   const [editValue, setEditValue] = useState("")
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
-  const [tempEdited, setTempEdited] = useState<TradeRow[]>([]) // simpan sementara
+  const [tempEdited, setTempEdited] = useState<TradeRow[]>([])
 
   const editableColumns = [
     "symbol",
@@ -61,12 +62,10 @@ export const UserTradeDialog = ({
 
   const symbolOptions = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD", "USDCAD"]
 
-  // === Load initial data ===
   useEffect(() => {
     setOpenPositions(data.tradePositions)
   }, [])
 
-  // === Handler: Klik cell untuk edit ===
   const handleCellClick = (rowIndex: number, col: string, value: any) => {
     if (editableColumns.includes(col)) {
       setEditingCell({ row: rowIndex, col })
@@ -77,7 +76,6 @@ export const UserTradeDialog = ({
     setSelectedRowIndex(rowIndex)
   }
 
-  // === Simpan perubahan ke state sementara ===
   const handleEditSave = () => {
     if (editingCell) {
       const updated = [...openPositions]
@@ -86,7 +84,7 @@ export const UserTradeDialog = ({
         [editingCell.col]: editValue,
       }
       setOpenPositions(updated)
-      setTempEdited(updated) // simpan sementara di tempEdited
+      setTempEdited(updated)
       setEditingCell(null)
       setEditValue("")
     }
@@ -103,7 +101,6 @@ export const UserTradeDialog = ({
   const renderValue = (val: unknown) =>
     val === null || val === undefined ? "-" : String(val)
 
-  // === Render table ===
   const renderTable = (rows: TradeRow[], columns: string[]) => (
     <div className="overflow-x-auto max-h-[300px] overflow-y-auto rounded-xl">
       <Table className="text-[11px] border-collapse w-full text-center">
@@ -128,8 +125,7 @@ export const UserTradeDialog = ({
             return (
               <TableRow
                 key={i}
-                className={`hover:bg-gray-50 transition-colors text-center ${isSelectedRow ? "" : ""
-                  }`}
+                className={`hover:bg-gray-50 transition-colors text-center ${isSelectedRow ? "" : ""}`}
                 style={{ height: "26px" }}
               >
                 {columns.map((col, j) => {
@@ -162,8 +158,6 @@ export const UserTradeDialog = ({
                             : "bg-white"
                           }`}
                       >
-
-                        {/* === Editable Cells === */}
                         {isEditingCell && col === "direction" ? (
                           <select
                             className="absolute inset-0 w-full h-full border border-gray-300 bg-white text-[11px] text-center focus:outline-none cursor-pointer"
@@ -232,15 +226,12 @@ export const UserTradeDialog = ({
     </div>
   )
 
-  // === Buttons ===
   const handleRefresh = () => {
-    console.log("Refreshing table from original source...")
     setOpenPositions(data.tradePositions)
-    setTempEdited([]) // hapus data edit sementara
+    setTempEdited([])
   }
 
   const handleEdit = () => {
-    console.log("Edited positions (temporary):", tempEdited)
     alert("Perubahan disimpan sementara (belum dikirim ke API).")
   }
 
@@ -278,7 +269,6 @@ export const UserTradeDialog = ({
                     </div>
                   ))}
                 </div>
-
 
                 {/* === Summary Info Bar === */}
                 <div className="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-md px-4 py-3 mb-3 text-sm font-medium text-gray-700">
@@ -353,74 +343,106 @@ export const UserTradeDialog = ({
                         <XCircle className="w-4 h-6" /> Close Position
                       </Button>
                     </div>
-
-
                   </div>
 
-                  <Tabs value={subTab} onValueChange={setSubTab}>
-                    <TabsContent value="open" className="flex-1 overflow-auto">
-                      {renderTable(openPositions, [
-                        "userId",
-                        "pidNo",
-                        "symbol",
-                        "createdTime",
-                        "volume",
-                        "direction",
-                        "enterPrice",
-                        "price",
-                        "stopLoss",
-                        "takeProfit",
-                        "swap",
-                        "commission",
-                        "profit",
-                        "netprofit",
-                      ])}
-                    </TabsContent>
+                  {/* === Animated Tabs Content === */}
+                  <AnimatePresence mode="wait">
+                    {subTab === "open" && (
+                      <motion.div
+                        key="open"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        {renderTable(openPositions, [
+                          "userId",
+                          "pidNo",
+                          "symbol",
+                          "createdTime",
+                          "volume",
+                          "direction",
+                          "enterPrice",
+                          "price",
+                          "stopLoss",
+                          "takeProfit",
+                          "swap",
+                          "commission",
+                          "profit",
+                          "netprofit",
+                        ])}
+                      </motion.div>
+                    )}
 
-                    {/* Order Positions */}
-                    <TabsContent value="order" className="flex-1 overflow-auto">
-                      {renderTable(data.orderPositions, [
-                        "userId",
-                        "pidNo",
-                        "symbol",
-                        "createdTime",
-                        "volume",
-                        "direction",
-                        "orderPrice",
-                        "price",
-                        "stopLoss",
-                        "takeProfit",
-                      ])}
-                    </TabsContent>
-                    <TabsContent value="closed" className="flex-1 overflow-auto">
-                      {renderTable(data.closedPositions, [
-                        "userId",
-                        "pidNo",
-                        "symbol",
-                        "createdTime",
-                        "closeTime",
-                        "volume",
-                        "direction",
-                        "enterPrice",
-                        "closePrice",
-                        "stopLoss",
-                        "takeProfit",
-                        "swap",
-                        "commission",
-                        "profit",
-                        "netProfit",
-                      ])}
-                    </TabsContent>
-                    <TabsContent value="transactions" className="flex-1 overflow-auto">
-                      {renderTable(data.transactions || [], [
-                        "userId",
-                        "type",
-                        "place",
-                        "time",
-                        "amount",
-                      ])}
-                    </TabsContent>
-                  </Tabs>
+                    {subTab === "order" && (
+                      <motion.div
+                        key="order"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        {renderTable(data.orderPositions, [
+                          "userId",
+                          "pidNo",
+                          "symbol",
+                          "createdTime",
+                          "volume",
+                          "direction",
+                          "orderPrice",
+                          "price",
+                          "stopLoss",
+                          "takeProfit",
+                        ])}
+                      </motion.div>
+                    )}
+
+                    {subTab === "closed" && (
+                      <motion.div
+                        key="closed"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        {renderTable(data.closedPositions, [
+                          "userId",
+                          "pidNo",
+                          "symbol",
+                          "createdTime",
+                          "closeTime",
+                          "volume",
+                          "direction",
+                          "enterPrice",
+                          "closePrice",
+                          "stopLoss",
+                          "takeProfit",
+                          "swap",
+                          "commission",
+                          "profit",
+                          "netProfit",
+                        ])}
+                      </motion.div>
+                    )}
+
+                    {subTab === "transactions" && (
+                      <motion.div
+                        key="transactions"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        {renderTable(data.transactions || [], [
+                          "userId",
+                          "type",
+                          "place",
+                          "time",
+                          "amount",
+                        ])}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </>
             ) : (
