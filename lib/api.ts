@@ -1,4 +1,6 @@
 // lib/api.ts
+
+// ====== Interfaces ======
 export interface Trader {
   userId: number;
   status: boolean;
@@ -62,9 +64,10 @@ export interface LoginResponse {
   user_name?: string;
 }
 
+// ====== Base URL ======
 const BASE_URL = "http://91.108.122.156/api/v1";
 
-// ===== Login =====
+// ====== Login ======
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
   const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
@@ -84,7 +87,7 @@ export const login = async (email: string, password: string): Promise<LoginRespo
   return data;
 };
 
-// ===== Refresh Token (Queue) =====
+// ====== Refresh Token (Queue System) ======
 let refreshingToken: Promise<void> | null = null;
 
 export const refreshToken = async (): Promise<void> => {
@@ -115,7 +118,7 @@ export const refreshToken = async (): Promise<void> => {
   return refreshingToken;
 };
 
-// ===== Logout =====
+// ====== Logout ======
 export const logout = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
@@ -123,7 +126,7 @@ export const logout = () => {
   window.location.href = "/login";
 };
 
-// ===== Check login status =====
+// ====== Check Login Status ======
 export const isLoggedIn = (): boolean => {
   const token = localStorage.getItem("access_token");
   if (!token) return false;
@@ -136,7 +139,7 @@ export const isLoggedIn = (): boolean => {
   }
 };
 
-// ===== Fetch With Auth (Generic + Retry) =====
+// ====== Fetch with Auth (Generic + Retry) ======
 export const fetchWithAuth = async <T = any>(url: string, options: RequestInit = {}): Promise<T> => {
   let token = localStorage.getItem("access_token");
   if (!token) throw new Error("Not logged in");
@@ -157,7 +160,7 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
       token = localStorage.getItem("access_token");
       if (!token) throw new Error("No token after refresh");
 
-      return fetchWithAuth<T>(url, options); // retry
+      return fetchWithAuth<T>(url, options); // retry once
     } catch {
       logout();
       throw new Error("Unauthorized. Please login again.");
@@ -172,8 +175,11 @@ export const fetchWithAuth = async <T = any>(url: string, options: RequestInit =
   return res.json();
 };
 
-// ===== Example Fetch Functions =====
-export const fetchAllTraders = async (skip = 0, limit = 50): Promise<{ traders: Trader[]; total: number }> => {
+// ====== Fetch All Traders ======
+export const fetchAllTraders = async (
+  skip = 0,
+  limit = 50
+): Promise<{ traders: Trader[]; total: number }> => {
   const data = await fetchWithAuth(`${BASE_URL}/admin/dashboard/traders?skip=${skip}&limit=${limit}`);
   const traders: Trader[] = (data.traders ?? []).map((t: any) => ({
     userId: t.user_id,
@@ -191,7 +197,11 @@ export const fetchAllTraders = async (skip = 0, limit = 50): Promise<{ traders: 
   return { traders, total: data.total ?? traders.length };
 };
 
-export const fetchUsersVerificationPage = async (skip = 0, limit = 8): Promise<{ users: UserVerificationData[]; total: number }> => {
+// ====== Fetch Users Verification ======
+export const fetchUsersVerificationPage = async (
+  skip = 0,
+  limit = 8
+): Promise<{ users: UserVerificationData[]; total: number }> => {
   const data = await fetchWithAuth(`${BASE_URL}/admin/users?skip=${skip}&limit=${limit}`);
   const rawUsers = Array.isArray(data) ? data : [];
 
@@ -211,21 +221,30 @@ export const fetchUsersVerificationPage = async (skip = 0, limit = 8): Promise<{
   return { users, total: rawUsers.length };
 };
 
+// ====== Fetch Pending Deposits ======
 export const fetchPendingDeposits = async (): Promise<PendingDepositData[]> => {
   return fetchWithAuth(`${BASE_URL}/admin/dashboard/pending-deposits`);
 };
 
+// ====== Fetch Pending Withdrawals ======
 export const fetchPendingWithdrawals = async (): Promise<PendingWithdrawalData[]> => {
   return fetchWithAuth(`${BASE_URL}/admin/dashboard/pending-withdrawals`);
 };
 
+// ====== Fetch Margin Calls ======
 export const fetchMarginCalls = async (): Promise<{ activePeople: ActivePerson[]; marginCalls: MarginCall[] }> => {
   return fetchWithAuth(`${BASE_URL}/admin/dashboard/margin-calls`);
 };
 
+// ====== Fetch All Admins (updated to API endpoint) ======
 export const fetchAllAdmins = async (): Promise<Admin[]> => {
-  const res = await fetch('/data/alladmins.json'); 
-  if (!res.ok) throw new Error("Failed to load admins JSON");
-  const data = await res.json();
-  return data.admins;
+  const data = await fetchWithAuth(`${BASE_URL}/admin/users?skip=0&limit=100`);
+  const admins: Admin[] = (Array.isArray(data) ? data : []).map((a: any) => ({
+    id: a.id,
+    name: `${a.first_name ?? ''} ${a.last_name ?? ''}`.trim(),
+    role: a.is_admin ? "Admin" : "User",
+    email: a.email,
+    password: a.password ?? "",
+  }));
+  return admins;
 };
