@@ -1,317 +1,304 @@
 'use client'
 
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { X } from "lucide-react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import tradesData from "@/data/trades.json";
-import { Trader } from "@/lib/api";
+import { useState } from "react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { XCircle, RefreshCcw, Pencil, ChevronDown } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import data from "@/data/trades.json"
 
-interface UserTradeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  user: Trader;
+interface User {
+  userId: string
+  name: string
+  email: string
+  phone: string
+  balance: string | number
+  equity: string | number
+  margin: string | number
+  freeMargin: string | number
 }
 
-export const UserTradeDialog = ({ open, onOpenChange, user }: UserTradeDialogProps) => {
-  const [activeTab, setActiveTab] = useState("open-positions");
+type TradeRow = Record<string, any>
 
-  const [openPositions, setOpenPositions] = useState(tradesData.tradePositions);
-  const [orderPositions, setOrderPositions] = useState(tradesData.orderPositions);
-  const [closedPositions, setClosedPositions] = useState(tradesData.closedPositions);
-  const [transactions, setTransactions] = useState(tradesData.transactions);
+interface UserTradeDialogProps {
+  isOpen: boolean
+  onClose: () => void
+  selectedUser: User | null
+}
 
-  const [editingCell, setEditingCell] = useState<{ tab: string; row: number; field: string } | null>(null);
+export const UserTradeDialog = ({ isOpen, onClose, selectedUser }: UserTradeDialogProps) => {
+  const [subTab, setSubTab] = useState("open")
+  const [openPositions, setOpenPositions] = useState<TradeRow[]>(data.tradePositions)
+  const [editingCell, setEditingCell] = useState<{ row: number; col: string } | null>(null)
+  const [editValue, setEditValue] = useState("")
+  const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
 
-  const handleCellChange = (tab: string, row: number, field: string, value: string) => {
-    const update = (setter: any, data: any[]) => {
-      const updated = [...data];
-      updated[row][field] = value;
-      setter(updated);
-    };
+  const editableColumns = [
+    "symbol",
+    "createdTime",
+    "volume",
+    "direction",
+    "enterPrice",
+    "price",
+    "stopLoss",
+    "takeProfit",
+    "swap",
+    "commission"
+  ]
 
-    switch (tab) {
-      case "open-positions":
-        update(setOpenPositions, openPositions);
-        break;
-      case "order-positions":
-        update(setOrderPositions, orderPositions);
-        break;
-      case "closed-positions":
-        update(setClosedPositions, closedPositions);
-        break;
-      case "transactions":
-        update(setTransactions, transactions);
-        break;
+  const handleCellClick = (rowIndex: number, col: string, value: any) => {
+    if (editableColumns.includes(col)) {
+      setEditingCell({ row: rowIndex, col })
+      setEditValue(String(value ?? ""))
     }
-  };
+    setSelectedRowIndex(rowIndex)
+  }
 
-  const handleBlur = () => setEditingCell(null);
+  const handleEditSave = () => {
+    if (editingCell) {
+      const updated = [...openPositions]
+      const row = { ...updated[editingCell.row] }
+      row[editingCell.col] = editValue
+      updated[editingCell.row] = row
+      setOpenPositions(updated)
+      setEditingCell(null)
+      setEditValue("")
+    }
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === "Escape") setEditingCell(null);
-  };
-
-  const parseFlexibleDate = (value: string): Date | null => {
-    if (!value) return null;
-    let date: Date | null = null;
-    if (!isNaN(Date.parse(value))) {
-      date = new Date(value);
-    } else {
-      const match = value.match(/(\d{1,2}) (\w{3}) (\d{4})(?:, (\d{1,2}):(\d{2}):(\d{2}))?/);
-      if (match) {
-        const [, day, mon, year, h = "00", m = "00", s = "00"] = match;
-        date = new Date(`${day} ${mon} ${year} ${h}:${m}:${s}`);
-      } else {
-        const parts = value.split("/");
-        if (parts.length === 3) {
-          const [d, m, y] = parts;
-          date = new Date(`${y}-${m}-${d}`);
-        }
-      }
+    if (e.key === "Enter") handleEditSave()
+    else if (e.key === "Escape") {
+      setEditingCell(null)
+      setEditValue("")
+      setSelectedRowIndex(null)
     }
-    return isNaN(date?.getTime() || NaN) ? null : date;
-  };
+  }
 
-  const formatDateTime = (value: string) => {
-    const d = parseFlexibleDate(value);
-    if (!d) return value;
-    const date = d.toLocaleDateString("en-GB");
-    const time = d.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-    return `${date}\n${time}`;
-  };
+  const renderValue = (val: unknown) =>
+    val === null || val === undefined ? "-" : String(val)
 
-  // 🔹 Table renderer
-  const renderEditableTable = (tab: string, data: any[], setData: any) => (
-    <div className="p-2">
-      <Table className="text-[12px] h-[405px] table-auto w-full rounded-lg overflow-hidden shadow-md ring-1 ring-gray-200">
-        <TableHeader className="bg-[#D1D1D6]">
-          <TableRow>
-            {Object.keys(data[0] || {}).map((key) => (
+  const renderTable = (rows: TradeRow[], columns: string[], editable = false) => (
+    <div className="overflow-x-auto max-h-[300px] overflow-y-auto rounded-xl border border-gray-200">
+      <Table className="text-[11px]">
+        <TableHeader>
+          <TableRow className="bg-gray-100">
+            {columns.map((col) => (
               <TableHead
-                key={key}
-                className="px-3 py-2 whitespace-nowrap text-gray-700 font-medium text-center first:rounded-tl-lg last:rounded-tr-lg"
+                key={col}
+                className="text-[11px] font-semibold text-gray-600 whitespace-nowrap"
               >
-                {key}
+                {col}
               </TableHead>
             ))}
           </TableRow>
         </TableHeader>
-
         <TableBody>
-          {data.map((row, rowIndex) => (
-            <TableRow
-              key={rowIndex}
-              className={`h-[38px] ${rowIndex % 2 === 0 ? "bg-white" : "bg-[#E0E0E0]"}
-                ${rowIndex === data.length - 1 ? "[&>td:first-child]:rounded-bl-lg [&>td:last-child]:rounded-br-lg" : ""}
+          {rows.map((row, i) => {
+            const isEditingRow = editingCell?.row === i
+            const isSelectedRow = selectedRowIndex === i
+
+            return (
+              <TableRow
+                key={i}
+                className={`transition-all duration-150 hover:bg-gray-50
+                ${isSelectedRow ? "border-t-2 border-b-2 border-black" : "border-t border-gray-200"}
               `}
-            >
-              {Object.keys(row).map((key) => {
-                const isDirectionField = key === "direction";
-                const isDateField = key.toLowerCase().includes("time") || key.toLowerCase().includes("date");
-                const isProfitField = key.toLowerCase() === "profit" || key.toLowerCase() === "netprofit";
+              >
+                {columns.map((col, j) => {
+                  const isEditingCell = isEditingRow && editingCell?.col === col
+                  const cellValue = renderValue(row[col])
+                  const textColor =
+                    col === "direction"
+                      ? cellValue === "BUY"
+                        ? "text-green-600"
+                        : cellValue === "SELL"
+                          ? "text-red-600"
+                          : ""
+                      : "text-gray-700"
 
-                const isEditing =
-                  editingCell &&
-                  editingCell.row === rowIndex &&
-                  editingCell.field === key &&
-                  editingCell.tab === tab;
-
-                const dateObj = isDateField ? parseFlexibleDate(row[key]) : null;
-
-                // 🎨 Tentukan warna text
-                let textColor = "";
-                if (isDirectionField) {
-                  textColor = row[key] === "BUY"
-                    ? "text-green-600 font-medium"
-                    : "text-red-600 font-medium";
-                } else if (isProfitField) {
-                  const value = String(row[key] || "");
-                  textColor = value.includes("-")
-                    ? "text-red-600 font-medium"
-                    : "text-green-600 font-medium";
-                }
-
-                return (
-                  <TableCell
-                    key={key}
-                    onClick={() => setEditingCell({ tab, row: rowIndex, field: key })}
-                    className={`cursor-pointer align-middle h-[36px] px-3 py-2 ${textColor}`}
-                    style={{
-                      verticalAlign: "middle",
-                      minWidth: isDateField ? "95px" : "80px",
-                      whiteSpace: isDateField ? "pre-line" : "nowrap",
-                    }}
-                  >
-                    {isEditing ? (
-                      isDirectionField ? (
-                        // 🔽 Dropdown untuk BUY / SELL
+                  return (
+                    <TableCell
+                      key={j}
+                      className="relative text-[11px] whitespace-nowrap px-1 cursor-pointer"
+                      onClick={() => handleCellClick(i, col, row[col])}
+                    >
+                      {isEditingCell && col === "direction" ? (
+                        // Dropdown langsung muncul saat klik cell direction
                         <select
-                          value={row[key]}
+                          className="absolute inset-0 w-full h-full rounded-sm px-1 py-0.5 text-[11px] focus:outline-none"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onBlur={handleEditSave}
                           autoFocus
-                          onBlur={handleBlur}
-                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
-                          className="h-[28px] w-full text-[12px] bg-yellow-50 border border-gray-300 rounded px-2 focus:ring-2 focus:ring-blue-400 outline-none"
                         >
-                          <option value="BUY" className="text-green-600 font-semibold">BUY</option>
-                          <option value="SELL" className="text-red-600 font-semibold">SELL</option>
+                          <option value="BUY">BUY</option>
+                          <option value="SELL">SELL</option>
                         </select>
-                      ) : key.toLowerCase() === "symbol" ? (
-                        // 🔽 Dropdown untuk pasangan mata uang
-                        <select
-                          value={row[key]}
-                          autoFocus
-                          onBlur={handleBlur}
-                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
-                          className="h-[28px] w-full text-[12px] bg-yellow-50 border border-gray-300 rounded px-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                        >
-                          {[
-                            "AUDUSD", "EURUSD", "USDJPY", "GBPUSD", "USDCAD", "USDCHF", "NZDUSD",
-                            "XAUUSD", "BTCUSD", "ETHUSD", "US30", "NAS100", "SPX500"
-                          ].map((pair) => (
-                            <option key={pair} value={pair}>
-                              {pair}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        // ✏️ Input teks biasa
+                      ) : isEditingCell && col !== "direction" ? (
                         <input
-                          type="text"
-                          defaultValue={row[key]}
-                          autoFocus
-                          onBlur={handleBlur}
+                          className="absolute inset-0 w-full h-full px-1 py-0.5 text-[11px] focus:outline-none"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onBlur={handleEditSave}
                           onKeyDown={handleKeyDown}
-                          onChange={(e) => handleCellChange(tab, rowIndex, key, e.target.value)}
-                          className="h-[28px] w-full text-[12px] text-gray-800 bg-yellow-50 border border-gray-300 rounded px-2 transition focus:ring-2 focus:ring-blue-400 outline-none"
+                          autoFocus
                         />
-                      )
-                    ) : (
-                      <div
-                        className={`h-[32px] flex items-center justify-start ${isDateField ? "whitespace-pre-line text-[11px]" : "truncate"
-                          }`}
-                      >
-                        {isDateField ? formatDateTime(row[key]) : row[key]}
-                      </div>
-                    )}
-
-
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          ))}
+                      ) : (
+                        <div className="flex items-center">
+                          <span className={textColor}>{cellValue}</span>
+                          {col === "direction" && <ChevronDown className="w-3 h-3 text-gray-400 ml-1" />}
+                        </div>
+                      )}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
     </div>
-  );
+  )
+
+  const handleRefresh = () => console.log("Refreshing data...")
+  const handleEdit = () => console.log("Edit position clicked")
+  const handleClosePosition = () => console.log("Close position clicked")
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[1200px] p-0 gap-0 max-h-[90vh] bg-gray-100 overflow-hidden rounded-xl shadow-2xl">
-        <DialogTitle>
-          <VisuallyHidden>User Trade Details</VisuallyHidden>
-        </DialogTitle>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-[1200px] h-[700px] bg-gray-50 rounded-xl shadow-2xl border border-gray-200 overflow-hidden p-0 flex items-center justify-center">
+        <div className="relative h-full flex flex-col w-full">
+          <div className="flex-1 overflow-auto p-6">
+            {selectedUser ? (
+              <>
+                {/* User Info */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  {[
+                    ["User ID", selectedUser.userId],
+                    ["Name", selectedUser.name],
+                    ["Email", selectedUser.email],
+                    ["Phone", selectedUser.phone],
+                  ].map(([label, value]) => (
+                    <div key={label} className="p-3 bg-white rounded-md shadow-sm border">
+                      <p className="text-gray-500 text-sm font-medium">{label}</p>
+                      <p className="font-semibold text-gray-800">{value}</p>
+                    </div>
+                  ))}
+                </div>
 
-        {/* Tombol Close */}
-        <button
-          onClick={() => onOpenChange(false)}
-          className="absolute top-3 right-3 opacity-70 hover:opacity-100 transition-opacity"
-        >
-          <X className="h-5 w-5" />
-        </button>
+                {/* Tabs + Buttons */}
+                <div className="bg-white border rounded-md shadow-sm p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <Tabs value={subTab} onValueChange={setSubTab}>
+                      <TabsList className="flex space-x-2">
+                        <TabsTrigger value="open">Open Positions</TabsTrigger>
+                        <TabsTrigger value="order">Order Positions</TabsTrigger>
+                        <TabsTrigger value="closed">Closed Positions</TabsTrigger>
+                        <TabsTrigger value="transactions">Transactions</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
 
-        {/* ===== Header Info Trader ===== */}
-        <DialogHeader className="px-6 pt-6 pb-4">
-          <div className="flex flex-wrap gap-3 leading-tight">
-            {[
-              { label: "User ID", value: user.userId },
-              { label: "Name", value: user.name },
-              { label: "Balance", value: user.balance },
-              { label: "Credit", value: user.credit },
-              { label: "Profit", value: user.balance },
-              { label: "Equity", value: user.equity },
-              { label: "Margin", value: user.margin },
-              { label: "F Margin", value: user.freeMargin },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col justify-center rounded-md bg-white px-3 py-2 shadow-sm border border-gray-100"
-                style={{ width: "125px", height: "67px" }}
-              >
-                <span className="text-gray-500 text-sm font-semibold">{item.label}</span>
-                <span className="font-semibold text-gray-700 text-[13px] mt-2">{item.value}</span>
-              </div>
-            ))}
+                    <div className="flex space-x-2">
+                      <Button variant="outline" size="sm" onClick={handleRefresh} className="flex items-center gap-1">
+                        <RefreshCcw className="w-4 h-4" /> Refresh
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleEdit} className="flex items-center gap-1">
+                        <Pencil className="w-4 h-4" /> Edit Position
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={handleClosePosition} className="flex items-center gap-1">
+                        <XCircle className="w-4 h-4" /> Close Position
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Summary Info */}
+                  <div className="flex items-center space-x-[10px] text-xs text-gray-700 mb-4">
+                    <p>All Swaps: 0.08</p>
+                    <p>All Commissions: 0.08</p>
+                    <p>All Profit: -$174.21</p>
+                    <p>All Total Profit: -$174.21</p>
+                  </div>
+
+                  {/* Table content */}
+                  <Tabs value={subTab} onValueChange={setSubTab}>
+                    <TabsContent value="open">
+                      {renderTable(
+                        openPositions,
+                        [
+                          "userId",
+                          "pidNo",
+                          "symbol",
+                          "createdTime",
+                          "volume",
+                          "direction",
+                          "enterPrice",
+                          "price",
+                          "stopLoss",
+                          "takeProfit",
+                          "swap",
+                          "commission",
+                          "profit",
+                          "netprofit",
+                        ],
+                        true
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="order">
+                      {renderTable(data.orderPositions as TradeRow[], [
+                        "userId",
+                        "pidNo",
+                        "symbol",
+                        "createdTime",
+                        "volume",
+                        "direction",
+                        "orderPrice",
+                        "price",
+                        "stopLoss",
+                        "takeProfit",
+                      ])}
+                    </TabsContent>
+
+                    <TabsContent value="closed">
+                      {renderTable(data.closedPositions as TradeRow[], [
+                        "userId",
+                        "pidNo",
+                        "symbol",
+                        "createdTime",
+                        "closeTime",
+                        "volume",
+                        "direction",
+                        "enterPrice",
+                        "closePrice",
+                        "stopLoss",
+                        "takeProfit",
+                        "swap",
+                        "commission",
+                        "profit",
+                        "netProfit",
+                      ])}
+                    </TabsContent>
+
+                    <TabsContent value="transactions">
+                      {renderTable(data.transactions as TradeRow[], [
+                        "userId",
+                        "type",
+                        "place",
+                        "time",
+                        "amount",
+                      ])}
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </>
+            ) : (
+              <p className="text-center text-gray-500">No user selected.</p>
+            )}
           </div>
-        </DialogHeader>
-
-        {/* ===== Tabs Section ===== */}
-        <div className="px-6 py-3 flex items-center justify-between">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="h-auto p-0 bg-transparent flex justify-start gap-2">
-              {["open-positions", "order-positions", "closed-positions", "transactions"].map((tab) => (
-                <TabsTrigger
-                  key={tab}
-                  value={tab}
-                  className="w-44 h-10 text-sm font-semibold rounded-md hover:bg-blue-100 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition"
-                >
-                  {tab.replace("-", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-
-          <div className="flex gap-2 ml-4">
-            <Button>Refresh</Button>
-            <Button variant="secondary">Save</Button>
-          </div>
-        </div>
-
-        {/* ===== Summary Section ===== */}
-        <div className="bg-white px-6 py-4 flex flex-wrap gap-6 mb-4 mx-4 mt-4 rounded-lg shadow-lg ring-1 ring-white/50">
-          {[
-            { label: "All Swaps", value: "0.08" },
-            { label: "All Commission", value: "0.08" },
-            { label: "All Profit", value: "-$174.21" },
-            { label: "All Total Profit", value: "-$174.21" },
-          ].map((item, idx) => (
-            <div key={idx} className="text-sm font-medium">
-              <span className="text-gray-500">{item.label}: </span>
-              <span
-                className={`font-semibold ${item.value.includes("-") ? "text-red-600" : "text-green-600"
-                  }`}
-              >
-                {item.value}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* ===== Tables ===== */}
-        <div className="overflow-auto max-h-[500px] px-2 pb-6">
-          <Tabs value={activeTab} className="w-full">
-            <TabsContent value="open-positions">
-              {renderEditableTable("open-positions", openPositions, setOpenPositions)}
-            </TabsContent>
-            <TabsContent value="order-positions">
-              {renderEditableTable("order-positions", orderPositions, setOrderPositions)}
-            </TabsContent>
-            <TabsContent value="closed-positions">
-              {renderEditableTable("closed-positions", closedPositions, setClosedPositions)}
-            </TabsContent>
-            <TabsContent value="transactions">
-              {renderEditableTable("transactions", transactions, setTransactions)}
-            </TabsContent>
-          </Tabs>
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
